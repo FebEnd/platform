@@ -1,5 +1,7 @@
 package com.platform.parent.mybatis.bean;
 
+import java.util.List;
+
 /**
  * Created by tqyao.
  * id BIGINT(20) NOT NULL AUTO_INCREMENT,
@@ -8,6 +10,7 @@ package com.platform.parent.mybatis.bean;
  */
 public class UserTag {
     private long id, userId, tagId;
+    private List<Tag> tags;
 
     public long getId() {
         return id;
@@ -33,6 +36,14 @@ public class UserTag {
         this.tagId = tagId;
     }
 
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
     public UserTag(long userId, long tagId) {
 
         this.userId = userId;
@@ -44,5 +55,18 @@ public class UserTag {
         this.id = id;
         this.userId = userId;
         this.tagId = tagId;
+    }
+
+    public UserTag(long id, long userId, long tagId, List<Tag> tags) {
+        this.id = id;
+        this.userId = userId;
+        this.tagId = tagId;
+        this.tags = tags;
+    }
+
+    public UserTag(long userId, long tagId, List<Tag> tags) {
+        this.userId = userId;
+        this.tagId = tagId;
+        this.tags = tags;
     }
 }

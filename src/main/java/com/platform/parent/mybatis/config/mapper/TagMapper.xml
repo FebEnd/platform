@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.TagMapper">
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.Tag" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tag (content) VALUES (#{content})
+    </insert>
+    <delete id="deleteByIds" parameterType="java.lang.String">
+        DELETE FROM tag WHERE id IN
+        <foreach collection="array" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+    <update id="update" parameterType="com.platform.parent.mybatis.bean.Tag">
+       UPDATE tag SET content = #{content}
+        WHERE id = #{id}
+    </update>
+
+    <select id="findTagById" parameterType="long" resultType="com.platform.parent.mybatis.bean.Tag">
+        SELECT id, content FROM tag WHERE id = #{id}
+    </select>
+
+    <select id="findTagsByUserId" parameterType="long" resultType="com.platform.parent.mybatis.bean.Tag">
+        SELECT T.id, T.content FROM tag AS T, user_tag AS U WHERE U.user_id = #{id} AND T.id = U.tag_id GROUP BY T.id
+    </select>
+</mapper>
