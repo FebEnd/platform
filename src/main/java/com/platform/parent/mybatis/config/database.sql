@@ -11,6 +11,8 @@ DROP TABLE IF EXISTS topic_collection;
 DROP TABLE IF EXISTS balance;
 DROP TABLE IF EXISTS coupon;
 DROP TABLE IF EXISTS tag;
+DROP TABLE IF EXISTS user_tag;
+DROP TABLE IF EXISTS camp_tag;
 DROP TABLE IF EXISTS tag_map;
 /* 用户 公有 */
 CREATE TABLE user (
@@ -147,9 +149,16 @@ CREATE TABLE tag(
     PRIMARY KEY (id)
 ) ENGINE =InnoDB DEFAULT CHARSET =utf8;
 /* tag 与目标id对应表 */
-CREATE TABLE tag_map(
+CREATE TABLE user_tag(
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
-    target_id BIGINT(20) NOT NULL ,
+    user_id BIGINT(20) NOT NULL ,
+    tag_id BIGINT(20) NOT NULL ,
+
+    PRIMARY KEY (id)
+)ENGINE =InnoDB DEFAULT CHARSET =utf8;
+CREATE TABLE camp_tag(
+    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    camp_id BIGINT(20) NOT NULL ,
     tag_id BIGINT(20) NOT NULL ,
 
     PRIMARY KEY (id)
