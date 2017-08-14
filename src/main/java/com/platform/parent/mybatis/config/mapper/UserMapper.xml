@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.UserMapper">
+    <!--
+    private long id;
+    private String phone, nickname, password, city, liveDistrict, targetDistrict;
+    private Date childBirth;
+    private String childGrade;
+    private String childGender, childSchool;
+    -->
+
+    <select id="findUserByPhone" parameterType="java.lang.String" resultType="com.platform.parent.mybatis.bean.User">
+        SELECT
+            U.id,
+            U.phone,
+            U.nickname,
+            U.password
+        FROM user AS U
+        WHERE phone = #{phone}
+    </select>
+
+    <select id="queryUserById" parameterType="long" resultType="com.platform.parent.mybatis.bean.User">
+        SELECT * FROM user WHERE id = #{id}
+    </select>
+
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user (phone, password, nickname) VALUES (#{phone}, #{password}, #{nickname})
+    </insert>
+
+    <update id="update" parameterType="com.platform.parent.mybatis.bean.User">
+        UPDATE user
+        SET phone = #{phone}, password = #{password}, nickname = #{nickname}, city = #{city},
+            live_district = #{liveDistrict}, target_district = #{targetDistrict},
+            child_birth   = #{childBirth}, child_grade = #{childGrade}, child_gender = #{childGender},
+            child_school  = #{childSchool}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteByIds" parameterType="java.lang.String">
+        DELETE FROM user WHERE id IN 
+        <foreach item="idItem" collection="array" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+
+</mapper>

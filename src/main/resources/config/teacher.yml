@@ -1,0 +1,22 @@
+star:
+  maxMember:
+    one: 100
+    two: 150
+    three: 200
+    four: 300
+    five: 500
+  share:
+    one: 70
+    two: 75
+    three: 80
+    four: 83
+    five: 85
+  manager:
+    one:
+    two:
+    three: 3
+    four: 4
+    five: 5
+manager:
+  share: 1
+

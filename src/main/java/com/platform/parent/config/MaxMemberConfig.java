@@ -1,0 +1,57 @@
+package com.platform.parent.config;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
+
+/**
+ * Created by tqyao.
+ * load config file for Member limit
+ */
+@Component
+@ConfigurationProperties( prefix = "Member.max")
+@PropertySource("classpath:config/teacher.properties")
+public class MaxMemberConfig {
+
+    private int  one, two, three, four, five;
+
+    public int  getOne() {
+        return one;
+    }
+
+    public void setOne(int one) {
+        this.one = one;
+    }
+
+    public int getTwo() {
+        return two;
+    }
+
+    public void setTwo(int two) {
+        this.two = two;
+    }
+
+    public int getThree() {
+        return three;
+    }
+
+    public void setThree(int three) {
+        this.three = three;
+    }
+
+    public int getFour() {
+        return four;
+    }
+
+    public void setFour(int four) {
+        this.four = four;
+    }
+
+    public int getFive() {
+        return five;
+    }
+
+    public void setFive(int five) {
+        this.five = five;
+    }
+}

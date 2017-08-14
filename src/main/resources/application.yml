@@ -1,0 +1,30 @@
+#spring boot file config
+#spring.http.multipart.max-file-size=100MB
+#spring.http.multipart.max-request-size=200MB
+spring:
+  http:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 200MB
+  datasource:
+    url: jdbc:mysql://localhost:3306/platform?serverTimezone=GMT%2B8&characterEncoding=utf-8
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+# mybatis
+mybatis:
+  type-aliases-package: com.platform.parent.mybatis.bean
+  mapper-locations: classpath:mapper/*.xml
+
+
+# jwt config
+#jwt.header=Authorization
+#jwt.secret=platformParentSecretKey
+#jwt.expiration=259200
+#jwt.token-head="Bearer "
+jwt:
+  header: Authorization
+  secret: platformParentSecretKey
+  expiration: 259200
+  tokenHead: "Bearer "
