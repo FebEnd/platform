@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.CampMapper">
+    <!--<resultMap id="baseResultMap" type="com.platform.parent.mybatis.bean.Camp">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="type" property="type" jdbcType="INT"/>
+        <result column="favor" property="favor" jdbcType="INT" />
+        <result column="max_limit" property="maxLimit" jdbcType="INT" />
+        <result column="min_limit" property="minLimit" jdbcType="INT" />
+        <result column="status" property="status" jdbcType="INT" />
+        <result column="price0" property="price0" jdbcType="DECIMAL(10,2)" />
+        <result column="price1" property="price1" jdbcType="DECIMAL(10,2)" />
+        <result column="price2" property="price2" jdbcType="DECIMAL(10,2)" />
+    </resultMap>-->
+
+    <sql id="baseColumn" >
+        id, type, favor, max_limit, min_limit, status, price0, price1, price2
+    </sql>
+
+    <!--this.type = type;
+        this.favor = favor;
+        this.maxLimit = maxLimit;
+        this.minLimit = minLimit;
+        this.status = status;
+        this.price0 = price0;
+        this.price1 = price1;
+        this.price2 = price2;-->
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.Camp" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO camp (type, favor, max_limit, min_limit, status, price0, price1, price2)
+        VALUES (#{type}, #{favor}, #{maxLimit}, #{minLimit}, #{status}, #{price0}, #{price1}, #{price2})
+    </insert>
+    <update id="update" parameterType="com.platform.parent.mybatis.bean.Camp">
+        UPDATE camp
+        SET type   = #{type}, favor = #{favor}, max_limit = #{maxLimit}, min_limit = #{minLimit},
+            status = #{status}, price0 = #{price0}, price1 = #{price1}, price2 = #{price2}
+        WHERE id = #{id}
+    </update>
+    <delete id="deleteByIds" parameterType="java.lang.String">
+        DELETE FROM camp WHERE id IN
+        <foreach item="idItem" collection="array" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+
+    <select id="queryCampById" parameterType="long" resultType="com.platform.parent.mybatis.bean.Camp">
+        SELECT <include refid="baseColumn"/> FROM camp WHERE id = #{id}
+    </select>
+
+    <select id="findCampsByType" parameterType="int" resultType="com.platform.parent.mybatis.bean.Camp">
+        SELECT * FROM camp WHERE type = #{type}
+    </select>
+
+    <select id="findCampsByStatus" parameterType="int" resultType="com.platform.parent.mybatis.bean.Camp">
+        SELECT * FROM camp WHERE status = #{status}
+    </select>
+
+    <select id="findCampsByParams" parameterType="java.util.HashMap" resultType="com.platform.parent.mybatis.bean.Camp">
+        SELECT <include refid="baseColumn"/> FROM camp
+        <where>
+            <if test="type != null">
+                type = #{type}
+            </if>
+            <if test="status != null" >
+                AND status = #{status}
+            </if>
+            <if test="maxLimit != null">
+                AND max_limit = #{maxLimit}
+            </if>
+            <if test="minLimit != null">
+                AND min_limit = #{minLimit}
+            </if>
+        </where>
+    </select>
+</mapper>

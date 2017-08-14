@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by tqyao.
@@ -17,5 +18,6 @@ public interface CampMapper {
     int deleteByIds(String[] ids);
     Camp queryCampById(long id);
     List<Camp> findCampsByType(int type);
-    List<Camp> findCampsByStatus(int status);0
+    List<Camp> findCampsByStatus(int status);
+    List<Camp> findCampsByParams(Map<String, Object> params);
 }
