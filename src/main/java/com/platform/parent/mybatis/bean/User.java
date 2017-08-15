@@ -15,6 +15,11 @@ public class User {
 
     private List<Role> roles;
 
+    public User id(long id) {
+        this.id = id;
+        return this;
+    }
+
     public User phone(String phone) {
         this.phone = phone;
         return this;
@@ -35,45 +40,35 @@ public class User {
         return this;
     }
 
-    public User liveDistrict(String liveDistrict) {this.liveDistrict = liveDistrict; return this;}
-
-    public User targetDistrict(String targetDistrict) {this.targetDistrict=targetDistrict; return this;}
-
-    public User childBirth(Date childBirth) {this.childBirth = childBirth; return this;}
-
-    public User childGrade(String childGrade) {this.childGrade = childGrade; return this;}
-
-    public User childGender(String childGender) {this.childGender = childGender; return this;}
-
-    public User childSchool(String childSchool) {this.childSchool = childSchool; return this;}
-
-    /*public User(long id, String phone, String nickname, String password, String city, String liveDistrict, String targetDistrict, Date childBirth, String childGrade, String childGender, String childSchool) {
-        this.id = id;
-        this.phone = phone;
-        this.nickname = nickname;
-        this.password = password;
-        this.city = city;
+    public User liveDistrict(String liveDistrict) {
         this.liveDistrict = liveDistrict;
+        return this;
+    }
+
+    public User targetDistrict(String targetDistrict) {
         this.targetDistrict = targetDistrict;
+        return this;
+    }
+
+    public User childBirth(Date childBirth) {
         this.childBirth = childBirth;
+        return this;
+    }
+
+    public User childGrade(String childGrade) {
         this.childGrade = childGrade;
+        return this;
+    }
+
+    public User childGender(String childGender) {
         this.childGender = childGender;
+        return this;
+    }
+
+    public User childSchool(String childSchool) {
         this.childSchool = childSchool;
+        return this;
     }
-
-
-    public User(String phone, String nickname, String password) {
-        this.phone = phone;
-        this.nickname = nickname;
-        this.password = password;
-    }
-
-    public User(long id, String phone, String nickname, String password) {
-        this.id = id;
-        this.phone = phone;
-        this.nickname = nickname;
-        this.password = password;
-    }*/
 
     public long getId() {
         return id;

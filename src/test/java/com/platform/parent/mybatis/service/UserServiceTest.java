@@ -18,9 +18,10 @@ public class UserServiceTest {
     @Autowired
     private UserService service;
 
-    /*@Test
+    @Test
     public void add() {
-        User user = new User("testphone2","thirduser","testpassword");
+        User user = new User().phone("testphone3").password("testpassword").nickname("nthuser");
+//        User user = new User("testphone2","thirduser","testpassword");
         long i = service.add(user);
         System.out.println(i);
         System.out.println(user.getId());
@@ -29,10 +30,11 @@ public class UserServiceTest {
 
     @Test
     public void update() {
-        User user = new User(1,"updatephone", "updatenickname","updatepassword");
+        User user = new User().phone("testphone3").password("testpassword").nickname("updatenickname").id(3);
+//        User user = new User(1,"updatephone", "updatenickname","updatepassword");
         int i = service.update(user);
         Assert.assertNotEquals(0,i);
-    }*/
+    }
 
     @Test
     public void delete() {

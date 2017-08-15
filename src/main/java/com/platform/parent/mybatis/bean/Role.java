@@ -7,20 +7,13 @@ public class Role {
     private long id;
     private String name;
 
-    public Role(long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public Role() {
-    }
-
-    public Role(String name) {
-        this.name = name;
-    }
-
     public Role name(String name) {
         this.name = name;
+        return this;
+    }
+
+    public Role id(long id) {
+        this.id = id;
         return this;
     }
 

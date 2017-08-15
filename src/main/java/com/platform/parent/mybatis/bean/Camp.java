@@ -19,7 +19,52 @@ public class Camp {
     private int type, favor, maxLimit, minLimit, status;
     private BigDecimal price0, price1, price2;
 
-    public Camp(long id, int type, int favor, int maxLimit, int minLimit, int status, BigDecimal price0, BigDecimal price1, BigDecimal price2) {
+    public Camp id(long id) {
+        this.id = id;
+        return this;
+    }
+
+    public Camp type(int type) {
+        this.type = type;
+        return this;
+    }
+
+    public Camp favor(int favor) {
+        this.favor = favor;
+        return this;
+    }
+
+    public Camp maxLimit(int maxLimit) {
+        this.maxLimit = maxLimit;
+        return this;
+    }
+
+    public Camp minLimit(int minLimit) {
+        this.minLimit = minLimit;
+        return this;
+    }
+
+    public Camp status(int status) {
+        this.status = status;
+        return this;
+    }
+
+    public Camp price0(BigDecimal price0) {
+        this.price0 = price0;
+        return this;
+    }
+
+    public Camp price1(BigDecimal price1) {
+        this.price1 = price1;
+        return this;
+    }
+
+    public Camp price2(BigDecimal price2) {
+        this.price2 = price2;
+        return this;
+    }
+
+    /*public Camp(long id, int type, int favor, int maxLimit, int minLimit, int status, BigDecimal price0, BigDecimal price1, BigDecimal price2) {
         this.id = id;
         this.type = type;
         this.favor = favor;
@@ -40,7 +85,7 @@ public class Camp {
         this.price0 = price0;
         this.price1 = price1;
         this.price2 = price2;
-    }
+    }*/
 
     public long getId() {
         return id;

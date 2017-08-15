@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS user_detail;
 DROP TABLE IF EXISTS member;
 DROP TABLE IF EXISTS teacher;
 DROP TABLE IF EXISTS camp;
@@ -16,12 +17,21 @@ DROP TABLE IF EXISTS camp_tag;
 DROP TABLE IF EXISTS tag_map;
 DROP TABLE IF EXISTS role;
 DROP TABLE IF EXISTS user_role;
+DROP TABLE IF EXISTS school;
+DROP TABLE IF EXISTS location;
 /* 用户 公有 */
 CREATE TABLE user (
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     phone  VARCHAR(20) NOT NULL,
     nickname VARCHAR(50) NOT NULL,
     password VARCHAR(50) NOT NULL,
+
+
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE user_detail(
+    id BIGINT(20) NOT NULL ,
     city VARCHAR(50),
     live_district VARCHAR(50),
     target_district VARCHAR(50),
@@ -31,7 +41,7 @@ CREATE TABLE user (
     child_school VARCHAR(100),
 
     PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE =InnoDB DEFAULT CHARSET =utf8;
 
 /* 会员表，当用户报名课程时加入信息 */
 CREATE TABLE member(
@@ -178,3 +188,19 @@ CREATE TABLE user_role(
 
     PRIMARY KEY (id)
 )ENGINE =InnoDB DEFAULT CHARSET =utf8;
+CREATE TABLE school(
+    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    full_name TEXT NOT NULL ,
+    alias TEXT,
+    location_id BIGINT(20) NOT NULL ,
+
+    PRIMARY KEY (id)
+) ENGINE =InnoDB DEFAULT CHARSET =utf8;
+CREATE TABLE location(
+    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    province TEXT,
+    city TEXT NOT NULL ,
+    district TEXT NOT NULL ,
+
+    PRIMARY KEY (id)
+) ENGINE =InnoDB DEFAULT CHARSET =utf8;
