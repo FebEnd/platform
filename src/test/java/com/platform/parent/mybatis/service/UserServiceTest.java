@@ -8,19 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-/**
+/*
  * Created by tqyao.
- */
+*/
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class UserServiceTest {
     @Autowired
     private UserService service;
 
-    @Test
+    /*@Test
     public void add() {
-        User user = new User("testphone","thirduser","testpassword");
-        int i = service.add(user);
+        User user = new User("testphone2","thirduser","testpassword");
+        long i = service.add(user);
+        System.out.println(i);
+        System.out.println(user.getId());
         Assert.assertNotEquals(0, i);
     }
 
@@ -29,13 +32,13 @@ public class UserServiceTest {
         User user = new User(1,"updatephone", "updatenickname","updatepassword");
         int i = service.update(user);
         Assert.assertNotEquals(0,i);
-    }
+    }*/
 
     @Test
     public void delete() {
-        String[] ids = {"1","2"};
+        String[] ids = {"1", "2"};
         int i = service.deleteByIds(ids);
-        Assert.assertNotEquals(0,i);
+        Assert.assertNotEquals(0, i);
     }
 
     @Test
@@ -43,6 +46,20 @@ public class UserServiceTest {
         long id = 3l;
         User user = service.queryUserById(id);
         Assert.assertEquals("thirduser", user.getNickname());
+    }
+
+    @Test
+    public void findUserByPhone() {
+        String phone = "testphone";
+        User user = service.findUserByPhone(phone);
+        Assert.assertEquals(phone, user.getPhone());
+    }
+
+    @Test
+    public void findUserByPhoneWithRole() {
+        String phone = "testphone";
+        User user = service.findUserByPhoneWithRole(phone);
+        Assert.assertEquals("ROLE_USER", user.getRoles().get(0).getName());
     }
 
 }

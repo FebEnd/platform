@@ -20,9 +20,12 @@ public class JwtTokenUtilTest {
 
     @Test
     public void testGenerateDate() {
-        System.out.println(tokenUtil.expiration);
-        System.out.println(tokenUtil.generateToken("15001877058","password"));
-        System.out.println(config.getExpiration());
+//        System.out.println(tokenUtil.expiration);
+        String token = tokenUtil.generateToken("15001877058","password", 1l);
+        System.out.println(token);
+//        System.out.println(config.getExpiration());
+        System.out.println(tokenUtil.getClaimKeyId(token));
+        System.out.println(tokenUtil.getClaimKeyPassword(token));
 
     }
 }

@@ -22,13 +22,16 @@ public class JwtTokenUtil implements Serializable {
     private static final String CLAIM_KEY_USERNAME = "sub";
     private static final String CLAIM_KEY_CREATED = "created";
     private static final String CLAIM_KEY_PASSWORD = "pwd";
+    private static final String CLAIM_KEY_ID = "id";
 
 
 //    @Value("${jwt.secret}")
     private static String secret;
 //
 //    @Value("${jwt.expiration}")
-    public static Long expiration;
+    private static Long expiration;
+    private static String tokenHeader;
+    private static String tokenHead;
 
 
     public String getPhoneFromToken(String token) {
@@ -40,6 +43,22 @@ public class JwtTokenUtil implements Serializable {
             phone = null;
         }
         return phone;
+    }
+
+    public String getClaimKeyPassword(String token) {
+        String password;
+        final Claims claims = getClaimsFromToken(token);
+        password = (String) claims.get(CLAIM_KEY_PASSWORD);
+        return password;
+    }
+
+    public long getClaimKeyId(String token) {
+//        long id;
+        final Claims claims = getClaimsFromToken(token);
+        int i =  (int)claims.get(CLAIM_KEY_ID);
+//        int i = Integer.parseInt(s);
+//        id =  (int) i;
+        return i;
     }
 
     public Date getCreatedDateFromToken(String token) {
@@ -90,11 +109,12 @@ public class JwtTokenUtil implements Serializable {
         return (lastPasswordReset != null && created.before(lastPasswordReset));
     }*/
 
-    public String generateToken(String phone, String password) {
+    public String generateToken(String phone, String password, long id) {
         Map<String, Object> claims = new HashMap<>();
         claims.put(CLAIM_KEY_USERNAME, phone);
         claims.put(CLAIM_KEY_CREATED, new Date());
         claims.put(CLAIM_KEY_PASSWORD, password);
+        claims.put(CLAIM_KEY_ID, id);
         return generateToken(claims);
     }
 
@@ -145,5 +165,21 @@ public class JwtTokenUtil implements Serializable {
 
     public void setExpiration(Long expiration) {
         this.expiration = expiration;
+    }
+
+    public static String getTokenHeader() {
+        return tokenHeader;
+    }
+
+    public static void setTokenHeader(String tokenHeader) {
+        JwtTokenUtil.tokenHeader = tokenHeader;
+    }
+
+    public static String getTokenHead() {
+        return tokenHead;
+    }
+
+    public static void setTokenHead(String tokenHead) {
+        JwtTokenUtil.tokenHead = tokenHead;
     }
 }

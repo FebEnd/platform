@@ -9,9 +9,11 @@ import java.util.Map;
  * Created by tqyao.
  */
 public interface UserService {
-    int add(User user);
+    long add(User user);
     int update(User user);
     int deleteByIds(String[] ids);
     User queryUserById(long id);
+    User findUserByPhone(String phone);
+    User findUserByPhoneWithRole(String phone);
     List<User> queryUserList(Map<String, Object> params);
 }

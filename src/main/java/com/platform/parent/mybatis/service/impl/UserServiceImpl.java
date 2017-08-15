@@ -17,8 +17,14 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserMapper userMapper;
     @Override
-    public int add(User user) {
-        return this.userMapper.add(user);
+    public long add(User user) {
+        User user1;
+        if ((user1 = findUserByPhone(user.getPhone())) != null) {
+            //already existed
+            return user1.getId();
+        } else {
+            return this.userMapper.add(user);
+        }
     }
 
     @Override
@@ -34,6 +40,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public User queryUserById(long id) {
         return this.userMapper.queryUserById(id);
+    }
+
+    @Override
+    public User findUserByPhone(String phone) { return this.userMapper.findUserByPhone(phone);}
+
+    @Override
+    public User findUserByPhoneWithRole(String phone) {
+        return this.userMapper.findUserByPhoneWithRole(phone);
     }
 
     @Override

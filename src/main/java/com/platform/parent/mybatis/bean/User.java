@@ -1,6 +1,7 @@
 package com.platform.parent.mybatis.bean;
 
 import java.sql.Date;
+import java.util.List;
 
 /**
  * Created by tqyao.
@@ -12,7 +13,41 @@ public class User {
     private String childGrade;
     private String childGender, childSchool;
 
-    public User(long id, String phone, String nickname, String password, String city, String liveDistrict, String targetDistrict, Date childBirth, String childGrade, String childGender, String childSchool) {
+    private List<Role> roles;
+
+    public User phone(String phone) {
+        this.phone = phone;
+        return this;
+    }
+
+    public User nickname(String nickname) {
+        this.nickname = nickname;
+        return this;
+    }
+
+    public User password(String password) {
+        this.password = password;
+        return this;
+    }
+
+    public User city(String city) {
+        this.city = city;
+        return this;
+    }
+
+    public User liveDistrict(String liveDistrict) {this.liveDistrict = liveDistrict; return this;}
+
+    public User targetDistrict(String targetDistrict) {this.targetDistrict=targetDistrict; return this;}
+
+    public User childBirth(Date childBirth) {this.childBirth = childBirth; return this;}
+
+    public User childGrade(String childGrade) {this.childGrade = childGrade; return this;}
+
+    public User childGender(String childGender) {this.childGender = childGender; return this;}
+
+    public User childSchool(String childSchool) {this.childSchool = childSchool; return this;}
+
+    /*public User(long id, String phone, String nickname, String password, String city, String liveDistrict, String targetDistrict, Date childBirth, String childGrade, String childGender, String childSchool) {
         this.id = id;
         this.phone = phone;
         this.nickname = nickname;
@@ -26,6 +61,7 @@ public class User {
         this.childSchool = childSchool;
     }
 
+
     public User(String phone, String nickname, String password) {
         this.phone = phone;
         this.nickname = nickname;
@@ -37,7 +73,7 @@ public class User {
         this.phone = phone;
         this.nickname = nickname;
         this.password = password;
-    }
+    }*/
 
     public long getId() {
         return id;
@@ -125,5 +161,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }

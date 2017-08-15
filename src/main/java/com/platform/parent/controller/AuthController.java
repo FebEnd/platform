@@ -1,12 +1,15 @@
 package com.platform.parent.controller;
 
+import com.aliyuncs.exceptions.ClientException;
 import com.platform.parent.easemob.api.IMUserAPI;
 import com.platform.parent.easemob.api.impl.EasemobIMUser;
 import com.platform.parent.mybatis.SqlSessionLoader;
 import com.platform.parent.mybatis.bean.User;
+import com.platform.parent.mybatis.service.UserService;
 import com.platform.parent.response.user.LoginResponse;
 import com.platform.parent.response.user.MsgResponse;
 import com.platform.parent.util.JwtTokenUtil;
+import com.platform.parent.util.MsgUtil;
 import com.platform.parent.util.UserUtil;
 import com.platform.parent.util.VerificationCodeUtil;
 import io.swagger.client.model.RegisterUsers;
@@ -37,6 +40,8 @@ public class AuthController {
 
     @Autowired
     static JwtTokenUtil tokenUtil = new JwtTokenUtil();
+    @Autowired
+    UserService userService;
 
     /**
      * 请求短信验证码接口，按照阿里云服务规则，每60s可以发送一条，每1h可以发送5条
@@ -55,13 +60,13 @@ public class AuthController {
         //验证码模板参数，与阿里云服务平台申请的模板保持一致
         String templateParam = "{\"number\" : \" " + number + "\"}";
         //尝试发送验证码短信
-        /*try {
+        try {
             MsgUtil.sendSms(phone, signName, templateCode, templateParam);
         } catch (ClientException e) {//阿里云服务故障
             logger.error(e.getMessage());
 //            e.printStackTrace();
             return new MsgResponse("100","短信服务故障");
-        }*/
+        }
         //验证码发送成功
         //将验证码存入map
         verifyMap.put(phone, "000000");
@@ -86,14 +91,13 @@ public class AuthController {
             try {
                 SqlSession sqlSession = SqlSessionLoader.getSqlSession();
                 //todo 查询数据库是否存在该手机号并执行相应操作
-                User user = sqlSession.selectOne("com.platform.parent.UserMapper.findUserByPhone", phone);
-                sqlSession.commit();
+                User user = userService.findUserByPhone(phone);
                 if (user != null) {
                     //已有该用户不操作
                     if (verify(phone,number)) {
                         //验证码正确
                         //todo 返回密码
-                        String token = tokenUtil.generateToken(phone,user.getPassword());
+                        String token = tokenUtil.generateToken(phone,user.getPassword(),user.getId());
                         return new LoginResponse("0",token);
                     } else {
                         return new LoginResponse("201","验证码错误");
@@ -104,18 +108,25 @@ public class AuthController {
                         //验证码正确
                         //注册新的环信账号，用户名为手机号，密码由UserUtil生成
                         String password = UserUtil.generatePassword(12);
-                        sqlSession.insert("com.platform.parent.UserMapper.addNewUser", new User(phone,password,phone));
-                        sqlSession.commit();
-                        sqlSession.close();
-                        String response = (String)imUser.createNewIMUserSingle(generateRegisterUser(phone,password));
-                        //todo 解析返回的response
-                        if (response != null) {
-                            //注册成功
-                            String token = tokenUtil.generateToken(phone, password);
-                            return new LoginResponse("0", token);
+                        User user1 = new User().phone(phone).password(password).nickname(phone);
+                        long i = userService.add(user1);
+                        if (i != 0) {
+                            //add successfully
+                            String response = (String)imUser.createNewIMUserSingle(generateRegisterUser(phone,password));
+                            //todo 解析返回的response
+                            if (response != null) {
+                                //注册成功
+                                String token = tokenUtil.generateToken(phone, password, user1.getId());
+                                return new LoginResponse("0", token);
+                            } else {
+                                //注册失败
+                                logger.error("register easemob user failed");
+                                return new MsgResponse("300","注册失败，请稍后重试");
+                            }
                         } else {
-                            //注册失败
-                            return new MsgResponse("300","注册失败，请稍后重试");
+                            //添加失败
+                            logger.error("insert user into database failed.");
+                            return new MsgResponse("202","注册失败，请稍后重试");
                         }
                         //todo 返回客户端所需信息
                     } else {

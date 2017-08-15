@@ -24,4 +24,12 @@
     <select id="findTagsByUserId" parameterType="long" resultType="com.platform.parent.mybatis.bean.Tag">
         SELECT T.id, T.content FROM tag AS T, user_tag AS U WHERE U.user_id = #{id} AND T.id = U.tag_id GROUP BY T.id
     </select>
+
+    <select id="findTagsByCampId" parameterType="long" resultType="com.platform.parent.mybatis.bean.Tag">
+        SELECT T.id, T.content FROM tag AS T, camp_tag AS C WHERE C.camp_id = #{id} AND T.id = C.tag_id GROUP BY T.id
+    </select>
+
+    <select id="findTagByContent" parameterType="java.lang.String" resultType="com.platform.parent.mybatis.bean.Tag">
+        SELECT id, content FROM tag WHERE content = #{content}
+    </select>
 </mapper>
