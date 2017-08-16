@@ -17,7 +17,7 @@ public class CampAttend {
     private Timestamp expiration;
     private int role;
 
-    public CampAttend(long userId, long campId, Timestamp expiration, int role) {
+    /**public CampAttend(long userId, long campId, Timestamp expiration, int role) {
         this.userId = userId;
         this.campId = campId;
         this.expiration = expiration;
@@ -30,6 +30,27 @@ public class CampAttend {
         this.campId = campId;
         this.expiration = expiration;
         this.role = role;
+    }*/
+
+    public CampAttend id (long id) {
+        this.id = id;
+        return this;
+    }
+    public CampAttend userId(long userId) {
+        this.userId =userId;
+        return this;
+    }
+    public CampAttend campId(long campId) {
+        this.campId = campId;
+        return this;
+    }
+    public CampAttend expiration(Timestamp expiration) {
+        this.expiration = expiration;
+        return this;
+    }
+    public CampAttend role (int role) {
+        this.role = role;
+        return this;
     }
 
     public long getId() {

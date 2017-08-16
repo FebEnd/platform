@@ -47,12 +47,14 @@ CREATE TABLE user_detail(
 CREATE TABLE member(
     id BIGINT(20) NOT NULL, /*与用户id匹配 */
     vip BIGINT(20) DEFAULT 0, /* 剩余vip时间, 为0则非vip */
-    
+    reference_id BIGINT(20),#推荐人id，null表示无
+
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE teacher(
     id BIGINT(20) NOT NULL, /* 与用户id匹配 */
+    star INT(11) NOT NULL DEFAULT 1, #星级
     account TEXT NOT NULL,
 
     PRIMARY KEY (id)
@@ -136,7 +138,7 @@ CREATE TABLE balance(
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     user_id BIGINT(20) NOT NULL,
     amount DECIMAL(10,2) NOT NULL,
-    type INT(11) NOT NULL, /* -1 表示购买vip, 其余与训练营id配对表示为加入训练营付费 */
+    type BIGINT(20) NOT NULL, /* -1 表示购买vip, 其余与训练营id配对表示为加入训练营付费 */
     time TIMESTAMP NOT NULL,
 
     PRIMARY KEY (id)
@@ -156,7 +158,7 @@ CREATE TABLE coupon(
 /* tag 存储表 */
 CREATE TABLE tag(
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
-    content TEXT NOT NULL ,
+    name TEXT NOT NULL ,
 
     PRIMARY KEY (id)
 ) ENGINE =InnoDB DEFAULT CHARSET =utf8;

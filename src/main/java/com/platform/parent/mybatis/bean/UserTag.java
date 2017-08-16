@@ -10,6 +10,19 @@ public class UserTag {
     private long id, userId, tagId;
 //    private List<Tag> tags;
 
+    public UserTag id(long id) {
+        this.id = id;
+        return this;
+    }
+    public UserTag userId( long userId) {
+        this.userId = userId;
+        return this;
+    }
+    public UserTag tagId(long tagId) {
+        this.tagId = tagId;
+        return this;
+    }
+
     public long getId() {
         return id;
     }
@@ -42,7 +55,7 @@ public class UserTag {
 //        this.tags = tags;
 //    }
 
-    public UserTag(long userId, long tagId) {
+    /*public UserTag(long userId, long tagId) {
 
         this.userId = userId;
         this.tagId = tagId;
@@ -53,7 +66,7 @@ public class UserTag {
         this.id = id;
         this.userId = userId;
         this.tagId = tagId;
-    }
+    }*/
 
 //    public UserTag(long id, long userId, long tagId, List<Tag> tags) {
 //        this.id = id;

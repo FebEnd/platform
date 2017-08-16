@@ -3,11 +3,21 @@ package com.platform.parent.mybatis.bean;
 /**
  * Created by tqyao.
  * id BIGINT(20) NOT NULL AUTO_INCREMENT,
- * content TEXT NOT NULL ,
+ * name TEXT NOT NULL ,
  */
 public class Tag {
     private long id;
-    private String content;
+    private String name;
+
+    public Tag id(long id) {
+        this.id = id;
+        return this;
+    }
+
+    public Tag name(String name) {
+        this.name = name;
+        return this;
+    }
 
     public long getId() {
         return id;
@@ -17,22 +27,22 @@ public class Tag {
         this.id = id;
     }
 
-    public String getContent() {
-        return content;
+    public String getName() {
+        return name;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Tag(String content) {
+    /*public Tag(String name) {
 
-        this.content = content;
+        this.name = name;
     }
 
-    public Tag(long id, String content) {
+    public Tag(long id, String name) {
 
         this.id = id;
-        this.content = content;
-    }
+        this.name = name;
+    }*/
 }

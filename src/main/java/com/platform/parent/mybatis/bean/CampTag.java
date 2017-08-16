@@ -9,6 +9,21 @@ package com.platform.parent.mybatis.bean;
 public class CampTag {
     private long id, campId, tagId;
 
+    public CampTag id(long id) {
+        this.id = id;
+        return this;
+    }
+
+    public CampTag campId(long campId) {
+        this.campId = campId;
+        return this;
+    }
+
+    public CampTag tagId(long tagId) {
+        this.tagId = tagId;
+        return this;
+    }
+
     public long getId() {
         return id;
     }
@@ -33,7 +48,7 @@ public class CampTag {
         this.tagId = tagId;
     }
 
-    public CampTag(long campId, long tagId) {
+    /*public CampTag(long campId, long tagId) {
 
         this.campId = campId;
         this.tagId = tagId;
@@ -44,5 +59,5 @@ public class CampTag {
         this.id = id;
         this.campId = campId;
         this.tagId = tagId;
-    }
+    }*/
 }

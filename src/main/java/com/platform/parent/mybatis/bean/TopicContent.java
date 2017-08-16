@@ -15,7 +15,9 @@ public class TopicContent {
     private String content;
     private Timestamp time;
 
-    public TopicContent(long id, long speakerId, String content, Timestamp time) {
+    //todo  change to easemob's msg struct
+
+   /**public TopicContent(long id, long speakerId, String content, Timestamp time) {
         this.id = id;
         this.speakerId = speakerId;
         this.content = content;
@@ -26,7 +28,7 @@ public class TopicContent {
         this.speakerId = speakerId;
         this.content = content;
         this.time = time;
-    }
+    }*/
 
     public long getId() {
         return id;

@@ -5,14 +5,17 @@ package com.platform.parent.mybatis.bean;
  */
 public class Teacher {
     private long id;
-    private String account;
+    private String account;//银行账户
+    private int star;
 
-    public Teacher(long id, String account) {
+    public Teacher id(long id) {
         this.id = id;
-        this.account = account;
+        return this;
     }
 
-    public Teacher() {
+    public Teacher star(int star) {
+        this.star = star;
+        return this;
     }
 
     public Teacher account(String account) {
@@ -34,5 +37,13 @@ public class Teacher {
 
     public void setAccount(String account) {
         this.account = account;
+    }
+
+    public int getStar() {
+        return star;
+    }
+
+    public void setStar(int star) {
+        this.star = star;
     }
 }

@@ -17,7 +17,32 @@ public class Topic {
     private boolean sticky;
     private long campId;
 
-    public Topic(long id, long originatorId, String title, int type, boolean sticky, long campId) {
+    public Topic id(long id) {
+        this.id = id;
+        return this;
+    }
+    public Topic originatorId(long originatorId) {
+        this.originatorId = originatorId;
+        return this;
+    }
+    public Topic title(String title) {
+        this.title = title;
+        return this;
+    }
+    public Topic type(int type) {
+        this.type =type;
+        return this;
+    }
+    public Topic sticky(boolean sticky) {
+        this.sticky = sticky;
+        return this;
+    }
+    public Topic campId(long campId) {
+        this.campId = campId;
+        return this;
+    }
+
+    /**public Topic(long id, long originatorId, String title, int type, boolean sticky, long campId) {
         this.id = id;
         this.originatorId = originatorId;
         this.title = title;
@@ -40,7 +65,7 @@ public class Topic {
         this.type = type;
         this.campId = campId;
         this.sticky = false;
-    }
+    }*/
 
     public long getId() {
         return id;

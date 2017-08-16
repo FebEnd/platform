@@ -9,16 +9,33 @@ package com.platform.parent.mybatis.bean;
 public class TopicInvolve {
     private long id, userId, topicId;
 
-    public TopicInvolve(long id, long userId, long topicId) {
+    public TopicInvolve id(long id) {
         this.id = id;
-        this.userId = userId;
-        this.topicId = topicId;
+        return this;
     }
 
-    public TopicInvolve(long userId, long topicId) {
+    public TopicInvolve userId(long userId) {
         this.userId = userId;
-        this.topicId = topicId;
+        return this;
     }
+
+    public TopicInvolve topicId(long topicId) {
+        this.topicId = topicId;
+        return this;
+    }
+
+    /**
+     * public TopicInvolve(long id, long userId, long topicId) {
+     * this.id = id;
+     * this.userId = userId;
+     * this.topicId = topicId;
+     * }
+     * <p>
+     * public TopicInvolve(long userId, long topicId) {
+     * this.userId = userId;
+     * this.topicId = topicId;
+     * }
+     */
 
     public long getId() {
         return id;

@@ -20,7 +20,37 @@ public class Coupon {
     private BigDecimal amount;
     private Timestamp expiration, publish;
 
-    public Coupon(long id, long userId, String name, String description, BigDecimal amount, Timestamp expiration, Timestamp publish) {
+    public Coupon id(long id) {
+        this.id = id;
+        return this;
+    }
+
+    public Coupon userId(long userId) {
+        this.userId = userId;
+        return this;
+    }
+    public Coupon name(String name) {
+        this.name = name;
+        return this;
+    }
+    public Coupon description(String description) {
+        this.description = description;
+        return this;
+    }
+    public Coupon amount(BigDecimal amount) {
+        this.amount = amount;
+        return this;
+    }
+    public Coupon expiration(Timestamp expiration) {
+        this.expiration = expiration;
+        return this;
+    }
+    public Coupon publish(Timestamp publish) {
+        this.publish = publish;
+        return this;
+    }
+
+    /**public Coupon(long id, long userId, String name, String description, BigDecimal amount, Timestamp expiration, Timestamp publish) {
         this.id = id;
         this.userId = userId;
         this.name = name;
@@ -37,7 +67,7 @@ public class Coupon {
         this.amount = amount;
         this.expiration = expiration;
         this.publish = publish;
-    }
+    }*/
 
     public long getId() {
         return id;

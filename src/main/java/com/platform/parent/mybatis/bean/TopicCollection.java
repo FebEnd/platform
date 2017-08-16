@@ -9,7 +9,20 @@ package com.platform.parent.mybatis.bean;
 public class TopicCollection {
     private long id, userId, topicId;
 
-    public TopicCollection(long id, long userId, long topicId) {
+    public TopicCollection id(long id) {
+        this.id = id;
+        return this;
+    }
+    public TopicCollection userId(long userId) {
+        this.userId = userId;
+        return this;
+    }
+    public TopicCollection topicId(long topicId) {
+        this.topicId = topicId;
+        return this;
+    }
+
+    /**public TopicCollection(long id, long userId, long topicId) {
         this.id = id;
         this.userId = userId;
         this.topicId = topicId;
@@ -18,7 +31,7 @@ public class TopicCollection {
     public TopicCollection(long userId, long topicId) {
         this.userId = userId;
         this.topicId = topicId;
-    }
+    }*/
 
     public long getId() {
         return id;

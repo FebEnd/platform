@@ -9,7 +9,20 @@ package com.platform.parent.mybatis.bean;
 public class CampCollection {
     private long id, userId, campId;
 
-    public CampCollection(long id, long userId, long campId) {
+    public CampCollection id(long id) {
+        this.id = id;
+        return this;
+    }
+    public CampCollection userId(long userId) {
+        this.userId = userId;
+        return this;
+    }
+    public CampCollection campId(long campId) {
+        this.campId = campId;
+        return this;
+    }
+
+    /**public CampCollection(long id, long userId, long campId) {
         this.id = id;
         this.userId = userId;
         this.campId = campId;
@@ -18,7 +31,7 @@ public class CampCollection {
     public CampCollection(long userId, long campId) {
         this.userId = userId;
         this.campId = campId;
-    }
+    }*/
 
     public long getId() {
         return id;

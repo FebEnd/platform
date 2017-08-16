@@ -15,10 +15,34 @@ public class Balance {
     private long id;
     private long userId;
     private BigDecimal amount;
-    private int type;
+    private long type;
     private Timestamp time;
 
-    public Balance(long id, long userId, BigDecimal amount, int type, Timestamp time) {
+    public Balance id(long id) {
+        this.id = id;
+        return this;
+    }
+
+    public Balance userId(long userId) {
+        this.userId = userId;
+        return this;
+    }
+
+    public Balance amount(BigDecimal amount) {
+        this.amount = amount;
+        return this;
+    }
+    public Balance type(long type) {
+        this.type = type;
+        return this;
+    }
+
+    public Balance time(Timestamp time) {
+        this.time = time;
+        return this;
+    }
+
+    /**public Balance(long id, long userId, BigDecimal amount, int type, Timestamp time) {
         this.id = id;
         this.userId = userId;
         this.amount = amount;
@@ -31,7 +55,7 @@ public class Balance {
         this.amount = amount;
         this.type = type;
         this.time = time;
-    }
+    }*/
 
     public long getId() {
         return id;
@@ -57,11 +81,11 @@ public class Balance {
         this.amount = amount;
     }
 
-    public int getType() {
+    public long getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(long type) {
         this.type = type;
     }
 
