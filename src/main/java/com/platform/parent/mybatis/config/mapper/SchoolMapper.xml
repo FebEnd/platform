@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.SchoolMapper">
+
+    <!--int add(School school);-->
+    <!--int update(School school);-->
+    <!--int deleteByIds(String[] ids);-->
+    <!--School findSchoolById(long id);-->
+    <!--List<School> findSchoolByFullName(String name);-->
+    <!--List<School> findSchoolByAlias(String alias);-->
+    <!--private long id, locationId;-->
+    <!--private String fullName, alias;-->
+
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.School" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO school (full_name, alias, location_id)
+        VALUES (#{fullName}, #{alias}, #{locationId})
+    </insert>
+
+    <update id="update" parameterType="com.platform.parent.mybatis.bean.School">
+        UPDATE school
+        SET full_name = #{fullName}, alias = #{alias}, lication_id = #{locationId}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteByIds" parameterType="java.lang.String">
+        DELETE FROM school WHERE id IN
+        <foreach item="idItem" collection="array" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+
+    <select id="findSchoolById" parameterType="long" resultType="com.platform.parent.mybatis.bean.School">
+        SELECT * FROM school WHERE id = #{id}
+    </select>
+    
+    <select id="findSchoolByFullName" parameterType="java.lang.String" resultType="com.platform.parent.mybatis.bean.School">
+        SELECT * FROM school WHERE full_name = #{fullName}
+    </select>
+
+    <select id="findSchoolByAlias" parameterType="java.lang.String" resultType="com.platform.parent.mybatis.bean.School">
+        SELECT * FROM school WHERE alias = #{alias}
+    </select>
+
+    <select id="findSchoolFuzzy" parameterType="java.lang.String" resultType="com.platform.parent.mybatis.bean.School">
+        SELECT * FROM school WHERE full_name LIKE concat(concat('%',#{fuzzy}),'%') OR alias LIKE concat(concat('%',#{fuzzy}),'%') GROUP BY school.id
+    </select>
+
+</mapper>

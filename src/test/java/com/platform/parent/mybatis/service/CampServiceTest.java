@@ -33,14 +33,18 @@ public class CampServiceTest {
 
     @Test
     public void testAdd() {
-        Camp camp = new Camp(0, 5, 0, 0, 0, new BigDecimal(100.00), new BigDecimal(150.00), new BigDecimal(200.00));
+        Camp camp = new Camp().type(0).favor(5).maxLimit(0).minLimit(0).price0(new BigDecimal(100.00))
+                .price1(new BigDecimal(150.00)).price2(new BigDecimal(200.00));
+//        Camp camp = new Camp(0, 5, 0, 0, 0, new BigDecimal(100.00), new BigDecimal(150.00), new BigDecimal(200.00));
         int i = service.add(camp);
         Assert.assertNotEquals(0, i);
     }
 
     @Test
     public void testUpdate() {
-        Camp camp = new Camp(1, 0, 5, 100, 0, 0, new BigDecimal(100.00), new BigDecimal(150.00), new BigDecimal(200.00));
+        Camp camp = new Camp().type(1).favor(5).maxLimit(100).minLimit(0).price0(new BigDecimal(100.00))
+                .price1(new BigDecimal(150.00)).price2(new BigDecimal(200.00));
+//        Camp camp = new Camp(1, 0, 5, 100, 0, 0, new BigDecimal(100.00), new BigDecimal(150.00), new BigDecimal(200.00));
         int i = service.update(camp);
         Assert.assertNotEquals(0, i);
     }
