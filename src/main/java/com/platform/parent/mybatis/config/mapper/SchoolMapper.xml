@@ -3,6 +3,18 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.platform.parent.mybatis.dao.SchoolMapper">
+    <resultMap id="schoolWithLocation" type="com.platform.parent.mybatis.bean.School">
+        <id property="id" column="id"/>
+        <result property="locationId" column="location_id"/>
+        <result property="fullName" column="full_name"/>
+        <result property="alias" column="alias"/>
+        <association property="location" javaType="com.platform.parent.mybatis.bean.Location">
+            <id property="id" column="id"/>
+            <result property="province" column="province"/>
+            <result property="city" column="city"/>
+            <result property="district" column="district"/>
+        </association>
+    </resultMap>
 
     <!--int add(School school);-->
     <!--int update(School school);-->
@@ -45,6 +57,10 @@
 
     <select id="findSchoolFuzzy" parameterType="java.lang.String" resultType="com.platform.parent.mybatis.bean.School">
         SELECT * FROM school WHERE full_name LIKE concat(concat('%',#{fuzzy}),'%') OR alias LIKE concat(concat('%',#{fuzzy}),'%') GROUP BY school.id
+    </select>
+
+    <select id="findAllSchool" resultMap="schoolWithLocation">
+        SELECT s.*, l.* FROM school s, location l WHERE s.location_id = l.id
     </select>
 
 </mapper>

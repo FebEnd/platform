@@ -16,4 +16,6 @@ public interface CampService {
     List<Camp> findCampsByType(int type);
     List<Camp> findCampsByStatus(int status);
     List<Camp> findCampsByParams(Map<String, Object> params);
+    List<Camp> findCampsByStatusWithTag(int status);
+    List<Camp> findCampsByTypeWithTag(int type);
 }

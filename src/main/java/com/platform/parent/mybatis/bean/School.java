@@ -11,6 +11,8 @@ public class School {
     private long id, locationId;
     private String fullName, alias;
 
+    private Location location;
+
     public School id(long id) {
         this.id = id;
         return this;
@@ -25,6 +27,10 @@ public class School {
     }
     public School alias(String alias) {
         this.alias = alias;
+        return this;
+    }
+    public School location(Location location) {
+        this.location = location;
         return this;
     }
 
@@ -58,5 +64,13 @@ public class School {
 
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }

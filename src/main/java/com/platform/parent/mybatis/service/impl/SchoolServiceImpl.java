@@ -68,4 +68,9 @@ public class SchoolServiceImpl implements SchoolService {
     public List<School> findSchoolFuzzy(String fuzzy) {
         return this.schoolMapper.findSchoolFuzzy(fuzzy);
     }
+
+    @Override
+    public List<School> findAllSchools() {
+        return this.schoolMapper.findAllSchool();
+    }
 }

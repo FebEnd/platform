@@ -1,6 +1,7 @@
 package com.platform.parent.mybatis.service;
 
 import com.platform.parent.mybatis.bean.Camp;
+import com.platform.parent.mybatis.bean.Tag;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +35,7 @@ public class CampServiceTest {
     @Test
     public void testAdd() {
         Camp camp = new Camp().type(0).favor(5).maxLimit(0).minLimit(0).price0(new BigDecimal(100.00))
-                .price1(new BigDecimal(150.00)).price2(new BigDecimal(200.00));
+                .price1(new BigDecimal(150.00)).price2(new BigDecimal(200.00)).status(0);
 //        Camp camp = new Camp(0, 5, 0, 0, 0, new BigDecimal(100.00), new BigDecimal(150.00), new BigDecimal(200.00));
         int i = service.add(camp);
         Assert.assertNotEquals(0, i);
@@ -95,5 +96,25 @@ public class CampServiceTest {
         params.put("maxLimit", 500);
         List<Camp> list = service.findCampsByParams(params);
         Assert.assertEquals(1, list.size());
+    }
+
+    @Test
+    public void testFindCampsByStatusWithTag() {
+        List<Camp> list = service.findCampsByStatusWithTag(1);
+        Assert.assertEquals(1,list.size());
+        for (Tag tag : list.get(0).getTags()) {
+            System.out.println(tag.getName());
+        }
+        System.out.println(list.get(0).getTags().size());
+    }
+
+    @Test
+    public void testFindCampsByTypeWithTag() {
+        List<Camp> list = service.findCampsByTypeWithTag(0);
+        Assert.assertEquals(2,list.size());
+        for (Tag tag : list.get(1).getTags()) {
+            System.out.println(tag.getName());
+        }
+        System.out.println(list.get(0).getTags().size());
     }
 }

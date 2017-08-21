@@ -50,4 +50,15 @@ public class CampServiceImpl implements CampService {
     public List<Camp> findCampsByParams(Map<String, Object> params) {
         return this.campMapper.findCampsByParams(params);
     }
+
+    @Override
+    public List<Camp> findCampsByStatusWithTag(int status) {
+        return this.campMapper.findCampsByStatusWithTag(status);
+    }
+
+    @Override
+    public List<Camp> findCampsByTypeWithTag(int type) {
+        return this.campMapper.findCampsByTypeWithTag(type);
+    }
+
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.CampTagMapper">
+
+    <!--CampTag findCampTagById(long id);
+    List<CampTag> findCampTagByCampId(long campId);
+    List<CampTag> findCampTagByTagId(long tagId);-->
+
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.CampTag" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO camp_tag (camp_id, tag_id) VALUES (#{campId}, #{tagId})
+    </insert>
+
+    <update id="update" parameterType="com.platform.parent.mybatis.bean.CampTag">
+        UPDATE camp_tag SET camp_id = #{campId}, tag_id = #{tagId}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteByIds" parameterType="java.lang.String">
+        DELETE FROM camp_tag WHERE id IN
+        <foreach collection="array" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+
+    <select id="findCampTagById" parameterType="long" resultType="com.platform.parent.mybatis.bean.CampTag">
+        SELECT * FROM camp_tag WHERE id = #{id}
+    </select>
+    <select id="findCampTagByCampId" parameterType="long" resultType="com.platform.parent.mybatis.bean.CampTag">
+        SELECT * FROM camp_tag WHERE camp_id = #{campId}
+    </select>
+    <select id="findCampTagByTagId" parameterType="long" resultType="com.platform.parent.mybatis.bean.CampTag">
+        SELECT * FROM camp_tag WHERE tag_id = #{tagId}
+    </select>
+</mapper>

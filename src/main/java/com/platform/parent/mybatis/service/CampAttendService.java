@@ -1,17 +1,13 @@
-package com.platform.parent.mybatis.dao;
+package com.platform.parent.mybatis.service;
 
 import com.platform.parent.mybatis.bean.CampAttend;
-import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
  * Created by tqyao.
  */
-@Mapper
-@Component
-public interface CampAttendMapper {
+public interface CampAttendService {
     int add(CampAttend attend);
     int update(CampAttend attend);
     int deleteByIds(String[] ids);

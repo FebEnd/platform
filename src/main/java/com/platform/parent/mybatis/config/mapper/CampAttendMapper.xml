@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.CampAttendMapper">
+    <!--id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    user_id BIGINT(20) NOT NULL,
+    camp_id BIGINT(20) NOT NULL,
+    expiration TIMESTAMP NOT NULL, /* 训练营到期时间 */
+    role TINYINT(1) DEFAULT 0, /* 会员在训练营中的身份 0 普通成员, 1 管理员, 2 导师, 3 观察员, 4 编制外成员 */-->
+    <!--int add(CampAttend attend);-->
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.CampAttend" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO camp_attend (user_id, camp_id, expiration, role)
+                VALUES (#{userId}, #{campId}, #{expiration}, #{role})
+    </insert>
+    <!--int update(CampAttend attend);-->
+    <update id="update" parameterType="com.platform.parent.mybatis.bean.CampAttend">
+        UPDATE camp_attend SET user_id = #{userId}, camp_id = #{campId}, expiration = #{expiration}, role = #{role}
+        WHERE id = #{id}
+    </update>
+    <!--int deleteByIds(String[] ids);-->
+    <delete id="deleteByIds" parameterType="java.lang.String">
+        DELETE FROM camp_attend WHERE id IN
+        <foreach collection="array" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+    <!--CampAttend findCampAttendById(long id);-->
+    <select id="findCampAttendById" parameterType="long" resultType="com.platform.parent.mybatis.bean.CampAttend">
+        SELECT * FROM camp_attend WHERE id = #{id}
+    </select>
+    <!--List<CampAttend> findCampAttendByUserId(long userId);-->
+    <select id="findCampAttendByUserId" parameterType="long" resultType="com.platform.parent.mybatis.bean.CampAttend">
+        SELECT * FROM camp_attend WHERE user_id = #{userId}
+    </select>
+    <!--List<CampAttend> findCampAttendByCampId(long campId);-->
+    <select id="findCampAttendByCampId" parameterType="long" resultType="com.platform.parent.mybatis.bean.CampAttend">
+        SELECT * FROM camp_attend WHERE camp_id = #{campId}
+    </select>
+    <!--long countCampAttendByUserId(long userId);-->
+    <select id="countCampAttendByUserId" parameterType="long" resultType="long">
+        SELECT count(1) FROM camp_attend WHERE user_id = #{userId}
+    </select>
+    <!--long countCampAttendByCampId(long campId);-->
+    <select id="countCampAttendByCampId" parameterType="long" resultType="long">
+        SELECT count(1) FROM camp_attend WHERE camp_id = #{campId}
+    </select>
+
+</mapper>

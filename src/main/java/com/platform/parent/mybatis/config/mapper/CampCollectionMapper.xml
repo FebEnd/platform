@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.CampCollectionMapper">
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.CampCollection" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO camp_collection (camp_id, user_id)
+        VALUES (#{campId}, #{userId})
+    </insert>
+    <update id="update" parameterType="com.platform.parent.mybatis.bean.CampCollection">
+        UPDATE camp_collection SET camp_id = #{campId}, user_id = #{userId}
+        WHERE id = #{id}
+    </update>
+    <delete id="deleteByIds" parameterType="java.lang.String">
+        DELETE FROM camp_collection WHERE id IN
+        <foreach collection="array" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+    <!--int add(CampCollection collection);
+    int update(CampCollection collection);
+    int deleteByIds(String[] ids);
+    CampCollection findCampCollectionById(long id);
+    List<CampCollection> findCampCollectionsByUserId(long userId);
+    List<CampCollection> findCampCollectionsByCampId(long campId);
+    //获取userId 的收藏数
+    long queryCountByUserId(long userId);
+    //获取campId 的收藏数
+    long queryCountByCampId(long campId);-->
+    <select id="findCampCollectionById" parameterType="long" resultType="com.platform.parent.mybatis.bean.CampCollection">
+        SELECT * FROM camp_collection WHERE id = #{id}
+    </select>
+    <select id="findCampCollectionsByUserId" parameterType="long" resultType="com.platform.parent.mybatis.bean.CampCollection">
+        SELECT * FROM camp_collection WHERE user_id = #{userId}
+    </select>
+    <select id="findCampCollectionsByCampId" parameterType="long" resultType="com.platform.parent.mybatis.bean.CampCollection">
+        SELECT * FROM camp_collection WHERE camp_id = #{campId}
+    </select>
+    <select id="queryCountByUserId" parameterType="long" resultType="long">
+        SELECT count(1) FROM camp_collection WHERE user_id = #{userId}
+    </select>
+    <select id="queryCountByCampId" parameterType="long" resultType="long">
+        SELECT count(1) FROM camp_collection WHERE camp_id = #{campId}
+    </select>
+</mapper>

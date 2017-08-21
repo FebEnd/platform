@@ -1,6 +1,7 @@
 package com.platform.parent.mybatis.bean;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by tqyao.
@@ -18,6 +19,8 @@ public class Camp {
     private long id;
     private int type, favor, maxLimit, minLimit, status;
     private BigDecimal price0, price1, price2;
+
+    private List<Tag> tags;
 
     public Camp id(long id) {
         this.id = id;
@@ -86,6 +89,14 @@ public class Camp {
         this.price1 = price1;
         this.price2 = price2;
     }*/
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
 
     public long getId() {
         return id;
