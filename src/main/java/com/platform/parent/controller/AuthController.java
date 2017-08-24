@@ -7,10 +7,7 @@ import com.platform.parent.mybatis.bean.User;
 import com.platform.parent.mybatis.service.UserService;
 import com.platform.parent.response.user.LoginResponse;
 import com.platform.parent.response.user.MsgResponse;
-import com.platform.parent.util.JwtTokenUtil;
-import com.platform.parent.util.MsgUtil;
-import com.platform.parent.util.UserUtil;
-import com.platform.parent.util.VerificationCodeUtil;
+import com.platform.parent.util.*;
 import io.swagger.client.model.RegisterUsers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +62,7 @@ public class AuthController {
         } catch (ClientException e) {//阿里云服务故障
             logger.error(e.getMessage());
 //            e.printStackTrace();
-            return new MsgResponse("100", "短信服务故障");
+            return new MsgResponse("400", "短信服务故障");
         }
         //验证码发送成功
         //将验证码存入map
@@ -84,10 +81,10 @@ public class AuthController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public @ResponseBody
-    Object login(@RequestParam("phone") String phone, @RequestParam("number") String number) {
+    Object login(@RequestParam("phone") String phone, @RequestParam("number") String number, @RequestParam("channel") String channel) {
         if (!verifyMap.containsKey(phone)) {
             //服务器不存在该手机号申请验证记录
-            return new MsgResponse("200", "手机号不存在");
+            return new MsgResponse("400", "手机号不存在");
         } else {
             //存在手机号申请验证记录
             //todo 查询数据库是否存在该手机号并执行相应操作
@@ -100,7 +97,7 @@ public class AuthController {
                     String token = tokenUtil.generateToken(phone, user.getPassword(), user.getId());
                     return new LoginResponse("0", token);
                 } else {
-                    return new LoginResponse("201", "验证码错误");
+                    return new LoginResponse("400", "验证码错误");
                 }
             } else {
                 //没有该用户
@@ -110,6 +107,7 @@ public class AuthController {
                     String password = UserUtil.generatePassword(12);
                     User user1 = new User().phone(phone).password(password).nickname(phone);
                     long i = userService.add(user1);
+                    //todo 发放优惠券
                     if (i != 0) {
                         //add successfully
                         String response = (String) imUser.createNewIMUserSingle(generateRegisterUser(phone, password));
@@ -121,15 +119,15 @@ public class AuthController {
                         } else {
                             //注册失败
                             logger.error("register easemob user failed");
-                            return new MsgResponse("300", "注册失败，请稍后重试");
+                            return new MsgResponse("400", "注册失败，请稍后重试");
                         }
                     } else {
                         //添加失败
                         logger.error("insert user into database failed.");
-                        return new MsgResponse("202", "注册失败，请稍后重试");
+                        return new MsgResponse("400", "注册失败，请稍后重试");
                     }
                 } else {
-                    return new LoginResponse("201", "验证码错误");
+                    return new LoginResponse("400", "验证码错误");
                 }
             }
         }
@@ -158,6 +156,14 @@ public class AuthController {
         RegisterUsers users = new RegisterUsers();
         users.add(new io.swagger.client.model.User().username(username).password(password));
         return users;
+    }
+
+    //todo 发放优惠券
+    private void publishCoupon(String channel, User user) {
+        if (StringUtil.isNaturalChannel(channel)) {
+            //自然渠道
+
+        }
     }
 
 }

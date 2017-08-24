@@ -35,4 +35,12 @@ public class StringUtil {
 
         return match.matches();
     }
+
+    public static boolean isNaturalChannel(String channel) {
+        return channel.equals("-1");
+    }
+
+    public static boolean isSchoolChannel(String channel) {
+        return channel.equals("-2");
+    }
 }

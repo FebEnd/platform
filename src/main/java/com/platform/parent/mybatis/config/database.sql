@@ -147,6 +147,7 @@ CREATE TABLE balance(
 CREATE TABLE coupon(
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     user_id BIGINT(20) NOT NULL ,
+    channel BIGINT(20) NOT NULL ,#渠道id，与用户id相匹配，再设定渠道的具体id
     name VARCHAR(50) NOT NULL ,
     description TEXT ,
     amount DECIMAL(10,2) NOT NULL ,

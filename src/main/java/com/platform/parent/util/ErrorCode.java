@@ -13,7 +13,9 @@ public enum ErrorCode {
     APPLY_CAMP_FAILED(400,"APPLY_CAMP_FAILED", "申请开班失败"),
     NOT_TEACHER_ERROR(400,"NOT_TEACHER_ERROR","用户不是认证教师"),
     NO_SUCH_CAMP(400,"NO_SUCH_CAMP","没有该训练营"),
-    QUERY_CAMP_FAILED(400,"QUERY_CAMP_FAILED","查询训练营失败");
+    QUERY_CAMP_FAILED(400,"QUERY_CAMP_FAILED","查询训练营失败"),
+    REGISTER_FAILED(400,"REGISTER_FAILED","注册失败，请稍后重试"),
+    ;
 
 
 

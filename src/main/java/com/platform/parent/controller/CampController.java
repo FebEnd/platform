@@ -2,6 +2,7 @@ package com.platform.parent.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.platform.parent.config.MaxMemberConfig;
+import com.platform.parent.config.PriceConfig;
 import com.platform.parent.mybatis.bean.Camp;
 import com.platform.parent.mybatis.bean.CampAttend;
 import com.platform.parent.mybatis.bean.Teacher;
@@ -35,6 +36,20 @@ public class CampController {
     CampService campService;
     @Autowired
     CampAttendService campAttendService;
+    @Autowired
+    PriceConfig priceConfig;
+
+    @GetMapping(value = "/getPrice")
+    public @ResponseBody Object getPrice(@RequestParam("star") String star) {
+        JSONObject result = new JSONObject();
+        result.put("status","0");
+        result.put("start", priceConfig.getSprint().get("start"));
+        result.put("end", priceConfig.getSprint().get("end"));
+        result.put("rate", priceConfig.getSprint().get("rate"));
+        result.put("price", priceConfig.getOrdinary().get(star));
+        logger.info("Get price config for star:\t" + star);
+        return result;
+    }
     //申请开班
     @PostMapping(value = "/apply")
     public @ResponseBody Object apply(@RequestBody ApplyCampRequest request){

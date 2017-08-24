@@ -15,7 +15,7 @@ import java.sql.Timestamp;
  */
 public class Coupon {
     private long id;
-    private long userId;
+    private long userId, channel;
     private String name, description;
     private BigDecimal amount;
     private Timestamp expiration, publish;
@@ -27,6 +27,11 @@ public class Coupon {
 
     public Coupon userId(long userId) {
         this.userId = userId;
+        return this;
+    }
+
+    public Coupon channel(long channel) {
+        this.channel = channel;
         return this;
     }
     public Coupon name(String name) {
@@ -123,5 +128,13 @@ public class Coupon {
 
     public void setPublish(Timestamp publish) {
         this.publish = publish;
+    }
+
+    public long getChannel() {
+        return channel;
+    }
+
+    public void setChannel(long channel) {
+        this.channel = channel;
     }
 }

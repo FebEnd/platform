@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
  */
 public class DateUtil {
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+//    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MMdd");
     private static final Logger logger = LoggerFactory.getLogger(DateUtil.class);
 
     public static java.sql.Date stringToSqlDate(String string) {
@@ -22,4 +23,5 @@ public class DateUtil {
         }
         return null;
     }
+
 }

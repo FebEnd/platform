@@ -17,6 +17,6 @@ public class AuthControllerTest {
         AuthController authController = new AuthController();
         authController.getVerifyCode("15001877056");
 
-        authController.login("15001877056","000000");
+        authController.login("15001877056","000000","-1");
     }
 }
