@@ -17,6 +17,26 @@
         </collection>
     </resultMap>
 
+    <resultMap id="campWithTeacher" type="com.platform.parent.response.camp.CampWithTeacher">
+        <id column="id" property="id"/>
+        <result column="type" property="type"/>
+        <result column="favor" property="favor" />
+        <result column="max_limit" property="maxLimit" />
+        <result column="min_limit" property="minLimit" />
+        <result column="status" property="status" />
+        <result column="price0" property="price0" />
+        <result column="price1" property="price1" />
+        <result column="price2" property="price2" />
+        <association property="teacher" javaType="com.platform.parent.mybatis.bean.Teacher">
+            <id column="id" property="id"/>
+            <result column="star" property="star"/>
+        </association>
+        <collection property="tags" ofType="com.platform.parent.mybatis.bean.Tag">
+            <!--<result column="id" property="id"/>-->
+            <result column="name" property="name"/>
+        </collection>
+    </resultMap>
+
     <sql id="baseColumn" >
         id, type, favor, max_limit, min_limit, status, price0, price1, price2
     </sql>
@@ -90,5 +110,15 @@
         WHERE c.type = #{type}
     </select>
 
+    <select id="findAllCampsWithTeacher" resultMap="campWithTeacher">
+        SELECT c.*, t.id, t.star FROM camp c
+        LEFT JOIN camp_attend ca ON c.id = ca.camp_id AND ca.role = 2
+        LEFT JOIN teacher t ON ca.user_id = t.id
+    </select>
+
+    <!--<delete id="clearCampsWithoutTeacher">
+        DELETE FROM camp USING camp c LEFT JOIN camp_attend ca ON c.id = ca.camp_id AND ca.role = 2
+        LEFT JOIN teacher t ON ca.user_id = t.id WHERE t.id IS NULL
+    </delete>-->
 
 </mapper>

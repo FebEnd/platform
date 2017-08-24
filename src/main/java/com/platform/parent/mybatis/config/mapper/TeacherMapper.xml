@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.TeacherMapper">
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.Teacher">
+        INSERT INTO teacher (id, account, star) VALUES (#{id}, #{account}, #{star})
+    </insert>
+
+    <update id="update" parameterType="com.platform.parent.mybatis.bean.Teacher">
+        UPDATE teacher SET account = #{account}, star = #{star} WHERE id = #{id}
+    </update>
+
+    <delete id="deleteByIds" parameterType="java.lang.String">
+        DELETE FROM teacher WHERE id IN
+        <foreach collection="array" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+
+    <select id="findTeacherById" parameterType="long" resultType="com.platform.parent.mybatis.bean.Teacher">
+        SELECT * FROM teacher WHERE id = #{id}
+    </select>
+
+    <select id="findTeachersByStar" parameterType="int" resultType="com.platform.parent.mybatis.bean.Teacher">
+        SELECT * FROM teacher WHERE star = #{star}
+    </select>
+
+    <select id="findAllTeachers" resultType="com.platform.parent.mybatis.bean.Teacher">
+        SELECT * FROM teacher
+    </select>
+</mapper>

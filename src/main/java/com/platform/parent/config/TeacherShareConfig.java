@@ -53,4 +53,20 @@ public class TeacherShareConfig {
     public void setFive(int five) {
         this.five = five;
     }
+
+    public int getTeacherShare(int star) {
+        switch (star) {
+            case 1:
+            default:
+                return getOne();
+            case 2:
+                return getTwo();
+            case 3:
+                return getThree();
+            case 4:
+                return getFour();
+            case 5:
+                return getFive();
+        }
+    }
 }

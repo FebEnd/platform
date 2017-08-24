@@ -96,6 +96,12 @@
 			<artifactId>rest-java-sdk</artifactId>
 			<version>1.0.5</version>
 		</dependency>
+		<!-- 阿里json包 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.31</version>
+		</dependency>
 		<!-- test -->
 		<dependency>
 			<groupId>junit</groupId>

@@ -53,7 +53,7 @@ public class SchoolController {
 
     }
 
-    @PostMapping(value = "add")
+    @PostMapping(value = "/add")
     public @ResponseBody
     Object addSchool(@RequestBody School school, @RequestBody Location location) {
         int status = schoolService.add(school, location);
@@ -64,7 +64,7 @@ public class SchoolController {
         }
     }
 
-    @PutMapping(value = "update")
+    @PutMapping(value = "/update")
     public @ResponseBody
     Object updateSchool(@RequestBody School school) {
         int status = schoolService.updateSchool(school);
@@ -75,7 +75,7 @@ public class SchoolController {
         }
     }
 
-    @PostMapping(value = "delete")
+    @PostMapping(value = "/delete")
     public @ResponseBody
     Object deleteSchool(@RequestParam("ids") String ids) {
         logger.info("ids:\t\t" + ids);
@@ -87,7 +87,7 @@ public class SchoolController {
         }
     }
 
-    @GetMapping(value = "list")
+    @GetMapping(value = "/list")
     public @ResponseBody Object listSchools() {
         logger.info("list all schools");
         List<School> schools = schoolService.findAllSchools();

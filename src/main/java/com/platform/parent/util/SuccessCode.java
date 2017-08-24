@@ -6,7 +6,8 @@ package com.platform.parent.util;
 public enum SuccessCode {
     ADD_SUCCESSFULLY(0,"ADD_SUCCESSFULLY","添加成功"),
     UPDATE_SUCCESSFULLY(0,"UPDATE_SUCCESSFULLY","修改成功"),
-    DELETE_SUCCESSFULLY(0, "DELETE_SUCCESSFULLY","删除成功");
+    DELETE_SUCCESSFULLY(0, "DELETE_SUCCESSFULLY","删除成功"),
+    APPLY_CAMP_SUCCESSFULLY(0,"APPLY_CAMP_SUCCESSFULLY","申请开班成功");
     private int status;
     private String code, message;
 

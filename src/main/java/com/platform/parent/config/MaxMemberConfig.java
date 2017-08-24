@@ -54,4 +54,21 @@ public class MaxMemberConfig {
     public void setFive(int five) {
         this.five = five;
     }
+
+    public int getMaxMember(int star) {
+        switch (star) {
+            case 1:
+                return getOne();
+            case 2:
+                return getTwo();
+            case 3:
+                return getThree();
+            case 4:
+                return getFour();
+            case 5:
+                return getFive();
+            default:
+                return 0;
+        }
+    }
 }
