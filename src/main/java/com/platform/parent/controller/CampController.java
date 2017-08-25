@@ -5,6 +5,7 @@ import com.platform.parent.config.MaxMemberConfig;
 import com.platform.parent.config.PriceConfig;
 import com.platform.parent.mybatis.bean.Camp;
 import com.platform.parent.mybatis.bean.CampAttend;
+import com.platform.parent.mybatis.bean.Tag;
 import com.platform.parent.mybatis.bean.Teacher;
 import com.platform.parent.mybatis.service.CampAttendService;
 import com.platform.parent.mybatis.service.CampService;
@@ -18,7 +19,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by tqyao.
@@ -77,6 +82,31 @@ public class CampController {
             //不是认证教师
             return ErrorCode.NOT_TEACHER_ERROR;
         }
+    }
+
+    @GetMapping(value = "/getDetail")
+    public @ResponseBody Object getDetail(@RequestParam("id") String id) {
+        JSONObject result = new JSONObject();
+        result.put("status", "0");
+        result.put("id","1");
+        result.put("type","0");
+        result.put("favor","2000");
+        result.put("collection","500");
+        result.put("member","167");
+        result.put("comment","倡导高效快乐的学习方法，注重自主学习习惯的培养，侠客岛成员。");
+        result.put("description","倡导高效快乐的学习方法，注重自主学习习惯的培养，侠客岛成员。");
+        Map<String, BigDecimal> price = new HashMap<>();
+        price.put("three",new BigDecimal(600));
+        price.put("six",new BigDecimal(1000));
+        price.put("twelve",new BigDecimal(2000));
+        result.put("price",price);
+        List<Tag> tags = new ArrayList<>();
+        tags.add(new Tag().name("学霸家长"));
+        tags.add(new Tag().name("奥数获奖"));
+        tags.add(new Tag().name("门萨会员"));
+        Teacher teacher = new Teacher().id(1).star(5).tags(tags).description("上外附小三年级家长");
+        result.put("teacher",teacher);
+        return result;
     }
 
     @PutMapping(value = "/update")
