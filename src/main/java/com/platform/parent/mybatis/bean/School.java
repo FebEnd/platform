@@ -1,5 +1,7 @@
 package com.platform.parent.mybatis.bean;
 
+import java.util.List;
+
 /**
  * Created by tqyao.
  * id BIGINT(20) NOT NULL AUTO_INCREMENT,
@@ -9,7 +11,9 @@ package com.platform.parent.mybatis.bean;
  */
 public class School {
     private long id, locationId;
-    private String fullName, alias;
+    private String fullName;
+    private int heat;
+    private List<SchoolAlias> alias;
 
     private Location location;
 
@@ -21,11 +25,16 @@ public class School {
         this.locationId = locationId;
         return this;
     }
+
+    public School heat(int heat) {
+        this.heat = heat;
+        return this;
+    }
     public School fullName(String fullName) {
         this.fullName = fullName;
         return this;
     }
-    public School alias(String alias) {
+    public School alias(List<SchoolAlias> alias) {
         this.alias = alias;
         return this;
     }
@@ -58,16 +67,24 @@ public class School {
         this.fullName = fullName;
     }
 
-    public String getAlias() {
+    public List<SchoolAlias> getAlias() {
         return alias;
     }
 
-    public void setAlias(String alias) {
+    public void setAlias(List<SchoolAlias> alias) {
         this.alias = alias;
     }
 
     public Location getLocation() {
         return location;
+    }
+
+    public int getHeat() {
+        return heat;
+    }
+
+    public void setHeat(int heat) {
+        this.heat = heat;
     }
 
     public void setLocation(Location location) {

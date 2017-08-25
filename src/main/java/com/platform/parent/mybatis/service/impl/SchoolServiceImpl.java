@@ -57,16 +57,24 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Override
     public School findSchoolByFullName(String name) {
-        return this.schoolMapper.findSchoolByFullName(name);
+        School school = this.schoolMapper.findSchoolByFullName(name);
+        this.schoolMapper.addHeat(school.getId());
+        return school;
     }
 
     @Override
     public School findSchoolByAlias(String alias) {
-        return this.schoolMapper.findSchoolByAlias(alias);
+        School school = this.schoolMapper.findSchoolByAlias(alias);
+        this.schoolMapper.addHeat(school.getId());
+        return school;
     }
 
     public List<School> findSchoolFuzzy(String fuzzy) {
-        return this.schoolMapper.findSchoolFuzzy(fuzzy);
+        List<School> schools = this.schoolMapper.findSchoolFuzzy(fuzzy);
+        for (School school : schools) {
+            this.schoolMapper.addHeat(school.getId());
+        }
+        return schools;
     }
 
     @Override

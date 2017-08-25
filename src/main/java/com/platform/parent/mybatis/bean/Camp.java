@@ -19,11 +19,22 @@ public class Camp {
     private long id;
     private int type, favor, maxLimit, minLimit, status;
     private BigDecimal price0, price1, price2;
+    private String description, comment;
 
     private List<Tag> tags;
 
     public Camp id(long id) {
         this.id = id;
+        return this;
+    }
+
+    public Camp description(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public Camp comment(String comment) {
+        this.comment = comment;
         return this;
     }
 
@@ -89,6 +100,22 @@ public class Camp {
         this.price1 = price1;
         this.price2 = price2;
     }*/
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
     public List<Tag> getTags() {
         return tags;

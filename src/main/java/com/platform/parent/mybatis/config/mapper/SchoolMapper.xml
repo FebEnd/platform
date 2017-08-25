@@ -7,13 +7,25 @@
         <id property="id" column="id"/>
         <result property="locationId" column="location_id"/>
         <result property="fullName" column="full_name"/>
-        <result property="alias" column="alias"/>
+        <result property="heat" column="heat"/>
         <association property="location" javaType="com.platform.parent.mybatis.bean.Location">
             <id property="id" column="id"/>
             <result property="province" column="province"/>
             <result property="city" column="city"/>
             <result property="district" column="district"/>
         </association>
+    </resultMap>
+
+    <resultMap id="schoolWithAlias" type="com.platform.parent.mybatis.bean.School">
+        <id property="id" column="id"/>
+        <result property="locationId" column="location_id"/>
+        <result property="fullName" column="full_name"/>
+        <result property="heat" column="heat"/>
+        <collection property="alias" javaType="com.platform.parent.mybatis.bean.SchoolAlias">
+            <id property="id" column="id"/>
+            <result property="alias" column="alias"/>
+            <result property="schoolId" column="school_id"/>
+        </collection>
     </resultMap>
 
     <!--int add(School school);-->
@@ -26,13 +38,13 @@
     <!--private String fullName, alias;-->
 
     <insert id="add" parameterType="com.platform.parent.mybatis.bean.School" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO school (full_name, alias, location_id)
-        VALUES (#{fullName}, #{alias}, #{locationId})
+        INSERT INTO school (full_name, location_id)
+        VALUES (#{fullName}, #{locationId});
     </insert>
 
     <update id="update" parameterType="com.platform.parent.mybatis.bean.School">
         UPDATE school
-        SET full_name = #{fullName}, alias = #{alias}, lication_id = #{locationId}
+        SET full_name = #{fullName}, lication_id = #{locationId}
         WHERE id = #{id}
     </update>
 
@@ -51,16 +63,24 @@
         SELECT * FROM school WHERE full_name = #{fullName}
     </select>
 
-    <select id="findSchoolByAlias" parameterType="java.lang.String" resultType="com.platform.parent.mybatis.bean.School">
-        SELECT * FROM school WHERE alias = #{alias}
+    <select id="findSchoolByAlias" parameterType="java.lang.String" resultMap="schoolWithAlias">
+        SELECT s.*, sa.* FROM school s LEFT JOIN school_alias sa ON s.id = sa.school_id WHERE sa.alias = #{alias}
     </select>
 
-    <select id="findSchoolFuzzy" parameterType="java.lang.String" resultType="com.platform.parent.mybatis.bean.School">
-        SELECT * FROM school WHERE full_name LIKE concat(concat('%',#{fuzzy}),'%') OR alias LIKE concat(concat('%',#{fuzzy}),'%') GROUP BY school.id
+    <select id="findSchoolFuzzy" parameterType="java.lang.String" resultMap="schoolWithAlias">
+        SELECT s.*, sa.* FROM school s
+        LEFT JOIN school_alias sa ON s.id = sa.school_id
+        WHERE s.full_name LIKE concat(concat('%',#{fuzzy}),'%')
+              OR sa.alias LIKE concat(concat('%',#{fuzzy}),'%')
+        GROUP BY school.id
     </select>
 
     <select id="findAllSchool" resultMap="schoolWithLocation">
         SELECT s.*, l.* FROM school s, location l WHERE s.location_id = l.id
     </select>
+
+    <update id="addHeat" parameterType="long">
+        UPDATE school SET heat = school.heat+1 WHERE id = #{id}
+    </update>
 
 </mapper>

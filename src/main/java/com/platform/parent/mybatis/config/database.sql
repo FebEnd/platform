@@ -46,6 +46,8 @@ CREATE TABLE camp (
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     type INT(11) DEFAULT 0, #0 家长创建， 1 专项， 2 机构
     favor INT(11) DEFAULT 0,#点赞数
+    description TEXT,#导师说
+    comment TEXT,#平台点评
     max_limit INT(11) DEFAULT 0,#最大人数限制
     min_limit INT(11) DEFAULT 0,#最小人数限制
     status INT(11) DEFAULT 0, #0 初始, 1 上线, 2 开课, 3 下线
@@ -193,7 +195,7 @@ DROP TABLE IF EXISTS school;
 CREATE TABLE school(
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     full_name TEXT NOT NULL ,
-    alias TEXT,
+    heat INT(11) NOT NULL DEFAULT 0,
     location_id BIGINT(20) NOT NULL ,
 
     PRIMARY KEY (id)

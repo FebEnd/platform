@@ -20,4 +20,5 @@ public interface SchoolMapper {
     School findSchoolByAlias(String alias);
     List<School> findSchoolFuzzy(String fuzzy);
     List<School> findAllSchool();
+    int addHeat(long id);
 }

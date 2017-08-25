@@ -38,7 +38,7 @@
     </resultMap>
 
     <sql id="baseColumn" >
-        id, type, favor, max_limit, min_limit, status, price0, price1, price2
+        id, type, favor,description, comment, max_limit, min_limit, status, price0, price1, price2
     </sql>
 
     <!--this.type = type;
@@ -50,13 +50,14 @@
         this.price1 = price1;
         this.price2 = price2;-->
     <insert id="add" parameterType="com.platform.parent.mybatis.bean.Camp" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO camp (type, favor, max_limit, min_limit, status, price0, price1, price2)
-        VALUES (#{type}, #{favor}, #{maxLimit}, #{minLimit}, #{status}, #{price0}, #{price1}, #{price2})
+        INSERT INTO camp (type, favor,description, comment, max_limit, min_limit, status, price0, price1, price2)
+        VALUES (#{type}, #{favor},#{description}, #{comment}, #{maxLimit}, #{minLimit}, #{status}, #{price0}, #{price1}, #{price2})
     </insert>
     <update id="update" parameterType="com.platform.parent.mybatis.bean.Camp">
         UPDATE camp
         SET type   = #{type}, favor = #{favor}, max_limit = #{maxLimit}, min_limit = #{minLimit},
-            status = #{status}, price0 = #{price0}, price1 = #{price1}, price2 = #{price2}
+            status = #{status}, price0 = #{price0}, price1 = #{price1}, price2 = #{price2},
+            description = #{description}, comment = #{comment}
         WHERE id = #{id}
     </update>
     <delete id="deleteByIds" parameterType="java.lang.String">

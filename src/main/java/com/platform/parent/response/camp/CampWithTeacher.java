@@ -13,12 +13,22 @@ public class CampWithTeacher {
     private long id;
     private int type, favor, maxLimit, minLimit, status;
     private BigDecimal price0, price1, price2;
+    private String description, comment;
 
     private Teacher teacher;
     private List<Tag> tags;
 
     public CampWithTeacher tags(List<Tag> tags) {
         this.tags = tags;
+        return this;
+    }
+    public CampWithTeacher description(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public CampWithTeacher comment(String comment) {
+        this.comment = comment;
         return this;
     }
     public CampWithTeacher teacher(Teacher teacher) {
