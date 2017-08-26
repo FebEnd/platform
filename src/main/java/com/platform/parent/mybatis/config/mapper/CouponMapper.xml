@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.CouponMapper">
+    <!--id INT(11) NOT NULL AUTO_INCREMENT,
+    * user_id INT(11) NOT NULL ,
+    * name VARCHAR(50) NOT NULL ,
+    * description TEXT ,
+    * amount DECIMAL(10,2) NOT NULL ,
+    * expiration TIMESTAMP NOT NULL , 过期日期
+    * publish TIMESTAMP NOT NULL , 发行日期-->
+    <!--int add(Coupon coupon);-->
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.Coupon" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO coupon (user_id, name, description, amount, expiration, publish)
+        VALUES (#{userId}, #{name}, #{description})
+    </insert>
+    <!--int update(Coupon coupon);-->
+    <!--int deleteByIds(String[] ids);-->
+    <!--Coupon findCouponById(long id);-->
+    <!--List<Coupon> findCouponsByUserId(long userId);-->
+    <!--List<Coupon> findCouponsByChannel(long channel);-->
+</mapper>

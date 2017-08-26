@@ -132,20 +132,6 @@ CREATE TABLE balance(
     PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS coupon;
-CREATE TABLE coupon(
-    id BIGINT(20) NOT NULL AUTO_INCREMENT,
-    user_id BIGINT(20) NOT NULL ,
-    channel BIGINT(20) NOT NULL ,#渠道id，与用户id相匹配，再设定渠道的具体id
-    name VARCHAR(50) NOT NULL ,
-    description TEXT ,
-    amount DECIMAL(10,2) NOT NULL ,
-    expiration TIMESTAMP NOT NULL ,
-    publish TIMESTAMP NOT NULL ,
-
-    PRIMARY KEY (id)
-)ENGINE=InnoDB DEFAULT CHARSET =utf8;
-
 /* tag 存储表 */
 DROP TABLE IF EXISTS tag;
 CREATE TABLE tag(
@@ -211,10 +197,48 @@ CREATE TABLE location(
     PRIMARY KEY (id)
 ) ENGINE =InnoDB DEFAULT CHARSET =utf8;
 
+DROP TABLE IF EXISTS coupon;
+CREATE TABLE coupon(
+    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    user_id BIGINT(20) NOT NULL ,
+    channel BIGINT(20) NOT NULL ,#渠道id，与用户id相匹配，再设定渠道的具体id
+    name VARCHAR(50) NOT NULL ,
+    description TEXT ,
+    amount DECIMAL(10,2) NOT NULL ,
+    expiration TIMESTAMP NOT NULL ,
+    publish TIMESTAMP NOT NULL ,
+
+    PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET =utf8;
+
+# 记录用户获得优惠券的记录的表
+# user_id 这笔优惠券记录属于哪个user
+# coupon_id 这笔优惠券记录发放的是哪个优惠券
+# channel 来自于什么渠道（或者由于邀请了哪个用户）
+# publish 优惠券发放日期
+# expiration 优惠券过期日期
+DROP TABLE IF EXISTS user_coupon;
+CREATE TABLE user_coupon(
+    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    user_id BIGINT(20) NOT NULL ,
+    coupon_id INT(11) NOT NULL ,
+    channel BIGINT(20) NOT NULL ,
+    publish TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    expiration TIMESTAMP NOT NULL ,
+
+    PRIMARY KEY (id)
+)ENGINE = InnoDB DEFAULT CHARSET =utf8;
+
 #优惠券模板表
-DROP TABLE IF EXISTS coupon_base;
-CREATE TABLE coupon_base(
+# name 优惠券名称
+# description 优惠券描述
+# amount 优惠券的优惠金额
+# duration 优惠券有效期（天数）
+DROP TABLE IF EXISTS coupon;
+CREATE TABLE coupon(
     id INT(11) NOT NULL AUTO_INCREMENT,
+    name TEXT NOT NULL ,
+    description TEXT NOT NULL ,
     amount DECIMAL(10,2) NOT NULL ,
     duration INT(11) NOT NULL DEFAULT 30,
 
@@ -225,8 +249,8 @@ CREATE TABLE coupon_base(
 #channel 表示策略针对哪个渠道的注册用户
 #base_id 表示优惠券的模板的id
 #number 表示发放多少张该base_id的优惠券
-DROP TABLE IF EXISTS coupon_policy;
-CREATE TABLE coupon_policy(
+DROP TABLE IF EXISTS coupon_strategy;
+CREATE TABLE coupon_strategy(
     id INT(11) NOT NULL AUTO_INCREMENT,
     channel INT(11) NOT NULL ,
     base_id INT(11) NOT NULL ,
