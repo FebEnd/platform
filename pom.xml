@@ -5,7 +5,7 @@
 
 	<groupId>com.platform.parent</groupId>
 	<artifactId>platform</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.3</version>
 	<packaging>jar</packaging>
 
 	<name>platform</name>
@@ -113,6 +113,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -130,6 +135,13 @@
 					<include>**/*.properties</include>
 				</includes>
 				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>lib/</directory>
+				<targetPath>BOOT-INF/lib/</targetPath>
+				<includes>
+					<include>**/*.jar</include>
+				</includes>
 			</resource>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -156,6 +168,7 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
+
 	</build>
 
 

@@ -17,6 +17,7 @@ public interface UserMapper {
     int update(User user);
     int deleteByIds(String[] ids);
     User queryUserById(long id);
+    User queryUserByIdWithDetail(long id);
     User findUserByPhone(String phone);
     User findUserByPhoneWithRole(String phone);
     List<User> queryUserList(Map<String, Object> params);

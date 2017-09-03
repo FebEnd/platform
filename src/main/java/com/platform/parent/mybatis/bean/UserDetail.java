@@ -21,7 +21,9 @@ public class UserDetail {
     private String liveDistrict;
     private String targetDistrict;
     private Date childBirth;
-    private String childGrade, childGender, childSchool;
+    private int childGrade;
+    private String childGender;
+    private long childSchool;
 
     public UserDetail id(long id) {
         this.id = id;
@@ -43,7 +45,7 @@ public class UserDetail {
         this.childBirth = DateUtil.stringToSqlDate(childBirth);
         return this;
     }
-    public UserDetail childGrade(String childGrade) {
+    public UserDetail childGrade(int childGrade) {
         this.childGrade = childGrade;
         return this;
     }
@@ -51,7 +53,7 @@ public class UserDetail {
         this.childGender = childGender;
         return this;
     }
-    public UserDetail childSchool(String childSchool) {
+    public UserDetail childSchool(long childSchool) {
         this.childSchool = childSchool;
         return this;
     }
@@ -96,11 +98,11 @@ public class UserDetail {
         this.childBirth = childBirth;
     }
 
-    public String getChildGrade() {
+    public int getChildGrade() {
         return childGrade;
     }
 
-    public void setChildGrade(String childGrade) {
+    public void setChildGrade(int childGrade) {
         this.childGrade = childGrade;
     }
 
@@ -112,11 +114,11 @@ public class UserDetail {
         this.childGender = childGender;
     }
 
-    public String getChildSchool() {
+    public long getChildSchool() {
         return childSchool;
     }
 
-    public void setChildSchool(String childSchool) {
+    public void setChildSchool(long childSchool) {
         this.childSchool = childSchool;
     }
 }

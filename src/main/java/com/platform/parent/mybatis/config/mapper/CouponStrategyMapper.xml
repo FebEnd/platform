@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.CouponStrategyMapper">
+    <!--* id INT(11) NOT NULL AUTO_INCREMENT,
+    * channel INT(11) NOT NULL ,
+    * base_id INT(11) NOT NULL ,
+    * number INT(11) NOT NULL ,-->
+    <!--int add(CouponStrategy couponStrategy);-->
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.CouponStrategy" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO coupon_strategy (channel, base_id, number)
+                VALUES (#{channel}, #{baseId}, #{number})
+    </insert>
+    <!--int update(CouponStrategy couponStrategy);-->
+    <update id="update" parameterType="com.platform.parent.mybatis.bean.CouponStrategy">
+        UPDATE coupon_strategy SET channel = #{channel}, base_id = #{baseId}, number = #{number}
+        WHERE id = #{id}
+    </update>
+    <!--int deleteByIds(String[] ids);-->
+    <delete id="deleteByIds" parameterType="java.lang.String">
+        DELETE FROM coupon_strategy WHERE id IN
+        <foreach collection="array" item="#{idItem}" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+    <!--List<CouponStrategy> findCouponStrategyByChannel(int channel);-->
+    <select id="findCouponStrategyByChannel" parameterType="int" resultType="com.platform.parent.mybatis.bean.CouponStrategy">
+        SELECT * FROM coupon_strategy WHERE channel = #{channel}
+    </select>
+    <!--List<CouponStrategy> findAllCouponStrategy();-->
+    <select id="findAllCouponStrategy" resultType="com.platform.parent.mybatis.bean.CouponStrategy">
+        SELECT * FROM coupon_strategy
+    </select>
+</mapper>

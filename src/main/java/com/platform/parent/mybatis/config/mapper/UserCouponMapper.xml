@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.UserCouponMapper">
+    <!--* # user_id 这笔优惠券记录属于哪个user
+    * # coupon_id 这笔优惠券记录发放的是哪个优惠券
+    * # channel 来自于什么渠道（或者由于邀请了哪个用户）
+    * # publish 优惠券发放日期
+    * # expiration 优惠券过期日期-->
+    <!--int add(UserCoupon userCoupon);-->
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.UserCoupon" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user_coupon (user_id, coupon_id, publish, expiration)
+                VALUES (#{userId}, #{couponId}, #{publish}, #{expiration})
+    </insert>
+    <!--int update(UserCoupon userCoupon);-->
+    <update id="update" parameterType="com.platform.parent.mybatis.bean.UserCoupon">
+        UPDATE user_coupon SET user_id = #{userId}, coupon_id = #{couponId},
+            publish = #{publish}, expiration = #{expiration} WHERE id = #{id}
+    </update>
+    <!--int deleteByIds(String[] ids);-->
+    <delete id="deleteByIds" parameterType="java.lang.String">
+        DELETE FROM user_coupon WHERE id IN
+        <foreach collection="array" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+    <!--List<UserCoupon> findUserCouponByUserId(long userId);-->
+    <select id="findUserCouponByUserId" parameterType="long" resultType="com.platform.parent.mybatis.bean.UserCoupon">
+        SELECT * FROM user_coupon WHERE user_id = #{userId}
+    </select>
+    <!--List<UserCoupon> findUserCouponByChannelAndUserId(@Param("userId") long userId, @Param("channel") long channel);-->
+    <!--<select id="findUserCouponByChannelAndUserId" resultType="com.platform.parent.mybatis.bean.UserCoupon">
+        SELECT * FROM user_coupon WHERE user_id = #{userId} AND channel = #{channel}
+    </select>-->
+    <!--List<UserCoupon> findUserCouponByCouponIdAndUserId(@Param("userId") long userId, @Param("couponId") long couponId);-->
+    <select id="findUserCouponByCouponIdAndUserId" resultType="com.platform.parent.mybatis.bean.UserCoupon">
+        SELECT * FROM user_coupon WHERE user_id = #{userId} AND coupon_id = #{couponId}
+    </select>
+    <!--int findCountUsableByUserId(long userId);-->
+    <select id="findCountUsableByUserId" parameterType="long" resultType="int">
+        SELECT count(1) FROM user_coupon uc WHERE uc.user_id = #{userId} AND uc.expiration >= CURRENT_TIMESTAMP()
+    </select>
+</mapper>

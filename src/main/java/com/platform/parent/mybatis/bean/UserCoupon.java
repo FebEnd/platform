@@ -12,7 +12,7 @@ import java.sql.Timestamp;
  * # expiration 优惠券过期日期
  */
 public class UserCoupon {
-    private long id, userId, channel;
+    private long id, userId;
     private int couponId;
     private Timestamp publish, expiration;
 
@@ -28,10 +28,10 @@ public class UserCoupon {
         this.couponId = couponId;
         return this;
     }
-    public UserCoupon channel(long channel) {
+    /*public UserCoupon channel(long channel) {
         this.channel = channel;
         return this;
-    }
+    }*/
     public UserCoupon publish(Timestamp publish) {
         this.publish = publish;
         return this;
@@ -65,13 +65,13 @@ public class UserCoupon {
         this.couponId = couponId;
     }
 
-    public long getChannel() {
+    /*public long getChannel() {
         return channel;
     }
 
     public void setChannel(long channel) {
         this.channel = channel;
-    }
+    }*/
 
     public Timestamp getPublish() {
         return publish;

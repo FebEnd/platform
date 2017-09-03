@@ -1,7 +1,9 @@
 package com.platform.parent.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.platform.parent.mybatis.bean.Location;
 import com.platform.parent.mybatis.bean.School;
+import com.platform.parent.mybatis.bean.SchoolAlias;
 import com.platform.parent.mybatis.service.LocationService;
 import com.platform.parent.mybatis.service.SchoolService;
 import com.platform.parent.response.school.SearchResponse;
@@ -13,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,6 +54,20 @@ public class SchoolController {
             }
         }
 
+    }
+
+    @GetMapping(value = "/getHot")
+    public @ResponseBody Object getHotSchools(@RequestParam("city") String city) {
+        //todo 根据city查询相应城市的热门搜索前九
+        JSONObject result = new JSONObject();
+        result.put("status","0");
+        List<School> schools = new ArrayList<>();
+        List<SchoolAlias> alias = new ArrayList<>();
+        alias.add(new SchoolAlias().id(1).schoolId(1).alias("世外小学"));
+        School school = new School().id(1).heat(5).locationId(1).fullName("上海市世外小学").alias(alias);
+        schools.add(school);
+        result.put("schools", schools);
+        return result;
     }
 
     @PostMapping(value = "/add")

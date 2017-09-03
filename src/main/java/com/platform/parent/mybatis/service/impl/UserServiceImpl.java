@@ -1,6 +1,8 @@
 package com.platform.parent.mybatis.service.impl;
 
 import com.platform.parent.mybatis.bean.User;
+import com.platform.parent.mybatis.bean.UserDetail;
+import com.platform.parent.mybatis.dao.UserDetailMapper;
 import com.platform.parent.mybatis.dao.UserMapper;
 import com.platform.parent.mybatis.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    UserDetailMapper detailMapper;
+
     @Override
     public long add(User user) {
         User user1;
@@ -23,18 +28,26 @@ public class UserServiceImpl implements UserService {
             //already existed
             return user1.getId();
         } else {
-            return this.userMapper.add(user);
+            int u = this.userMapper.add(user);
+            UserDetail detail = new UserDetail().id(user.getId());
+            int d = this.detailMapper.add(detail);
+            return ((u > 0) && (d > 0)) ? 1 : 0;
         }
     }
 
     @Override
-    public int update(User user) {
+    public int update(User user, UserDetail detail) {
+        System.out.println("update");
+        this.detailMapper.update(detail);
+        System.out.println("user");
         return this.userMapper.update(user);
     }
 
     @Override
     public int deleteByIds(String[] ids) {
-        return this.userMapper.deleteByIds(ids);
+        int u = this.userMapper.deleteByIds(ids);
+        int d = this.detailMapper.deleteByIds(ids);
+        return ((u > 0) && (d > 0)) ? 1 : 0;
     }
 
     @Override
@@ -43,7 +56,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByPhone(String phone) { return this.userMapper.findUserByPhone(phone);}
+    public User queryUserByIdWithDetail(long id) {
+        return this.userMapper.queryUserByIdWithDetail(id);
+    }
+
+    @Override
+    public User findUserByPhone(String phone) {
+        return this.userMapper.findUserByPhone(phone);
+    }
 
     @Override
     public User findUserByPhoneWithRole(String phone) {

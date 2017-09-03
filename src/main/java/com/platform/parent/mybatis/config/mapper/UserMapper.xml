@@ -10,18 +10,39 @@
     private String childGrade;
     private String childGender, childSchool;
     -->
+    <resultMap id="userMapBase" type="com.platform.parent.mybatis.bean.User">
+        <id property="id" column="id"/>
+        <result property="phone" column="phone"/>
+        <result property="password" column="password"/>
+        <result property="nickname" column="nickname"/>
+        <result property="auth" column="auth"/>
+        <result property="referee" column="referee"/>
+    </resultMap>
+    <resultMap id="userMapWithDetail" type="com.platform.parent.mybatis.bean.User">
+        <id property="id" column="id"/>
+        <result property="phone" column="phone"/>
+        <result property="password" column="password"/>
+        <result property="nickname" column="nickname"/>
+        <result property="auth" column="auth"/>
+        <result property="referee" column="referee"/>
+        <association property="detail" javaType="com.platform.parent.mybatis.bean.UserDetail">
+            <id column="id" property="id"/>
+            <result property="city" column="city"/>
+            <result property="liveDistrict" column="live_district" />
+            <result property="targetDistrict" column="target_district" />
+            <result property="childBirth" column="child_birth" />
+            <result property="childGrade" column="child_grade" />
+            <result property="childGender" column="child_gender" />
+            <result property="childSchool" column="child_school" />
+        </association>
+    </resultMap>
     <resultMap id="userMapWithRole" type="com.platform.parent.mybatis.bean.User">
         <id property="id" column="id"/>
         <result property="phone" column="phone"/>
         <result property="password" column="password"/>
         <result property="nickname" column="nickname"/>
-        <result property="city" column="city"/>
-        <result property="liveDistrict" column="live_district" />
-        <result property="targetDistrict" column="target_district" />
-        <result property="childBirth" column="child_birth" />
-        <result property="childGrade" column="child_grade" />
-        <result property="childGender" column="child_gender" />
-        <result property="childSchool" column="child_school" />
+        <result property="auth" column="auth"/>
+        <result property="referee" column="referee"/>
         <collection property="roles" ofType="com.platform.parent.mybatis.bean.Role">
             <!--<result column="id" property="id"/>-->
             <result column="name" property="name"/>
@@ -42,16 +63,17 @@
         SELECT * FROM user WHERE id = #{id}
     </select>
 
+    <select id="queryUserByIdWithDetail" parameterType="long" resultMap="userMapWithDetail">
+        SELECT u.*, d.* FROM user u LEFT JOIN user_detail d ON u.id = d.id WHERE u.id = #{id}
+    </select>
+
     <insert id="add" parameterType="com.platform.parent.mybatis.bean.User" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO user (phone, password, nickname) VALUES (#{phone}, #{password}, #{nickname})
+        INSERT INTO user (phone, password, nickname, referee) VALUES (#{phone}, #{password}, #{nickname}, #{referee})
     </insert>
 
     <update id="update" parameterType="com.platform.parent.mybatis.bean.User">
         UPDATE user
-        SET phone = #{phone}, password = #{password}, nickname = #{nickname}, city = #{city},
-            live_district = #{liveDistrict}, target_district = #{targetDistrict},
-            child_birth   = #{childBirth}, child_grade = #{childGrade}, child_gender = #{childGender},
-            child_school  = #{childSchool}
+        SET phone = #{phone}, password = #{password}, nickname = #{nickname}, auth = #{auth}, referee = #{referee}
         WHERE id = #{id}
     </update>
 

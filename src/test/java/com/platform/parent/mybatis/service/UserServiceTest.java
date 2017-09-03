@@ -28,13 +28,13 @@ public class UserServiceTest {
         Assert.assertNotEquals(0, i);
     }
 
-    @Test
+    /*@Test
     public void update() {
         User user = new User().phone("testphone3").password("testpassword").nickname("updatenickname").id(3);
 //        User user = new User(1,"updatephone", "updatenickname","updatepassword");
         int i = service.update(user);
         Assert.assertNotEquals(0,i);
-    }
+    }*/
 
     @Test
     public void delete() {

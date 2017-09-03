@@ -12,6 +12,8 @@ spring:
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+
+
 # mybatis
 mybatis:
   type-aliases-package: com.platform.parent.mybatis.bean
@@ -28,3 +30,6 @@ jwt:
   secret: platformParentSecretKey
   expiration: 259200
   tokenHead: "Bearer "
+server:
+  port: 8080
+

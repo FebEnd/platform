@@ -12,6 +12,5 @@ public interface CouponService {
     int update(Coupon coupon);
     int deleteByIds(String[] ids);
     Coupon findCouponById(long id);
-    List<Coupon> findCouponsByUserId(long userId);
-    List<Coupon> findCouponsByChannel(long channel);
+    List<Coupon> findAllCoupons();
 }

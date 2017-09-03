@@ -36,12 +36,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public List<Coupon> findCouponsByUserId(long userId) {
-        return this.couponMapper.findCouponsByUserId(userId);
-    }
-
-    @Override
-    public List<Coupon> findCouponsByChannel(long channel) {
-        return this.couponMapper.findCouponsByChannel(channel);
+    public List<Coupon> findAllCoupons() {
+        return this.couponMapper.findAllCoupons();
     }
 }

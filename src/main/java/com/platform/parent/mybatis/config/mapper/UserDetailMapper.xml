@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.UserDetailMapper">
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.UserDetail" useGeneratedKeys="false">
+        INSERT INTO user_detail (id) VALUES (#{id})
+    </insert>
+    <!--city VARCHAR(50),
+    live_district VARCHAR(50),
+    target_district VARCHAR(50),
+    child_birth DATE,
+    child_grade VARCHAR(20),
+    child_gender VARCHAR(10),
+    child_school BIGINT(20),-->
+    <update id="update" parameterType="com.platform.parent.mybatis.bean.UserDetail">
+        UPDATE user_detail SET city = #{city}, live_district = #{liveDistrict}, target_district = #{targetDistrict},
+            child_birth = #{childBirth}, child_grade = #{childGrade}, child_gender = #{childGender}, child_school = #{childSchool}
+        WHERE id = #{id}
+    </update>
+    <delete id="deleteByIds" parameterType="java.lang.String">
+        DELETE FROM user_detail WHERE id IN
+        <foreach collection="array" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+
+</mapper>

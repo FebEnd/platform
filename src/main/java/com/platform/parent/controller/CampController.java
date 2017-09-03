@@ -11,6 +11,7 @@ import com.platform.parent.mybatis.service.CampAttendService;
 import com.platform.parent.mybatis.service.CampService;
 import com.platform.parent.mybatis.service.TeacherService;
 import com.platform.parent.request.camp.ApplyCampRequest;
+import com.platform.parent.response.camp.CampCollection;
 import com.platform.parent.response.camp.CampWithTeacher;
 import com.platform.parent.util.ErrorCode;
 import com.platform.parent.util.SuccessCode;
@@ -51,7 +52,7 @@ public class CampController {
         result.put("start", priceConfig.getSprint().get("start"));
         result.put("end", priceConfig.getSprint().get("end"));
         result.put("rate", priceConfig.getSprint().get("rate"));
-        result.put("price", priceConfig.getOrdinary().get(star));
+        result.put("price", priceConfig.getOrdinary().get(star+""));
         logger.info("Get price config for star:\t" + star);
         return result;
     }
@@ -106,6 +107,23 @@ public class CampController {
         tags.add(new Tag().name("门萨会员"));
         Teacher teacher = new Teacher().id(1).star(5).tags(tags).description("上外附小三年级家长");
         result.put("teacher",teacher);
+        return result;
+    }
+
+    @GetMapping("/listCampCollection")
+    public @ResponseBody Object listCampCollection(@RequestParam("id") String id) {
+        JSONObject result = new JSONObject();
+        result.put("status", "0");
+        List<CampCollection> collection = new ArrayList<>();
+        List<Teacher> teachers = new ArrayList<>();
+        teachers.add(new Teacher().id(1).description("上外附小三年级家长").star(4));
+        CampCollection camp = new CampCollection().id(1).price(new BigDecimal(200.00)).comment("倡导高效快乐的学习方法，注重自主学习习惯的培养，侠客岛成员。")
+                .title("导师  BlueFirefly66 V").subtitle("上外附小三年级家长").teachers(teachers);
+        CampCollection camp1 = new CampCollection().id(1).price(new BigDecimal(200.00)).comment("倡导高效快乐的学习方法，注重自主学习习惯的培养，侠客岛成员。")
+                .title("导师  BlueFirefly66 V").subtitle("上外附小三年级家长").teachers(teachers);
+        collection.add(camp);
+        collection.add(camp1);
+        result.put("collection", collection);
         return result;
     }
 

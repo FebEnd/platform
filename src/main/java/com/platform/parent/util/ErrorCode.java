@@ -15,6 +15,9 @@ public enum ErrorCode {
     NO_SUCH_CAMP(400,"NO_SUCH_CAMP","没有该训练营"),
     QUERY_CAMP_FAILED(400,"QUERY_CAMP_FAILED","查询训练营失败"),
     REGISTER_FAILED(400,"REGISTER_FAILED","注册失败，请稍后重试"),
+    NO_SUCH_USER(400,"NO_SUCH_USER","没有此用户"),
+    NO_SUCH_COUPON(400,"NO_SUCH_COUPON","优惠券信息错误"),
+    COUPON_QUERY_ERROR(400,"COUPON_QUERY_ERROR","优惠券信息查询错误")
     ;
 
 

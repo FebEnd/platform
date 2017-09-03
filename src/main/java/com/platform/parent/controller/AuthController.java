@@ -4,6 +4,7 @@ import com.aliyuncs.exceptions.ClientException;
 import com.platform.parent.easemob.api.IMUserAPI;
 import com.platform.parent.easemob.api.impl.EasemobIMUser;
 import com.platform.parent.mybatis.bean.User;
+import com.platform.parent.mybatis.service.UserCouponService;
 import com.platform.parent.mybatis.service.UserService;
 import com.platform.parent.response.user.LoginResponse;
 import com.platform.parent.response.user.MsgResponse;
@@ -36,6 +37,8 @@ public class AuthController {
     static JwtTokenUtil tokenUtil = new JwtTokenUtil();
     @Autowired
     UserService userService;
+    @Autowired
+    UserCouponService userCouponService;
 
     /**
      * 请求短信验证码接口，按照阿里云服务规则，每60s可以发送一条，每1h可以发送5条
@@ -66,7 +69,7 @@ public class AuthController {
         }
         //验证码发送成功
         //将验证码存入map
-        verifyMap.put(phone, "000000");
+        verifyMap.put(phone, number);
         return new MsgResponse("0", "短信发送成功");
     }
 
@@ -105,10 +108,20 @@ public class AuthController {
                     //验证码正确
                     //注册新的环信账号，用户名为手机号，密码由UserUtil生成
                     String password = UserUtil.generatePassword(12);
+                    long referee = Long.valueOf(channel);
                     User user1 = new User().phone(phone).password(password).nickname(phone);
+                    if (referee > 0) {
+                        //有用户推荐人
+                        user1 = user1.referee(referee);
+                        this.userCouponService.publishAward(referee);
+                    } else {
+                        //没有用户推荐人
+                        user1 = user1.referee(0l);
+                    }
                     long i = userService.add(user1);
                     //todo 发放优惠券
-                    if (i != 0) {
+                    int index = this.userCouponService.add(user1.getId(), Long.valueOf(channel));
+                    if (i > 0 ) {
                         //add successfully
                         String response = (String) imUser.createNewIMUserSingle(generateRegisterUser(phone, password));
                         //todo 解析返回的response
@@ -137,6 +150,7 @@ public class AuthController {
         String code = verifyMap.get(phone);
         if (code.equals(number)) {
             //验证成功
+            System.out.println(number);
             return true;
         } else {
             return false;
@@ -158,12 +172,5 @@ public class AuthController {
         return users;
     }
 
-    //todo 发放优惠券
-    private void publishCoupon(String channel, User user) {
-        if (StringUtil.isNaturalChannel(channel)) {
-            //自然渠道
-
-        }
-    }
 
 }

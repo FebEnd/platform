@@ -5,6 +5,8 @@ CREATE TABLE user (
     phone  VARCHAR(20) NOT NULL,
     nickname VARCHAR(50) NOT NULL,
     password VARCHAR(50) NOT NULL,
+    referee BIGINT(20) NOT NULL , #为0表示非注册用户推荐
+    auth TINYINT(1) NOT NULL DEFAULT 0,
 
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -18,7 +20,7 @@ CREATE TABLE user_detail(
     child_birth DATE,
     child_grade VARCHAR(20),
     child_gender VARCHAR(10),
-    child_school VARCHAR(100),
+    child_school BIGINT(20),
 
     PRIMARY KEY (id)
 ) ENGINE =InnoDB DEFAULT CHARSET =utf8;
@@ -222,7 +224,6 @@ CREATE TABLE user_coupon(
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     user_id BIGINT(20) NOT NULL ,
     coupon_id INT(11) NOT NULL ,
-    channel BIGINT(20) NOT NULL ,
     publish TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     expiration TIMESTAMP NOT NULL ,
 

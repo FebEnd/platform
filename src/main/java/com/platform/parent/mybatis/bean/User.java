@@ -1,6 +1,5 @@
 package com.platform.parent.mybatis.bean;
 
-import java.sql.Date;
 import java.util.List;
 
 /**
@@ -8,10 +7,11 @@ import java.util.List;
  */
 public class User {
     private long id;
-    private String phone, nickname, password, city, liveDistrict, targetDistrict;
-    private Date childBirth;
-    private String childGrade;
-    private String childGender, childSchool;
+    private String phone, nickname, password;
+    private long referee;
+    private boolean auth;
+
+    private UserDetail detail;
 
     private List<Role> roles;
 
@@ -25,6 +25,16 @@ public class User {
         return this;
     }
 
+    public User auth(boolean auth) {
+        this.auth = auth;
+        return this;
+    }
+
+    public User referee(long referee) {
+        this.referee = referee;
+        return this;
+    }
+
     public User nickname(String nickname) {
         this.nickname = nickname;
         return this;
@@ -35,7 +45,12 @@ public class User {
         return this;
     }
 
-    public User city(String city) {
+    public User detail(UserDetail detail) {
+        this.detail = detail;
+        return this;
+    }
+
+    /*public User city(String city) {
         this.city = city;
         return this;
     }
@@ -68,7 +83,7 @@ public class User {
     public User childSchool(String childSchool) {
         this.childSchool = childSchool;
         return this;
-    }
+    }*/
 
     public long getId() {
         return id;
@@ -94,7 +109,7 @@ public class User {
         this.nickname = nickname;
     }
 
-    public String getCity() {
+    /*public String getCity() {
         return city;
     }
 
@@ -148,7 +163,7 @@ public class User {
 
     public void setChildSchool(String childSchool) {
         this.childSchool = childSchool;
-    }
+    }*/
 
     public String getPassword() {
         return password;
@@ -164,5 +179,29 @@ public class User {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public boolean isAuth() {
+        return auth;
+    }
+
+    public void setAuth(boolean auth) {
+        this.auth = auth;
+    }
+
+    public UserDetail getDetail() {
+        return detail;
+    }
+
+    public void setDetail(UserDetail detail) {
+        this.detail = detail;
+    }
+
+    public long getReferee() {
+        return referee;
+    }
+
+    public void setReferee(long referee) {
+        this.referee = referee;
     }
 }

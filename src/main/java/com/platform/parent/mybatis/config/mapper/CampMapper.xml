@@ -122,4 +122,8 @@
         LEFT JOIN teacher t ON ca.user_id = t.id WHERE t.id IS NULL
     </delete>-->
 
+    <select id="findCampByTeacherId" parameterType="long" resultType="com.platform.parent.mybatis.bean.Camp">
+        SELECT c.* FROM camp c, teacher t, camp_attend ca WHERE c.id = ca.camp_id AND t.id = ca.user_id GROUP BY c.id
+    </select>
+
 </mapper>

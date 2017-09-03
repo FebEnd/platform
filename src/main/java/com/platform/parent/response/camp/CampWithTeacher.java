@@ -15,7 +15,7 @@ public class CampWithTeacher {
     private BigDecimal price0, price1, price2;
     private String description, comment;
 
-    private Teacher teacher;
+    private List<Teacher> teachers;
     private List<Tag> tags;
 
     public CampWithTeacher tags(List<Tag> tags) {
@@ -31,8 +31,8 @@ public class CampWithTeacher {
         this.comment = comment;
         return this;
     }
-    public CampWithTeacher teacher(Teacher teacher) {
-        this.teacher = teacher;
+    public CampWithTeacher teacher(List<Teacher> teachers) {
+        this.teachers = teachers;
         return this;
     }
     public CampWithTeacher id(long id) {
