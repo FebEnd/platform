@@ -3,6 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.platform.parent.mybatis.dao.CouponStrategyMapper">
+    <resultMap id="base" type="com.platform.parent.mybatis.bean.CouponStrategy">
+        <id property="id" column="id"/>
+        <result property="baseId" column="base_id"/>
+        <result property="channel" column="channel"/>
+        <result property="number" column="number"/>
+    </resultMap>
     <!--* id INT(11) NOT NULL AUTO_INCREMENT,
     * channel INT(11) NOT NULL ,
     * base_id INT(11) NOT NULL ,
@@ -20,16 +26,16 @@
     <!--int deleteByIds(String[] ids);-->
     <delete id="deleteByIds" parameterType="java.lang.String">
         DELETE FROM coupon_strategy WHERE id IN
-        <foreach collection="array" item="#{idItem}" open="(" separator="," close=")">
+        <foreach collection="array" item="idItem" open="(" separator="," close=")">
             #{idItem}
         </foreach>
     </delete>
     <!--List<CouponStrategy> findCouponStrategyByChannel(int channel);-->
-    <select id="findCouponStrategyByChannel" parameterType="int" resultType="com.platform.parent.mybatis.bean.CouponStrategy">
+    <select id="findCouponStrategyByChannel" parameterType="int" resultMap="base">
         SELECT * FROM coupon_strategy WHERE channel = #{channel}
     </select>
     <!--List<CouponStrategy> findAllCouponStrategy();-->
-    <select id="findAllCouponStrategy" resultType="com.platform.parent.mybatis.bean.CouponStrategy">
+    <select id="findAllCouponStrategy" resultMap="base">
         SELECT * FROM coupon_strategy
     </select>
 </mapper>

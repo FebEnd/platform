@@ -18,7 +18,7 @@ public interface UserCouponMapper {
     int deleteByIds(String[] ids);
     List<UserCoupon> findUserCouponByUserId(long userId);
     List<UserCoupon> findUserCouponByChannelAndUserId(@Param("userId") long userId, @Param("channel") long channel);
-    List<UserCoupon> findUserCouponByCouponIdAndUserId(@Param("userId") long userId, @Param("couponId") long couponId);
+    List<UserCoupon> findUserCouponByCouponIdAndUserId(@Param("userId") long userId, @Param("couponId") int couponId);
 //    int findCountByUserId(long userId);
     int findCountUsableByUserId(long userId);
 }

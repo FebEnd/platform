@@ -4,14 +4,14 @@ package com.platform.parent.response.user;
  * Created by tqyao.
  */
 public class LoginResponse {
+    private int status;
+    private String token;
 
-    private String status, token;
-
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -23,7 +23,7 @@ public class LoginResponse {
         this.token = token;
     }
 
-    public LoginResponse(String status, String token) {
+    public LoginResponse(int status, String token) {
 
         this.status = status;
         this.token = token;

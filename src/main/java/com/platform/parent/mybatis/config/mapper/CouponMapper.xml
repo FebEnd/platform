@@ -15,7 +15,7 @@
     </insert>
     <!--int update(Coupon coupon);-->
     <update id="update" parameterType="com.platform.parent.mybatis.bean.Coupon">
-        UPDATE coupon SET name = #{name}, description = #{decription}, amount = #{amount}, duration = #{duration}
+        UPDATE coupon SET name = #{name}, description = #{description}, amount = #{amount}, duration = #{duration}
         WHERE id = #{id}
     </update>
     <!--int deleteByIds(String[] ids);-->

@@ -14,7 +14,7 @@ public interface UserCouponService {
     int deleteByIds(String[] ids);
     List<UserCoupon> findUserCouponByUserId(long userId);
 //    List<UserCoupon> findUserCouponByChannelAndUserId(long userId, long channel);
-    List<UserCoupon> findUserCouponByCouponIdAndUserId(long userId, long couponId);
+    List<UserCoupon> findUserCouponByCouponIdAndUserId(long userId, int couponId);
     //    int findCountByUserId(long userId);
     int findCountUsableByUserId(long userId);
 }

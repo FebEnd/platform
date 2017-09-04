@@ -6,8 +6,10 @@ import com.platform.parent.easemob.api.impl.EasemobIMUser;
 import com.platform.parent.mybatis.bean.User;
 import com.platform.parent.mybatis.service.UserCouponService;
 import com.platform.parent.mybatis.service.UserService;
+import com.platform.parent.request.auth.LoginReq;
+import com.platform.parent.request.auth.RegisterReq;
+import com.platform.parent.response.auth.VerifyRes;
 import com.platform.parent.response.user.LoginResponse;
-import com.platform.parent.response.user.MsgResponse;
 import com.platform.parent.util.*;
 import io.swagger.client.model.RegisterUsers;
 import org.slf4j.Logger;
@@ -51,6 +53,14 @@ public class AuthController {
     Object getVerifyCode(@RequestParam("phone") String phone) {
         //默认前端已做60s限定，即，一但发送请求均视为距上一次请求验证码已过60s
         //判断目前服务端是否已对目标手机号发送过验证码，是则移除储存的验证码
+        User user = this.userService.findUserByPhone(phone);
+        boolean exists = false;
+        if (user != null) {
+            //用户已存在
+            exists = true;
+        } else {
+            exists = false;
+        }
         if (verifyMap.containsKey(phone)) {
             verifyMap.remove(phone);
         }
@@ -65,12 +75,64 @@ public class AuthController {
         } catch (ClientException e) {//阿里云服务故障
             logger.error(e.getMessage());
 //            e.printStackTrace();
-            return new MsgResponse("400", "短信服务故障");
+            return ErrorCode.MESSAGE_SEND_FAILED;
         }
         //验证码发送成功
         //将验证码存入map
         verifyMap.put(phone, number);
-        return new MsgResponse("0", "短信发送成功");
+        return new VerifyRes(0,exists);
+    }
+
+    @PostMapping(value = "/register")
+    public @ResponseBody Object register(RegisterReq req) {
+        User user = this.userService.findUserByPhone(req.getPhone());
+        if (user != null) {
+            login(new LoginReq(req.getPhone(),req.getNumber()));
+        }
+        if (!verifyMap.containsKey(req.getPhone())){
+            //服务器不存在该手机号申请验证记录
+            return ErrorCode.NO_SUCH_PHONE;
+        } else {
+            if (verify(req.getPhone(),req.getNumber())) {
+                //验证码正确
+                //注册新的环信账号，用户名为手机号，密码由UserUtil生成
+                String password = UserUtil.generatePassword(12);
+                long referee = Long.valueOf(req.getChannel());
+                User user1 = new User().phone(req.getPhone()).password(password).nickname(req.getPhone());
+                if (referee > 0) {
+                    //有用户推荐人
+                    user1 = user1.referee(referee);
+                    this.userCouponService.publishAward(referee);
+                } else {
+                    //没有用户推荐人
+                    user1 = user1.referee(0l);
+                }
+                long i = userService.add(user1);
+                //todo 发放优惠券
+                int index = this.userCouponService.add(user1.getId(), Long.valueOf(req.getChannel()));
+                if (i > 0 ) {
+                    //add successfully
+                    String response = (String) imUser.createNewIMUserSingle(generateRegisterUser(req.getPhone(), password));
+                    //todo 解析返回的response
+//                    JSONArray array = JSONArray.parseArray(response);
+                    if (response != null) {
+                        //注册成功
+                        String token = tokenUtil.generateToken(req.getPhone(), password, user1.getId());
+                        return new LoginResponse(0, token);
+                    } else {
+                        //注册失败
+                        logger.error("register easemob user failed");
+                        return ErrorCode.REGISTER_FAILED;
+                    }
+                } else {
+                    //添加失败
+                    logger.error("insert user into database failed.");
+                    return ErrorCode.REGISTER_FAILED;
+                }
+            } else {
+                return ErrorCode.VERIFY_CODE_ERROR;
+            }
+        }
     }
 
     /**
@@ -78,70 +140,32 @@ public class AuthController {
      * 如果数据库已存在该手机号则让用户登陆
      * 如果数据库未存在该手机号则将手机号录入数据库,申请环信云账号并让用户登陆
      *
-     * @param phone  要验证的手机号
-     * @param number 用户输入的验证码
+     *
      * @return
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public @ResponseBody
-    Object login(@RequestParam("phone") String phone, @RequestParam("number") String number, @RequestParam("channel") String channel) {
-        if (!verifyMap.containsKey(phone)) {
+    Object login(LoginReq req) {
+        if (!verifyMap.containsKey(req.getPhone())) {
             //服务器不存在该手机号申请验证记录
-            return new MsgResponse("400", "手机号不存在");
+            return ErrorCode.NO_SUCH_PHONE;
         } else {
             //存在手机号申请验证记录
             //todo 查询数据库是否存在该手机号并执行相应操作
-            User user = userService.findUserByPhone(phone);
+            User user = userService.findUserByPhone(req.getPhone());
             if (user != null) {
                 //已有该用户不操作
-                if (verify(phone, number)) {
+                if (verify(req.getPhone(), req.getNumber())) {
                     //验证码正确
                     //todo 返回密码
-                    String token = tokenUtil.generateToken(phone, user.getPassword(), user.getId());
-                    return new LoginResponse("0", token);
+                    String token = tokenUtil.generateToken(req.getPhone(), user.getPassword(), user.getId());
+                    return new LoginResponse(0, token);
                 } else {
-                    return new LoginResponse("400", "验证码错误");
+                    return ErrorCode.VERIFY_CODE_ERROR;
                 }
             } else {
                 //没有该用户
-                if (verify(phone, number)) {
-                    //验证码正确
-                    //注册新的环信账号，用户名为手机号，密码由UserUtil生成
-                    String password = UserUtil.generatePassword(12);
-                    long referee = Long.valueOf(channel);
-                    User user1 = new User().phone(phone).password(password).nickname(phone);
-                    if (referee > 0) {
-                        //有用户推荐人
-                        user1 = user1.referee(referee);
-                        this.userCouponService.publishAward(referee);
-                    } else {
-                        //没有用户推荐人
-                        user1 = user1.referee(0l);
-                    }
-                    long i = userService.add(user1);
-                    //todo 发放优惠券
-                    int index = this.userCouponService.add(user1.getId(), Long.valueOf(channel));
-                    if (i > 0 ) {
-                        //add successfully
-                        String response = (String) imUser.createNewIMUserSingle(generateRegisterUser(phone, password));
-                        //todo 解析返回的response
-                        if (response != null) {
-                            //注册成功
-                            String token = tokenUtil.generateToken(phone, password, user1.getId());
-                            return new LoginResponse("0", token);
-                        } else {
-                            //注册失败
-                            logger.error("register easemob user failed");
-                            return new MsgResponse("400", "注册失败，请稍后重试");
-                        }
-                    } else {
-                        //添加失败
-                        logger.error("insert user into database failed.");
-                        return new MsgResponse("400", "注册失败，请稍后重试");
-                    }
-                } else {
-                    return new LoginResponse("400", "验证码错误");
-                }
+                return ErrorCode.NO_SUCH_USER;
             }
         }
     }

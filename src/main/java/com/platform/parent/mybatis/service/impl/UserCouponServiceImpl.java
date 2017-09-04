@@ -82,10 +82,14 @@ public class UserCouponServiceImpl implements UserCouponService {
         List<CouponStrategy> strategies = this.couponStrategyMapper.findCouponStrategyByChannel(type);
         Timestamp publish = new Timestamp(System.currentTimeMillis());
         boolean suc = true;
+        System.out.println(strategies.size());
         for (CouponStrategy strategy : strategies) {
+            System.out.println(strategy.getBaseId());
+            System.out.println(strategy.getNumber());
+            System.out.println(strategy.getChannel());
             Coupon coupon = this.couponMapper.findCouponById(strategy.getBaseId());
             int number = strategy.getNumber();
-            long couponId = coupon.getId();
+            int couponId = coupon.getId();
             Timestamp expiration = new Timestamp(publish.getTime() + coupon.getDuration()*24*3600*1000);
             for (int i = 0; i < number; i++) {
                 UserCoupon userCoupon = new UserCoupon().userId(userId).couponId(coupon.getId())
@@ -113,7 +117,7 @@ public class UserCouponServiceImpl implements UserCouponService {
     }
 
     @Override
-    public List<UserCoupon> findUserCouponByCouponIdAndUserId(long userId, long couponId) {
+    public List<UserCoupon> findUserCouponByCouponIdAndUserId(long userId, int couponId) {
         return this.userCouponMapper.findUserCouponByCouponIdAndUserId(userId, couponId);
     }
 
