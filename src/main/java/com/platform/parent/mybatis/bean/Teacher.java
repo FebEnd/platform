@@ -10,11 +10,17 @@ public class Teacher {
     private String account;//银行账户
     private int star;
     private String description;
+    private int status;//状态 0 未申请，1 已申请未审核，2 已审核通过， 3 未通过
 
     private List<Tag> tags;
 
     public Teacher id(long id) {
         this.id = id;
+        return this;
+    }
+
+    public Teacher status(int status) {
+        this.status = status;
         return this;
     }
 
@@ -76,5 +82,13 @@ public class Teacher {
 
     public void setStar(int star) {
         this.star = star;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

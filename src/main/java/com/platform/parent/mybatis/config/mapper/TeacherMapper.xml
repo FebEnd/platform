@@ -8,7 +8,7 @@
     </insert>
 
     <update id="update" parameterType="com.platform.parent.mybatis.bean.Teacher">
-        UPDATE teacher SET account = #{account}, star = #{star} WHERE id = #{id}
+        UPDATE teacher SET account = #{account}, star = #{star}, description = #{description}, status = #{status} WHERE id = #{id}
     </update>
 
     <delete id="deleteByIds" parameterType="java.lang.String">

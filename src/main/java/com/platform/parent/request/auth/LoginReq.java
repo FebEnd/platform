@@ -6,6 +6,10 @@ package com.platform.parent.request.auth;
 public class LoginReq {
     private String phone, number;
 
+    public LoginReq(){
+
+    }
+
     public LoginReq(String phone, String number) {
         this.phone = phone;
         this.number = number;

@@ -21,4 +21,5 @@ public interface SchoolMapper {
     List<School> findSchoolFuzzy(String fuzzy);
     List<School> findAllSchool();
     int addHeat(long id);
+    List<School> findHotSchool(String location);
 }

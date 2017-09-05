@@ -1,19 +1,16 @@
 package com.platform.parent.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.platform.parent.mybatis.bean.Camp;
-import com.platform.parent.mybatis.bean.CampCollection;
-import com.platform.parent.mybatis.bean.User;
-import com.platform.parent.mybatis.bean.UserDetail;
-import com.platform.parent.mybatis.service.CampCollectionService;
-import com.platform.parent.mybatis.service.CampService;
-import com.platform.parent.mybatis.service.UserCouponService;
-import com.platform.parent.mybatis.service.UserService;
+import com.platform.parent.easemob.api.IMUserAPI;
+import com.platform.parent.easemob.api.impl.EasemobIMUser;
+import com.platform.parent.mybatis.bean.*;
+import com.platform.parent.mybatis.service.*;
 import com.platform.parent.request.user.ApplyAuthReq;
 import com.platform.parent.request.user.CompleteInfoReq;
-import com.platform.parent.response.user.MsgResponse;
 import com.platform.parent.util.ErrorCode;
+import com.platform.parent.util.StringUtil;
 import com.platform.parent.util.SuccessCode;
+import io.swagger.client.model.Nickname;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +32,9 @@ public class UserController {
     CampCollectionService collectionService;
     @Autowired
     UserCouponService couponService;
+    @Autowired
+    TeacherService teacherService;
+    private static final IMUserAPI imUser = new EasemobIMUser();
 
     @PutMapping(value = "/completeInfo")
     public @ResponseBody
@@ -50,9 +50,14 @@ public class UserController {
                 .childSchool(req.getChildSchool()).city(req.getCity()).liveDistrict(req.getLiveDistrict()).targetDistrict(req.getTargetDistrict());
         int i = this.userService.update(user, detail);
         if (i > 0) {
-            return new MsgResponse("0", "完善资料成功");
+            String username = req.getPhone();
+            Nickname nickname = new Nickname().nickname(req.getNickname());
+            imUser.modifyIMUserNickNameWithAdminToken(username, nickname);
+            return SuccessCode.COMPLETE_INFO_SUCCESSFULLY;
+//            return new MsgResponse("0", "完善资料成功");
         } else {
-            return new MsgResponse("400", "完善资料失败");
+            return ErrorCode.COMPLETE_INFO_FAILED;
+//            return new MsgResponse("400", "完善资料失败");
         }
         /*int i = userService.update(user);
         if (i != 0) {
@@ -65,57 +70,126 @@ public class UserController {
     @PostMapping(value = "/applyAuth")
     public @ResponseBody
     Object applyAuth(@RequestBody ApplyAuthReq req) {
-        //todo
-        return SuccessCode.APPLY_AUTH_SUCCESSFULLY;
+        User user = this.userService.queryUserByIdWithDetail(req.getId());
+        if (user != null) {
+            user.auth(1);
+            UserDetail detail = user.getDetail();
+            detail.childGrade(req.getChildGrade()).childGender(req.getChildGender()).childSchool(req.getChildSchool());
+            int i = this.userService.update(user, detail);
+            if (i > 0) {
+                return _applyTeacher(req.getId());
+            } else {
+                return ErrorCode.APPLY_AUTH_FAILED;
+            }
+        } else {
+            return ErrorCode.NO_SUCH_USER;
+        }
     }
 
-    @GetMapping(value = "/applyTeacher")
+    @PostMapping(value = "/applyTeacher")
     public @ResponseBody
     Object applyTeacher(@RequestParam("id") String id) {
-        //todo
-        return SuccessCode.APPLY_TEACHER_SUCCESSFULLY;
+        id = id.trim();
+        if (StringUtil.isNumber(id)) {
+            long userId = Long.valueOf(id);
+            return _applyTeacher(userId);
+        } else {
+            return ErrorCode.ILLEGAL_USER_ID;
+        }
     }
 
-    @GetMapping(value = "/getDetail")
+    private Object _applyTeacher(long userId) {
+        User user = this.userService.queryUserByIdWithDetail(userId);
+        if (user != null) {
+            Teacher teacher = this.teacherService.findTeacherById(userId);
+            if (teacher != null) {
+                JSONObject result = new JSONObject();
+                result.put("status", 0);
+                switch (teacher.getStatus()) {
+                    case 1://未审核
+                        result.put("code", "ALREADY_APPLIED");
+                        result.put("message", "已申请请耐心等待审核");
+                        return result;
+                    case 2://已通过
+                        result.put("code", "ALREADY_PASSED");
+                        result.put("message", "已通过审核");
+                        return result;
+                    case 3://未通过
+                        result.put("code","FAILED_TO_PASS");
+                        result.put("message","未通过审核");
+                        return result;
+                    default://未申请
+                        teacher.status(1);
+                        int i = this.teacherService.update(teacher);
+                        if (i > 0) {
+                            return SuccessCode.APPLY_TEACHER_SUCCESSFULLY;
+                        } else {
+                            return ErrorCode.APPLY_TEACHER_FAILED;
+                        }
+                }
+            } else {
+                Teacher teacher1 = new Teacher().id(userId).account("has not set").star(1);
+                int i = this.teacherService.add(teacher1);
+                if (i > 0) {
+                    return SuccessCode.APPLY_TEACHER_SUCCESSFULLY;
+                } else {
+                    return ErrorCode.APPLY_TEACHER_FAILED;
+                }
+            }
+        } else {
+            return ErrorCode.NO_SUCH_USER;
+        }
+    }
+
+
+    @PostMapping(value = "/getDetail")
     public @ResponseBody
     Object getDetail(@RequestParam("id") String id) {
+        id = id.trim();
+        if (!StringUtil.isNumber(id)) {
+            return ErrorCode.ILLEGAL_USER_ID;
+        }
         long userId = Long.valueOf(id);
         User user = this.userService.queryUserByIdWithDetail(userId);
         JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
         if (user != null) {
-            result.put("id", id);
-            result.put("nickname", user.getNickname());
-            result.put("childGrade", user.getDetail().getChildGrade());
+            result.put("status", 0);
+            result.put("message", "获取成功");
+            data.put("id", id);
+            data.put("nickname", user.getNickname());
+            data.put("childGrade", user.getDetail().getChildGrade());
         } else {
             return ErrorCode.NO_SUCH_USER;
         }
         Camp camp = this.campService.findCampByTeacherId(userId);
         if (camp != null) {
-            result.put("application", "未申请");
+            data.put("application", "未申请");
         } else {
 //            0 初始, 1 上线, 2 开课, 3 下线
             switch (camp.getStatus()) {
                 case 0:
-                    result.put("application", "已申请，审核中");
+                    data.put("application", "已申请，审核中");
                     break;
                 case 1:
                 case 2:
-                    result.put("application", "已通过");
+                    data.put("application", "已通过");
                     break;
                 case 3:
                 default:
-                    result.put("application", "未通过");
+                    data.put("application", "未通过");
                     break;
             }
         }
         List<CampCollection> collections = this.collectionService.findCampCollectionsByUserId(userId);
         if (collections != null) {
-            result.put("collection", collections.size());
+            data.put("collection", collections.size());
         } else {
-            result.put("collection", 0);
+            data.put("collection", 0);
         }
-        int count  = this.couponService.findCountUsableByUserId(userId);
-        result.put("coupon", count);
+        int count = this.couponService.findCountUsableByUserId(userId);
+        data.put("coupon", count);
+        result.put("data", data);
         return result;
     }
 }

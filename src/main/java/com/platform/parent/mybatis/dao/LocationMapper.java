@@ -4,6 +4,7 @@ import com.platform.parent.mybatis.bean.Location;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,6 +18,6 @@ public interface LocationMapper {
     int update(Location location);
     int deleteByIds(String[] ids);
     Location findLocationById(long id);
-    Location findLocationByParams(Map<String, String> params);
+    List<Location> findLocationByParams(Map<String, String> params);
 
 }

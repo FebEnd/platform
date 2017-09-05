@@ -6,7 +6,7 @@ CREATE TABLE user (
     nickname VARCHAR(50) NOT NULL,
     password VARCHAR(50) NOT NULL,
     referee BIGINT(20) NOT NULL , #为0表示非注册用户推荐
-    auth TINYINT(1) NOT NULL DEFAULT 0,
+    auth INT(11) NOT NULL DEFAULT 0,
 
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -38,7 +38,9 @@ DROP TABLE IF EXISTS teacher;
 CREATE TABLE teacher(
     id BIGINT(20) NOT NULL, #与用户id相匹配
     star INT(11) NOT NULL DEFAULT 1, #星级
-    account TEXT NOT NULL,
+    account TEXT NOT NULL DEFAULT 'has not set',
+    description TEXT,
+    status INT(11) NOT NULL DEFAULT 0,
 
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

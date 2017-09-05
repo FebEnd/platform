@@ -9,7 +9,7 @@ public class User {
     private long id;
     private String phone, nickname, password;
     private long referee;
-    private boolean auth;
+    private int auth;//申请实名认证 0 未申请， 1 已申请未审核， 2 已审核通过， 3 未通过
 
     private UserDetail detail;
 
@@ -25,7 +25,7 @@ public class User {
         return this;
     }
 
-    public User auth(boolean auth) {
+    public User auth(int auth) {
         this.auth = auth;
         return this;
     }
@@ -181,11 +181,11 @@ public class User {
         this.roles = roles;
     }
 
-    public boolean isAuth() {
+    public int getAuth() {
         return auth;
     }
 
-    public void setAuth(boolean auth) {
+    public void setAuth(int auth) {
         this.auth = auth;
     }
 

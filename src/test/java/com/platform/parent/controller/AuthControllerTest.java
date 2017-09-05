@@ -1,5 +1,6 @@
 package com.platform.parent.controller;
 
+import com.platform.parent.request.auth.LoginReq;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +18,6 @@ public class AuthControllerTest {
         AuthController authController = new AuthController();
         authController.getVerifyCode("15001877056");
 
-        authController.login("15001877056","000000","-1");
+        authController.login(new LoginReq("15001877056","1111"));
     }
 }

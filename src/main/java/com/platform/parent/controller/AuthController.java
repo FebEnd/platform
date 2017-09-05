@@ -79,7 +79,7 @@ public class AuthController {
         }
         //验证码发送成功
         //将验证码存入map
-        verifyMap.put(phone, number);
+        verifyMap.put(phone, "1111");
         return new VerifyRes(0,exists);
     }
 

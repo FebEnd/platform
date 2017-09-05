@@ -5,13 +5,15 @@ package com.platform.parent.request.user;
  */
 public class ApplyAuthReq {
     private long id;
-    private String childGrade, childGender, childSchool;
+    private int childGrade;
+    private long childSchool;
+    private String childGender;
 
     public ApplyAuthReq id(long id) {
         this.id = id;
         return this;
     }
-    public ApplyAuthReq childGrade(String childGrade) {
+    public ApplyAuthReq childGrade(int childGrade) {
         this.childGrade = childGrade;
         return this;
     }
@@ -19,7 +21,7 @@ public class ApplyAuthReq {
         this.childGender = childGender;
         return this;
     }
-    public ApplyAuthReq childSchool(String childSchool) {
+    public ApplyAuthReq childSchool(long childSchool) {
         this.childSchool = childSchool;
         return this;
     }
@@ -32,11 +34,11 @@ public class ApplyAuthReq {
         this.id = id;
     }
 
-    public String getChildGrade() {
+    public int getChildGrade() {
         return childGrade;
     }
 
-    public void setChildGrade(String childGrade) {
+    public void setChildGrade(int childGrade) {
         this.childGrade = childGrade;
     }
 
@@ -48,11 +50,11 @@ public class ApplyAuthReq {
         this.childGender = childGender;
     }
 
-    public String getChildSchool() {
+    public long getChildSchool() {
         return childSchool;
     }
 
-    public void setChildSchool(String childSchool) {
+    public void setChildSchool(long childSchool) {
         this.childSchool = childSchool;
     }
 }

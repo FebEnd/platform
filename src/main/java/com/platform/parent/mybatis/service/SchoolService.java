@@ -18,4 +18,5 @@ public interface SchoolService {
     School findSchoolByAlias(String alias);
     List<School> findSchoolFuzzy(String fuzzy);
     List<School> findAllSchools();
+    List<School> findHotSchool(String location);
 }

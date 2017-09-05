@@ -6,6 +6,7 @@ import com.platform.parent.mybatis.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,7 +37,7 @@ public class LocationServiceImpl implements LocationService{
     }
 
     @Override
-    public Location findLocationByParams(Map<String, String> params) {
+    public List<Location> findLocationByParams(Map<String, String> params) {
         return this.locationMapper.findLocationByParams(params);
     }
 }

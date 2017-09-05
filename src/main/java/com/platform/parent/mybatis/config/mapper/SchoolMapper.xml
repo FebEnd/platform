@@ -38,13 +38,13 @@
     <!--private String fullName, alias;-->
 
     <insert id="add" parameterType="com.platform.parent.mybatis.bean.School" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO school (full_name, location_id)
-        VALUES (#{fullName}, #{locationId});
+        INSERT INTO school (full_name, location_id, heat)
+        VALUES (#{fullName}, #{locationId}, #{heat});
     </insert>
 
     <update id="update" parameterType="com.platform.parent.mybatis.bean.School">
         UPDATE school
-        SET full_name = #{fullName}, lication_id = #{locationId}
+        SET full_name = #{fullName}, lication_id = #{locationId}, heat = #{heat}
         WHERE id = #{id}
     </update>
 
@@ -82,5 +82,15 @@
     <update id="addHeat" parameterType="long">
         UPDATE school SET heat = school.heat+1 WHERE id = #{id}
     </update>
+
+    <select id="findHotSchool" parameterType="java.lang.String" resultMap="schoolWithAlias">
+        SELECT s.*, sa.* FROM school s
+        LEFT JOIN school_alias sa ON s.id = sa.school_id
+        LEFT JOIN location l ON l.id = s.location_id
+        WHERE l.city LIKE concat(concat('%',#{location},'%'))
+        GROUP BY s.id
+        ORDER BY s.heat DESC
+        LIMIT 9
+    </select>
 
 </mapper>

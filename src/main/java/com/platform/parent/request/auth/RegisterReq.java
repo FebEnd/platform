@@ -6,6 +6,9 @@ package com.platform.parent.request.auth;
 public class RegisterReq {
     private String phone,number,channel;
 
+    public RegisterReq() {
+    }
+
     public RegisterReq(String phone, String number, String channel) {
         this.phone = phone;
         this.number = number;

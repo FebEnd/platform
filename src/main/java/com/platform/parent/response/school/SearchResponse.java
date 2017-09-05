@@ -8,10 +8,10 @@ import java.util.List;
  * Created by tqyao.
  */
 public class SearchResponse {
-    private String status;
+    private int status;
     private List<School> schools;
 
-    public SearchResponse(String status, List<School> schools) {
+    public SearchResponse(int status, List<School> schools) {
         this.status = status;
         this.schools = schools;
     }
@@ -20,11 +20,11 @@ public class SearchResponse {
         return schools;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 

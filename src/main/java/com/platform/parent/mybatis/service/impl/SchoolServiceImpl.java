@@ -81,4 +81,9 @@ public class SchoolServiceImpl implements SchoolService {
     public List<School> findAllSchools() {
         return this.schoolMapper.findAllSchool();
     }
+
+    @Override
+    public List<School> findHotSchool(String location) {
+        return this.schoolMapper.findHotSchool(location);
+    }
 }
