@@ -3,6 +3,7 @@ package com.platform.parent.mybatis.service.impl;
 import com.platform.parent.mybatis.bean.Camp;
 import com.platform.parent.mybatis.dao.CampMapper;
 import com.platform.parent.mybatis.service.CampService;
+import com.platform.parent.response.camp.CampList;
 import com.platform.parent.response.camp.CampWithTeacher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,6 +71,16 @@ public class CampServiceImpl implements CampService {
     @Override
     public List<CampWithTeacher> findAllCampsWithTeacher() {
         return this.campMapper.findAllCampsWithTeacher();
+    }
+
+    @Override
+    public List<CampList> findCampList(long userId) {
+        return this.campMapper.findCampList(userId);
+    }
+
+    @Override
+    public int addFavor(long id) {
+        return this.campMapper.addFavor(id);
     }
 
 }

@@ -16,4 +16,5 @@ public interface TeacherMapper {
     Teacher findTeacherById(long id);
     List<Teacher> findTeachersByStar(int star);
     List<Teacher> findAllTeachers();
+    List<Teacher> findTeachersByCampId(long campId);
 }

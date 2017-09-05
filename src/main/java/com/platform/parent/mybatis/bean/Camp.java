@@ -20,11 +20,22 @@ public class Camp {
     private int type, favor, maxLimit, minLimit, status;
     private BigDecimal price0, price1, price2;
     private String description, comment;
+    private String title, subtitle;
 
     private List<Tag> tags;
 
     public Camp id(long id) {
         this.id = id;
+        return this;
+    }
+
+    public Camp title(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public Camp subtitle(String subtitle) {
+        this.subtitle = subtitle;
         return this;
     }
 
@@ -195,5 +206,21 @@ public class Camp {
 
     public void setPrice2(BigDecimal price2) {
         this.price2 = price2;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getSubtitle() {
+        return subtitle;
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
     }
 }

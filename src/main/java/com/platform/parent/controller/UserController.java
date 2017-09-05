@@ -3,18 +3,20 @@ package com.platform.parent.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.platform.parent.easemob.api.IMUserAPI;
 import com.platform.parent.easemob.api.impl.EasemobIMUser;
-import com.platform.parent.mybatis.bean.*;
+import com.platform.parent.mybatis.bean.Camp;
+import com.platform.parent.mybatis.bean.Teacher;
+import com.platform.parent.mybatis.bean.User;
+import com.platform.parent.mybatis.bean.UserDetail;
 import com.platform.parent.mybatis.service.*;
 import com.platform.parent.request.user.ApplyAuthReq;
 import com.platform.parent.request.user.CompleteInfoReq;
+import com.platform.parent.util.EnumUtil;
 import com.platform.parent.util.ErrorCode;
 import com.platform.parent.util.StringUtil;
 import com.platform.parent.util.SuccessCode;
 import io.swagger.client.model.Nickname;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * Created by tqyao.
@@ -53,10 +55,10 @@ public class UserController {
             String username = req.getPhone();
             Nickname nickname = new Nickname().nickname(req.getNickname());
             imUser.modifyIMUserNickNameWithAdminToken(username, nickname);
-            return SuccessCode.COMPLETE_INFO_SUCCESSFULLY;
+            return EnumUtil.succToJson(SuccessCode.COMPLETE_INFO_SUCCESSFULLY);
 //            return new MsgResponse("0", "完善资料成功");
         } else {
-            return ErrorCode.COMPLETE_INFO_FAILED;
+            return EnumUtil.errorToJson(ErrorCode.COMPLETE_INFO_FAILED);
 //            return new MsgResponse("400", "完善资料失败");
         }
         /*int i = userService.update(user);
@@ -79,10 +81,10 @@ public class UserController {
             if (i > 0) {
                 return _applyTeacher(req.getId());
             } else {
-                return ErrorCode.APPLY_AUTH_FAILED;
+                return EnumUtil.errorToJson(ErrorCode.APPLY_AUTH_FAILED);
             }
         } else {
-            return ErrorCode.NO_SUCH_USER;
+            return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
         }
     }
 
@@ -94,7 +96,7 @@ public class UserController {
             long userId = Long.valueOf(id);
             return _applyTeacher(userId);
         } else {
-            return ErrorCode.ILLEGAL_USER_ID;
+            return EnumUtil.errorToJson(ErrorCode.ILLEGAL_USER_ID);
         }
     }
 
@@ -122,22 +124,22 @@ public class UserController {
                         teacher.status(1);
                         int i = this.teacherService.update(teacher);
                         if (i > 0) {
-                            return SuccessCode.APPLY_TEACHER_SUCCESSFULLY;
+                            return EnumUtil.succToJson(SuccessCode.APPLY_TEACHER_SUCCESSFULLY);
                         } else {
-                            return ErrorCode.APPLY_TEACHER_FAILED;
+                            return EnumUtil.errorToJson(ErrorCode.APPLY_TEACHER_FAILED);
                         }
                 }
             } else {
                 Teacher teacher1 = new Teacher().id(userId).account("has not set").star(1);
                 int i = this.teacherService.add(teacher1);
                 if (i > 0) {
-                    return SuccessCode.APPLY_TEACHER_SUCCESSFULLY;
+                    return EnumUtil.succToJson(SuccessCode.APPLY_TEACHER_SUCCESSFULLY);
                 } else {
-                    return ErrorCode.APPLY_TEACHER_FAILED;
+                    return EnumUtil.errorToJson(ErrorCode.APPLY_TEACHER_FAILED);
                 }
             }
         } else {
-            return ErrorCode.NO_SUCH_USER;
+            return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
         }
     }
 
@@ -147,7 +149,7 @@ public class UserController {
     Object getDetail(@RequestParam("id") String id) {
         id = id.trim();
         if (!StringUtil.isNumber(id)) {
-            return ErrorCode.ILLEGAL_USER_ID;
+            return EnumUtil.errorToJson(ErrorCode.ILLEGAL_USER_ID);
         }
         long userId = Long.valueOf(id);
         User user = this.userService.queryUserByIdWithDetail(userId);
@@ -160,7 +162,7 @@ public class UserController {
             data.put("nickname", user.getNickname());
             data.put("childGrade", user.getDetail().getChildGrade());
         } else {
-            return ErrorCode.NO_SUCH_USER;
+            return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
         }
         Camp camp = this.campService.findCampByTeacherId(userId);
         if (camp != null) {
@@ -181,12 +183,14 @@ public class UserController {
                     break;
             }
         }
-        List<CampCollection> collections = this.collectionService.findCampCollectionsByUserId(userId);
+        long collection = this.collectionService.queryCountByUserId(userId);
+        data.put("collection", collection);
+        /*List<CampCollection> collections = this.collectionService.findCampCollectionsByUserId(userId);
         if (collections != null) {
             data.put("collection", collections.size());
         } else {
             data.put("collection", 0);
-        }
+        }*/
         int count = this.couponService.findCountUsableByUserId(userId);
         data.put("coupon", count);
         result.put("data", data);

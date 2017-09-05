@@ -1,6 +1,7 @@
 package com.platform.parent.mybatis.dao;
 
 import com.platform.parent.mybatis.bean.Camp;
+import com.platform.parent.response.camp.CampList;
 import com.platform.parent.response.camp.CampWithTeacher;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
@@ -25,4 +26,6 @@ public interface CampMapper {
     List<Camp> findCampsByStatusWithTag(int status);
     List<Camp> findCampsByTypeWithTag(int type);
     List<CampWithTeacher> findAllCampsWithTeacher();
+    List<CampList> findCampList(long userId);
+    int addFavor(long id);
 }

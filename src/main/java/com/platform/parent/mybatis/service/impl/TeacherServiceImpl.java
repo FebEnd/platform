@@ -46,4 +46,9 @@ public class TeacherServiceImpl implements TeacherService{
     public List<Teacher> findAllTeachers() {
         return this.teacherMapper.findAllTeachers();
     }
+
+    @Override
+    public List<Teacher> findTeachersByCampId(long campId) {
+        return this.teacherMapper.findTeachersByCampId(campId);
+    }
 }

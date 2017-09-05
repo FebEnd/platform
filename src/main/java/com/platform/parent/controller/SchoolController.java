@@ -5,7 +5,7 @@ import com.platform.parent.mybatis.bean.Location;
 import com.platform.parent.mybatis.bean.School;
 import com.platform.parent.mybatis.service.LocationService;
 import com.platform.parent.mybatis.service.SchoolService;
-import com.platform.parent.response.school.SearchResponse;
+import com.platform.parent.util.EnumUtil;
 import com.platform.parent.util.ErrorCode;
 import com.platform.parent.util.StringUtil;
 import com.platform.parent.util.SuccessCode;
@@ -37,23 +37,32 @@ public class SchoolController {
     public @ResponseBody
     Object searchSchool(@RequestParam("name") String name) {
         if (StringUtil.isNull(name)) {
-            return ErrorCode.KEYWORD_IS_NULL;
+            return EnumUtil.errorToJson(ErrorCode.KEYWORD_IS_NULL);
         } else {
-            List<School> result = schoolService.findSchoolFuzzy(name);
+            List<School> schools = schoolService.findSchoolFuzzy(name);
         /*List<School> result = new ArrayList<>();
         School school = new School().id(1).fullName("上海世外小学").alias("世外小学").locationId(1);
         School school1 = new School().id(2).fullName("上海世界小学").alias("世界小学").locationId(2);
         result.add(school);
         result.add(school1);*/
-            if (result != null && result.size() > 0) {
-                return new SearchResponse(0, result);
-            } else if (result.size() == 0) {
-                return ErrorCode.NO_SUCH_SCHOOL;
+            if (schools != null && schools.size() > 0) {
+                return combine(schools);
+            } else if (schools.size() == 0) {
+                return EnumUtil.errorToJson(ErrorCode.NO_SUCH_SCHOOL);
             } else {
-                return ErrorCode.QUERY_SCHOOL_FAILED;
+                return EnumUtil.errorToJson(ErrorCode.QUERY_SCHOOL_FAILED);
             }
         }
+    }
 
+    private Object combine(List<School> schools) {
+        JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
+        result.put("status", 0);
+        result.put("message", "成功");
+        data.put("schools", schools);
+        result.put("data",data);
+        return result;
     }
 
     @GetMapping(value = "/getHot")
@@ -63,16 +72,13 @@ public class SchoolController {
         params.put("city", city);
         List<Location> locations = this.locationService.findLocationByParams(params);
         if (locations == null || locations.size() <= 0) {
-            return ErrorCode.NO_SUCH_CITY;
+            return EnumUtil.errorToJson(ErrorCode.NO_SUCH_CITY);
         }
-        JSONObject result = new JSONObject();
         List<School> schools = this.schoolService.findHotSchool(city);
         if (schools != null && schools.size()>0) {
-            result.put("status",0);
-            result.put("schools",schools);
-            return result;
+            return combine(schools);
         } else {
-            return ErrorCode.QUERY_SCHOOL_FAILED;
+            return EnumUtil.errorToJson(ErrorCode.QUERY_SCHOOL_FAILED);
         }
     }
 
@@ -81,9 +87,9 @@ public class SchoolController {
     Object addSchool(@RequestBody School school, @RequestBody Location location) {
         int status = schoolService.add(school, location);
         if (status > 0) {
-            return SuccessCode.ADD_SUCCESSFULLY;
+            return EnumUtil.succToJson(SuccessCode.ADD_SUCCESSFULLY);
         } else {
-            return ErrorCode.ADD_FAILED;
+            return EnumUtil.errorToJson(ErrorCode.ADD_FAILED);
         }
     }
 
@@ -92,9 +98,9 @@ public class SchoolController {
     Object updateSchool(@RequestBody School school) {
         int status = schoolService.updateSchool(school);
         if (status > 0) {
-            return SuccessCode.UPDATE_SUCCESSFULLY;
+            return EnumUtil.succToJson(SuccessCode.UPDATE_SUCCESSFULLY);
         } else {
-            return ErrorCode.UPDATE_FAILED;
+            return EnumUtil.errorToJson(ErrorCode.UPDATE_FAILED);
         }
     }
 
@@ -104,9 +110,9 @@ public class SchoolController {
         logger.info("ids:\t\t" + ids);
         int status = schoolService.deleteByIds(ids.split(","));
         if (status > 0) {
-            return SuccessCode.DELETE_SUCCESSFULLY;
+            return EnumUtil.succToJson(SuccessCode.DELETE_SUCCESSFULLY);
         } else {
-            return ErrorCode.DELETE_FAILED;
+            return EnumUtil.errorToJson(ErrorCode.DELETE_FAILED);
         }
     }
 
@@ -115,9 +121,9 @@ public class SchoolController {
         logger.info("list all schools");
         List<School> schools = schoolService.findAllSchools();
         if (schools!= null && schools.size()>0) {
-            return new SearchResponse(0, schools);
+            return combine(schools);
         } else {
-            return ErrorCode.QUERY_SCHOOL_FAILED;
+            return EnumUtil.errorToJson(ErrorCode.QUERY_SCHOOL_FAILED);
         }
     }
 

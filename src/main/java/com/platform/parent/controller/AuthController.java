@@ -1,5 +1,6 @@
 package com.platform.parent.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.exceptions.ClientException;
 import com.platform.parent.easemob.api.IMUserAPI;
 import com.platform.parent.easemob.api.impl.EasemobIMUser;
@@ -8,8 +9,6 @@ import com.platform.parent.mybatis.service.UserCouponService;
 import com.platform.parent.mybatis.service.UserService;
 import com.platform.parent.request.auth.LoginReq;
 import com.platform.parent.request.auth.RegisterReq;
-import com.platform.parent.response.auth.VerifyRes;
-import com.platform.parent.response.user.LoginResponse;
 import com.platform.parent.util.*;
 import io.swagger.client.model.RegisterUsers;
 import org.slf4j.Logger;
@@ -75,12 +74,18 @@ public class AuthController {
         } catch (ClientException e) {//阿里云服务故障
             logger.error(e.getMessage());
 //            e.printStackTrace();
-            return ErrorCode.MESSAGE_SEND_FAILED;
+            return EnumUtil.errorToJson(ErrorCode.MESSAGE_SEND_FAILED);
         }
         //验证码发送成功
         //将验证码存入map
         verifyMap.put(phone, "1111");
-        return new VerifyRes(0,exists);
+        JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
+        data.put("exists", exists);
+        result.put("status", 0);
+        result.put("message", "短信发送成功");
+        result.put("data", data);
+        return result;
     }
 
     @PostMapping(value = "/register")
@@ -91,7 +96,7 @@ public class AuthController {
         }
         if (!verifyMap.containsKey(req.getPhone())){
             //服务器不存在该手机号申请验证记录
-            return ErrorCode.NO_SUCH_PHONE;
+            return EnumUtil.errorToJson(ErrorCode.NO_SUCH_PHONE);
         } else {
             if (verify(req.getPhone(),req.getNumber())) {
                 //验证码正确
@@ -118,19 +123,19 @@ public class AuthController {
                     if (response != null) {
                         //注册成功
                         String token = tokenUtil.generateToken(req.getPhone(), password, user1.getId());
-                        return new LoginResponse(0, token);
+                        return succ(token);
                     } else {
                         //注册失败
                         logger.error("register easemob user failed");
-                        return ErrorCode.REGISTER_FAILED;
+                        return EnumUtil.errorToJson(ErrorCode.REGISTER_FAILED);
                     }
                 } else {
                     //添加失败
                     logger.error("insert user into database failed.");
-                    return ErrorCode.REGISTER_FAILED;
+                    return EnumUtil.errorToJson(ErrorCode.REGISTER_FAILED);
                 }
             } else {
-                return ErrorCode.VERIFY_CODE_ERROR;
+                return EnumUtil.errorToJson(ErrorCode.VERIFY_CODE_ERROR);
             }
         }
     }
@@ -148,7 +153,7 @@ public class AuthController {
     Object login(LoginReq req) {
         if (!verifyMap.containsKey(req.getPhone())) {
             //服务器不存在该手机号申请验证记录
-            return ErrorCode.NO_SUCH_PHONE;
+            return EnumUtil.errorToJson(ErrorCode.NO_SUCH_PHONE);
         } else {
             //存在手机号申请验证记录
             //todo 查询数据库是否存在该手机号并执行相应操作
@@ -159,15 +164,25 @@ public class AuthController {
                     //验证码正确
                     //todo 返回密码
                     String token = tokenUtil.generateToken(req.getPhone(), user.getPassword(), user.getId());
-                    return new LoginResponse(0, token);
+                    return succ(token);
                 } else {
-                    return ErrorCode.VERIFY_CODE_ERROR;
+                    return EnumUtil.errorToJson(ErrorCode.VERIFY_CODE_ERROR);
                 }
             } else {
                 //没有该用户
-                return ErrorCode.NO_SUCH_USER;
+                return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
             }
         }
+    }
+
+    private Object succ(String token) {
+        JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
+        data.put("token", token);
+        result.put("status",0);
+        result.put("message","登录成功");
+        result.put("data", data);
+        return result;
     }
 
     private boolean verify(String phone, String number) {

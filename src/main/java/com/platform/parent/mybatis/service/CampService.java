@@ -1,6 +1,7 @@
 package com.platform.parent.mybatis.service;
 
 import com.platform.parent.mybatis.bean.Camp;
+import com.platform.parent.response.camp.CampList;
 import com.platform.parent.response.camp.CampWithTeacher;
 
 import java.util.List;
@@ -21,4 +22,6 @@ public interface CampService {
     List<Camp> findCampsByStatusWithTag(int status);
     List<Camp> findCampsByTypeWithTag(int type);
     List<CampWithTeacher> findAllCampsWithTeacher();
+    List<CampList> findCampList(long userId);
+    int addFavor(long id);
 }

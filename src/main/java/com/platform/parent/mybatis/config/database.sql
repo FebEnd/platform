@@ -58,6 +58,9 @@ CREATE TABLE camp (
     price0 DECIMAL(10,2),
     price1 DECIMAL(10,2),
     price2 DECIMAL(10,2),
+    title TEXT,
+    subtitle TEXT,
+
     PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 #储存会员加入的训练营

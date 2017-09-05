@@ -3,6 +3,24 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.platform.parent.mybatis.dao.TeacherMapper">
+    <resultMap id="base" type="com.platform.parent.mybatis.bean.Teacher">
+        <id column="id" property="id"/>
+        <result column="account" property="account"/>
+        <result column="star" property="star"/>
+        <result column="description" property="description"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <resultMap id="baseWithTags" type="com.platform.parent.mybatis.bean.Teacher">
+        <id column="id" property="id"/>
+        <result column="account" property="account"/>
+        <result column="star" property="star"/>
+        <result column="description" property="description"/>
+        <result column="status" property="status"/>
+        <collection property="tags" ofType="com.platform.parent.mybatis.bean.Tag">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+        </collection>
+    </resultMap>
     <insert id="add" parameterType="com.platform.parent.mybatis.bean.Teacher">
         INSERT INTO teacher (id, account, star) VALUES (#{id}, #{account}, #{star})
     </insert>
@@ -28,5 +46,14 @@
 
     <select id="findAllTeachers" resultType="com.platform.parent.mybatis.bean.Teacher">
         SELECT * FROM teacher
+    </select>
+
+    <select id="findTeachersByCampId" parameterType="long" resultMap="baseWithTags">
+        SELECT t.*, tag.* FROM teacher t
+        LEFT JOIN camp_attend ca ON ca.user_id = t.id
+        LEFT JOIN camp c ON ca.camp_id = c.id
+        LEFT JOIN user_tag ut ON ut.user_id = t.id
+        LEFT JOIN tag ON tag.id = ut.tag_id
+        WHERE ca.role = 2 AND c.id = #{campId}
     </select>
 </mapper>
