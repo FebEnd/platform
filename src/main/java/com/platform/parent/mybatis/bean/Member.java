@@ -1,48 +1,37 @@
 package com.platform.parent.mybatis.bean;
 
+import java.sql.Timestamp;
+
 /**
  * Created by tqyao.
  */
 public class Member {
     private long id;
-    private int vip;
-    private long referenceId;
+    private Timestamp vip;
 
     public Member id(long id) {
         this.id = id;
         return this;
     }
-    public Member vip(int vip) {
+    public Member vip(Timestamp vip) {
         this.vip = vip;
         return this;
     }
 
-    public Member referenceId(long referenceId) {
-        this.referenceId = referenceId;
-        return this;
-    }
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public long getRecommenderId() {
-        return referenceId;
-    }
-
-    public void setRecommenderId(long recommenderId) {
-        this.referenceId = recommenderId;
     }
 
     public long getId() {
         return id;
     }
 
-    public int getVip() {
+    public Timestamp getVip() {
         return vip;
     }
 
-    public void setVip(int vip) {
+    public void setVip(Timestamp vip) {
         this.vip = vip;
     }
 

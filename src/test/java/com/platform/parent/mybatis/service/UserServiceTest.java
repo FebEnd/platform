@@ -32,7 +32,7 @@ public class UserServiceTest {
     @Test
     public void update() {
         User user = new User().phone("testphone3").password("testpassword").nickname("updatenickname").id(3);
-        UserDetail detail = new UserDetail().id(3).childBirth("20010101").childGender("男").childGrade(5).city("上海市").childSchool(1).liveDistrict("松江区").targetDistrict("松江区");
+        UserDetail detail = new UserDetail().id(3).childBirth("20010101").childGender("男").childGrade("G2").city("上海市").childSchool(1).liveDistrict("松江区").targetDistrict("松江区");
 //        User user = new User(1,"updatephone", "updatenickname","updatepassword");
         int i = service.update(user, detail);
         Assert.assertNotEquals(0,i);

@@ -21,4 +21,8 @@ public interface UserCouponMapper {
     List<UserCoupon> findUserCouponByCouponIdAndUserId(@Param("userId") long userId, @Param("couponId") int couponId);
 //    int findCountByUserId(long userId);
     int findCountUsableByUserId(long userId);
+    int setUserCouponUsedByIds(String[] ids);
+    int setUserCouponUnusedByIds(String[] ids);
+    List<UserCoupon> findUserCouponUsableByUserId(long userId);
+    List<UserCoupon> findUserCouponByIds(String[] ids);
 }

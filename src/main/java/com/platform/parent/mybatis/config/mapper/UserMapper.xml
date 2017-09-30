@@ -84,6 +84,14 @@
         </foreach>
     </delete>
 
+    <!--User findUserByCampId(long campId);-->
+    <select id="findUserByCampId" parameterType="long" resultMap="userMapBase">
+        SELECT u.* FROM user u
+        LEFT JOIN teacher t ON t.id = u.id
+        LEFT JOIN camp_attend ca ON ca.user_id = t.id
+        LEFT JOIN camp c ON ca.camp_id = c.id
+        WHERE c.id = #{campId}
+    </select>
     <select id="findUserByPhoneWithRole" parameterType="java.lang.String" resultMap="userMapWithRole">
         SELECT U.*, R.name FROM user U
             LEFT JOIN user_role UR ON U.id = UR.user_id

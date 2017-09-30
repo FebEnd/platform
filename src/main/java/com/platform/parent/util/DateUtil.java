@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
  * Created by tqyao.
  */
 public class DateUtil {
-    private static final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+    private static final SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
 //    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MMdd");
     private static final Logger logger = LoggerFactory.getLogger(DateUtil.class);
 
@@ -22,6 +22,16 @@ public class DateUtil {
 //            e.printStackTrace();
         }
         return null;
+    }
+
+    public static String sqlDateStringFormat(String s) {
+        try {
+            return new java.sql.Date(format.parse(s).getTime()).toString();
+        } catch (ParseException e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
+        }
+        return s+"01";
     }
 
 }

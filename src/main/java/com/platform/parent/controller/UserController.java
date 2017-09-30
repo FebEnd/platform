@@ -3,17 +3,11 @@ package com.platform.parent.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.platform.parent.easemob.api.IMUserAPI;
 import com.platform.parent.easemob.api.impl.EasemobIMUser;
-import com.platform.parent.mybatis.bean.Camp;
-import com.platform.parent.mybatis.bean.Teacher;
-import com.platform.parent.mybatis.bean.User;
-import com.platform.parent.mybatis.bean.UserDetail;
+import com.platform.parent.mybatis.bean.*;
 import com.platform.parent.mybatis.service.*;
 import com.platform.parent.request.user.ApplyAuthReq;
 import com.platform.parent.request.user.CompleteInfoReq;
-import com.platform.parent.util.EnumUtil;
-import com.platform.parent.util.ErrorCode;
-import com.platform.parent.util.StringUtil;
-import com.platform.parent.util.SuccessCode;
+import com.platform.parent.util.*;
 import io.swagger.client.model.Nickname;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,19 +30,26 @@ public class UserController {
     UserCouponService couponService;
     @Autowired
     TeacherService teacherService;
+    @Autowired
+    SchoolService schoolService;
+
     private static final IMUserAPI imUser = new EasemobIMUser();
 
-    @PutMapping(value = "/completeInfo")
+    @RequestMapping(value = "/completeInfo", method = RequestMethod.POST)
     public @ResponseBody
     Object completeInfo(CompleteInfoReq req) {
 //        User user = new User().id(userDetail.getId()).phone(phone).nickname(nickname);
-        /*System.out.println(req.getId());
-        System.out.println(req.getChildBirth());*/
+        System.out.println(req.getId());
+        System.out.println(req.getChildBirth());
+        System.out.println(req.getPhone());
         User user = this.userService.queryUserByIdWithDetail(req.getId());
+        if (user == null) {
+            return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
+        }
         user.phone(req.getPhone());
         user.nickname(req.getNickname());
         UserDetail detail = user.getDetail();
-        detail.id(req.getId()).childBirth(req.getChildBirth()).childGender(req.getChildGender()).childGrade(req.getChildGrade())
+        detail.id(req.getId()).childBirth(DateUtil.sqlDateStringFormat(req.getChildBirth())).childGender(req.getChildGender()).childGrade(req.getChildGrade())
                 .childSchool(req.getChildSchool()).city(req.getCity()).liveDistrict(req.getLiveDistrict()).targetDistrict(req.getTargetDistrict());
         int i = this.userService.update(user, detail);
         if (i > 0) {
@@ -69,9 +70,9 @@ public class UserController {
         }*/
     }
 
-    @PostMapping(value = "/applyAuth")
+    @RequestMapping(value = "/applyAuth", method = RequestMethod.POST)
     public @ResponseBody
-    Object applyAuth(@RequestBody ApplyAuthReq req) {
+    Object applyAuth(ApplyAuthReq req) {
         User user = this.userService.queryUserByIdWithDetail(req.getId());
         if (user != null) {
             user.auth(1);
@@ -88,7 +89,8 @@ public class UserController {
         }
     }
 
-    @PostMapping(value = "/applyTeacher")
+//    @PostMapping(value = "/applyTeacher")
+    @RequestMapping(value = "/applyTeacher", method = RequestMethod.POST)
     public @ResponseBody
     Object applyTeacher(@RequestParam("id") String id) {
         id = id.trim();
@@ -96,7 +98,7 @@ public class UserController {
             long userId = Long.valueOf(id);
             return _applyTeacher(userId);
         } else {
-            return EnumUtil.errorToJson(ErrorCode.ILLEGAL_USER_ID);
+            return EnumUtil.errorToJson(ErrorCode.ILLEGAL_REQUEST_PARAM);
         }
     }
 
@@ -106,7 +108,7 @@ public class UserController {
             Teacher teacher = this.teacherService.findTeacherById(userId);
             if (teacher != null) {
                 JSONObject result = new JSONObject();
-                result.put("status", 0);
+                result.put("status", 200);
                 switch (teacher.getStatus()) {
                     case 1://未审核
                         result.put("code", "ALREADY_APPLIED");
@@ -130,7 +132,7 @@ public class UserController {
                         }
                 }
             } else {
-                Teacher teacher1 = new Teacher().id(userId).account("has not set").star(1);
+                Teacher teacher1 = new Teacher().id(userId).account("has not set").star(1).status(1);
                 int i = this.teacherService.add(teacher1);
                 if (i > 0) {
                     return EnumUtil.succToJson(SuccessCode.APPLY_TEACHER_SUCCESSFULLY);
@@ -144,42 +146,48 @@ public class UserController {
     }
 
 
-    @PostMapping(value = "/getDetail")
+//    @PostMapping(value = "/getDetail")
+    @RequestMapping(value = "/getDetail", method = RequestMethod.GET)
     public @ResponseBody
     Object getDetail(@RequestParam("id") String id) {
         id = id.trim();
         if (!StringUtil.isNumber(id)) {
-            return EnumUtil.errorToJson(ErrorCode.ILLEGAL_USER_ID);
+            return EnumUtil.errorToJson(ErrorCode.ILLEGAL_REQUEST_PARAM);
         }
         long userId = Long.valueOf(id);
         User user = this.userService.queryUserByIdWithDetail(userId);
         JSONObject result = new JSONObject();
         JSONObject data = new JSONObject();
         if (user != null) {
-            result.put("status", 0);
-            result.put("message", "获取成功");
-            data.put("id", id);
+            result.put("status", 200);
+            result.put("message", "成功");
+            data.put("id", user.getId());
             data.put("nickname", user.getNickname());
             data.put("childGrade", user.getDetail().getChildGrade());
+            data.put("auth", user.getAuth());
         } else {
             return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
         }
         Camp camp = this.campService.findCampByTeacherId(userId);
-        if (camp != null) {
-            data.put("application", "未申请");
+        if (camp == null) {
+//            data.put("application", "未申请");
+            data.put("application", 0);
         } else {
 //            0 初始, 1 上线, 2 开课, 3 下线
             switch (camp.getStatus()) {
                 case 0:
-                    data.put("application", "已申请，审核中");
+//                    data.put("application", "已申请，审核中");
+                    data.put("application",1);
                     break;
                 case 1:
                 case 2:
-                    data.put("application", "已通过");
+//                    data.put("application", "已通过");
+                    data.put("application",2);
                     break;
                 case 3:
                 default:
-                    data.put("application", "未通过");
+//                    data.put("application", "未通过");
+                    data.put("application",3);
                     break;
             }
         }
@@ -193,7 +201,20 @@ public class UserController {
         }*/
         int count = this.couponService.findCountUsableByUserId(userId);
         data.put("coupon", count);
+        Teacher teacher = this.teacherService.findTeacherById(userId);
+        if (teacher != null) {
+            data.put("teacher", teacher.getStatus());
+        } else {
+            data.put("teacher", 0);
+        }
+        School school = this.schoolService.findSchoolById(user.getDetail().getChildSchool());
+        /*if (school == null) {
+            return EnumUtil.errorToJson(ErrorCode.QUERY_SCHOOL_FAILED);
+        }*/
+        data.put("childSchool", school);
         result.put("data", data);
         return result;
     }
+
+    //todo 后台的各种操作
 }

@@ -10,13 +10,15 @@ public class UserCouponRes {
     private String name, description;
     private BigDecimal amount;
     private Timestamp publish, expiration;
+    private boolean used;
 
-    public UserCouponRes(String name, String description, BigDecimal amount, Timestamp publish, Timestamp expiration) {
+    public UserCouponRes(String name, String description, BigDecimal amount, Timestamp publish, Timestamp expiration, boolean used) {
         this.name = name;
         this.description = description;
         this.amount = amount;
         this.publish = publish;
         this.expiration = expiration;
+        this.used = used;
     }
 
     public String getName() {
@@ -57,5 +59,13 @@ public class UserCouponRes {
 
     public void setExpiration(Timestamp expiration) {
         this.expiration = expiration;
+    }
+
+    public boolean isUsed() {
+        return used;
+    }
+
+    public void setUsed(boolean used) {
+        this.used = used;
     }
 }

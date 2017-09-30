@@ -3,6 +3,13 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.platform.parent.mybatis.dao.CouponMapper">
+    <resultMap id="base" type="com.platform.parent.mybatis.bean.Coupon">
+        <id property="id" column="id"/>
+        <result column="name" property="name"/>
+        <result property="description" column="description"/>
+        <result column="duration" property="duration"/>
+        <result column="amount" property="amount"/>
+    </resultMap>
     <!--* #优惠券模板表
     * # name 优惠券名称
     * # description 优惠券描述
@@ -26,11 +33,11 @@
         </foreach>
     </delete>
     <!--Coupon findCouponById(long id);-->
-    <select id="findCouponById" parameterType="long" resultType="com.platform.parent.mybatis.bean.Coupon">
+    <select id="findCouponById" parameterType="long" resultMap="base">
         SELECT * FROM coupon WHERE id = #{id}
     </select>
     <!--List<Coupon> findAllCoupons();-->
-    <select id="findAllCoupons" resultType="com.platform.parent.mybatis.bean.Coupon">
+    <select id="findAllCoupons" resultMap="base">
         SELECT * FROM coupon
     </select>
 </mapper>

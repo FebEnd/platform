@@ -22,7 +22,11 @@ public class CouponStragetyServiceTest {
     @Test
     public void testAdd() {
         CouponStrategy strategy = new CouponStrategy().baseId(1).channel(1).number(2);
+        CouponStrategy strategy1 = new CouponStrategy().baseId(2).channel(1).number(1);
+        CouponStrategy strategy2 = new CouponStrategy().baseId(3).channel(1).number(2);
         int i = this.strategyService.add(strategy);
+        this.strategyService.add(strategy1);
+        this.strategyService.add(strategy2);
         Assert.assertNotEquals(0,i);
     }
 

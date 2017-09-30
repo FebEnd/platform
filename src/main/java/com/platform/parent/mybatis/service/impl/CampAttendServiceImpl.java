@@ -36,6 +36,11 @@ public class CampAttendServiceImpl implements CampAttendService {
     }
 
     @Override
+    public CampAttend findCampAttendByUserIdAndCampId(long userId, long campId) {
+        return this.mapper.findCampAttendByUserIdAndCampId(userId, campId);
+    }
+
+    @Override
     public List<CampAttend> findCampAttendByUserId(long userId) {
         return this.mapper.findCampAttendByUserId(userId);
     }

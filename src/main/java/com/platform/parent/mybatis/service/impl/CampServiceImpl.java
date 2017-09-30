@@ -4,7 +4,9 @@ import com.platform.parent.mybatis.bean.Camp;
 import com.platform.parent.mybatis.dao.CampMapper;
 import com.platform.parent.mybatis.service.CampService;
 import com.platform.parent.response.camp.CampList;
+import com.platform.parent.response.camp.CampWithGroupId;
 import com.platform.parent.response.camp.CampWithTeacher;
+import com.platform.parent.response.school.CampWithTitle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +46,16 @@ public class CampServiceImpl implements CampService {
     }
 
     @Override
+    public CampWithTeacher findCampByIdWithDetail(long id) {
+        return this.campMapper.findCampByIdWithDetail(id);
+    }
+
+    @Override
+    public List<CampWithGroupId> findCampsActiveByUserId(long userId) {
+        return this.campMapper.findCampsActiveByUserId(userId);
+    }
+
+    @Override
     public List<Camp> findCampsByType(int type) {
         return this.campMapper.findCampsByType(type);
     }
@@ -76,6 +88,11 @@ public class CampServiceImpl implements CampService {
     @Override
     public List<CampList> findCampList(long userId) {
         return this.campMapper.findCampList(userId);
+    }
+
+    @Override
+    public List<CampWithTitle> findCampByTypeWithTitle(int type, String city) {
+        return this.campMapper.findCampByTypeWithTitle(type, city);
     }
 
     @Override

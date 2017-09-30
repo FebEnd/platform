@@ -61,6 +61,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> findUserByCampId(long campId) {
+        return this.userMapper.findUserByCampId(campId);
+    }
+
+    @Override
     public User findUserByPhone(String phone) {
         return this.userMapper.findUserByPhone(phone);
     }

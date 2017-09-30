@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.MemberMapper">
+    <resultMap id="base" type="com.platform.parent.mybatis.bean.Member">
+        <id property="id" column="id"/>
+        <result column="vip" property="vip"/>
+    </resultMap>
+
+    <!--int add(Member member);-->
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.Member">
+        INSERT INTO member (id, vip) VALUES (#{id}, #{vip})
+    </insert>
+    <!--int update(Member member);-->
+    <update id="update" parameterType="com.platform.parent.mybatis.bean.Member">
+        UPDATE member SET vip = #{vip} WHERE id = #{id}
+    </update>
+    <!--int deleteByIds(String[] ids);-->
+    <delete id="deleteByIds" parameterType="java.lang.String">
+        DELETE FROM member WHERE id IN
+        <foreach collection="array" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+    <!--Member findMemberById(long id);-->
+    <select id="findMemberById" parameterType="long" resultMap="base">
+        SELECT * FROM member WHERE id = #{id}
+    </select>
+</mapper>

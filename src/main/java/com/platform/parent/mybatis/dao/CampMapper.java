@@ -2,8 +2,11 @@ package com.platform.parent.mybatis.dao;
 
 import com.platform.parent.mybatis.bean.Camp;
 import com.platform.parent.response.camp.CampList;
+import com.platform.parent.response.camp.CampWithGroupId;
 import com.platform.parent.response.camp.CampWithTeacher;
+import com.platform.parent.response.school.CampWithTitle;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,6 +23,8 @@ public interface CampMapper {
     int deleteByIds(String[] ids);
     Camp queryCampById(long id);
     Camp findCampByTeacherId(long id);
+    CampWithTeacher findCampByIdWithDetail(long id);
+    List<CampWithGroupId> findCampsActiveByUserId(long userId);
     List<Camp> findCampsByType(int type);
     List<Camp> findCampsByStatus(int status);
     List<Camp> findCampsByParams(Map<String, Object> params);
@@ -27,5 +32,6 @@ public interface CampMapper {
     List<Camp> findCampsByTypeWithTag(int type);
     List<CampWithTeacher> findAllCampsWithTeacher();
     List<CampList> findCampList(long userId);
+    List<CampWithTitle> findCampByTypeWithTitle(@Param("type") int type, @Param("city") String city);
     int addFavor(long id);
 }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.OrderMapper">
+    <resultMap id="base" type="com.platform.parent.mybatis.bean.Order">
+        <id property="id" column="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="amount" property="amount"/>
+        <result column="type" property="type"/>
+        <result column="create" property="create"/>
+        <result column="payed" property="payed"/>
+        <result column="coupons" property="coupons"/>
+        <result column="duration" property="duration"/>
+        <result column="confirm" property="confirm"/>
+    </resultMap>
+
+    <resultMap id="tiny" type="com.platform.parent.mybatis.bean.Order">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="type" column="type"/>
+    </resultMap>
+
+    <!--int add(Order order);-->
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.Order" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `order` (user_id, amount, type, create, payed, coupons, duration, confirm)
+        VALUES (#{userId}, #{amount}, #{type}, #{create}, #{payed}, #{coupons}, #{duration}, #{confirm})
+    </insert>
+    <!--int update(Order order);-->
+    <update id="update" parameterType="com.platform.parent.mybatis.bean.Order">
+        UPDATE `order` SET payed = #{payed}, coupons = #{coupons}, confirm = #{confirm} WHERE id = #{id}
+    </update>
+    <!--int deleteByIds(String[] ids);-->
+    <delete id="deleteByIds" parameterType="java.lang.String">
+        DELETE FROM `order` WHERE id IN
+        <foreach collection="array" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+    <!--Order findOrderById(long id);-->
+    <select id="findOrderById" parameterType="long" resultMap="base">
+        SELECT * FROM `order` WHERE id = #{id}
+    </select>
+    <!--List<Order> findOrderByTime(Timestamp start, Timestamp end);-->
+    <select id="findOrderByTime" resultMap="base">
+        SELECT * FROM `order` WHERE payed >= #{start} AND #{end} >= payed
+    </select>
+    <!--List<Order> findOrderByType(long type);-->
+    <select id="findOrderByType" parameterType="long" resultMap="base">
+        SELECT * FROM `order` WHERE `type` = #{type}
+    </select>
+    <!--List<Order> findCompleteOrderForCamp(long campId);-->
+    <select id="findCompleteOrderForCamp" parameterType="long" resultMap="tiny">
+        SELECT o.id, o.user_id, o.type FROM `order` o WHERE o.type != -1 AND o.payed != NULL ORDER BY o.payed DESC LIMIT 20
+    </select>
+</mapper>

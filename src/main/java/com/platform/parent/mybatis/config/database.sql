@@ -28,8 +28,7 @@ CREATE TABLE user_detail(
 DROP TABLE IF EXISTS member;
 CREATE TABLE member(
     id BIGINT(20) NOT NULL, #与用户id相匹配
-    vip INT(11) DEFAULT 0, #剩余vip时间，为0则表示非vip
-    reference_id BIGINT(20),#推荐人id，null表示无
+    vip TIMESTAMP DEFAULT NOW(), #vip过期时间
 
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -38,7 +37,7 @@ DROP TABLE IF EXISTS teacher;
 CREATE TABLE teacher(
     id BIGINT(20) NOT NULL, #与用户id相匹配
     star INT(11) NOT NULL DEFAULT 1, #星级
-    account TEXT NOT NULL DEFAULT 'has not set',
+    account TEXT,
     description TEXT,
     status INT(11) NOT NULL DEFAULT 0,
 
@@ -58,8 +57,9 @@ CREATE TABLE camp (
     price0 DECIMAL(10,2),
     price1 DECIMAL(10,2),
     price2 DECIMAL(10,2),
-    title TEXT,
+    name TEXT,
     subtitle TEXT,
+    group_id TEXT,
 
     PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -89,11 +89,15 @@ CREATE TABLE camp_collection(
 DROP TABLE IF EXISTS topic;
 CREATE TABLE topic(
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
-    originator_id BIGINT(20) NOT NULL,/* 发起者 id*/
-    title VARCHAR(100) NOT NULL,
-    type INT(11) NOT NULL, /* 0 公开群聊话题, 1 临时1v1, 2 持久1v1*/
-    sticky BOOLEAN DEFAULT FALSE, /* 是否精华 */
+    owner_id BIGINT(20) NOT NULL,/* 发起者 id*/
+    name VARCHAR(100) NOT NULL,
+    pri BOOLEAN DEFAULT FALSE , /* 0 公开群聊话题, 1 临时1v1, 2 持久1v1*/
+    essence BOOLEAN DEFAULT FALSE, /* 是否精华 */
+    top BOOLEAN DEFAULT FALSE ,
+    group_id VARCHAR(20) NOT NULL ,
     camp_id BIGINT(20) DEFAULT NULL, /* 话题归属， NULL 表示不属于群聊 */
+    created TIMESTAMP NOT NULL DEFAULT now(),
+    updated TIMESTAMP NOT NULL DEFAULT now(),
 
     PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -128,13 +132,17 @@ CREATE TABLE topic_collection(
     PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS balance;
-CREATE TABLE balance(
+DROP TABLE IF EXISTS order;
+CREATE TABLE order(
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     user_id BIGINT(20) NOT NULL,
     amount DECIMAL(10,2) NOT NULL,
     type BIGINT(20) NOT NULL, /* -1 表示购买vip, 其余与训练营id配对表示为加入训练营付费 */
-    time TIMESTAMP NOT NULL,
+    create TIMESTAMP NOT NULL, #订单创建时间
+    payed TIMESTAMP, #订单支付时间
+    confirm TINYINT(1) NOT NULL DEFAULT TRUE ,#订单确认，默认确认，如果为false表示已取消
+    duration INT(11) NOT NULL ,
+    coupons TEXT,#订单中使用的优惠券id（将被锁定）
 
     PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -207,13 +215,10 @@ CREATE TABLE location(
 DROP TABLE IF EXISTS coupon;
 CREATE TABLE coupon(
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
-    user_id BIGINT(20) NOT NULL ,
-    channel BIGINT(20) NOT NULL ,#渠道id，与用户id相匹配，再设定渠道的具体id
     name VARCHAR(50) NOT NULL ,
     description TEXT ,
     amount DECIMAL(10,2) NOT NULL ,
-    expiration TIMESTAMP NOT NULL ,
-    publish TIMESTAMP NOT NULL ,
+    duration INT(11) NOT NULL DEFAULT 30,
 
     PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET =utf8;
@@ -224,6 +229,7 @@ CREATE TABLE coupon(
 # channel 来自于什么渠道（或者由于邀请了哪个用户）
 # publish 优惠券发放日期
 # expiration 优惠券过期日期
+# used 表示该优惠券是否已经使用
 DROP TABLE IF EXISTS user_coupon;
 CREATE TABLE user_coupon(
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
@@ -231,6 +237,7 @@ CREATE TABLE user_coupon(
     coupon_id INT(11) NOT NULL ,
     publish TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     expiration TIMESTAMP NOT NULL ,
+    used TINYINT(1) NOT NULL DEFAULT FALSE ,
 
     PRIMARY KEY (id)
 )ENGINE = InnoDB DEFAULT CHARSET =utf8;
@@ -271,6 +278,18 @@ CREATE TABLE school_alias(
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     alias TEXT NOT NULL ,
     school_id BIGINT(20) NOT NULL ,
+
+    PRIMARY KEY (id)
+)ENGINE =InnoDB DEFAULT CHARSET =utf8;
+
+#群组信息表
+DROP TABLE IF EXISTS chat_group;
+CREATE TABLE chat_group(
+    id VARCHAR(20) NOT NULL ,
+    name TEXT NOT NULL,
+    description TEXT NOT NULL,
+    owner VARCHAR(20) NOT NULL ,
+    member TEXT NOT NULL ,
 
     PRIMARY KEY (id)
 )ENGINE =InnoDB DEFAULT CHARSET =utf8;

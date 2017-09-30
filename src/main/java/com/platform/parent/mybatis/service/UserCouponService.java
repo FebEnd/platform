@@ -17,4 +17,5 @@ public interface UserCouponService {
     List<UserCoupon> findUserCouponByCouponIdAndUserId(long userId, int couponId);
     //    int findCountByUserId(long userId);
     int findCountUsableByUserId(long userId);
+    int setUserCouponUsedByIds(String[] ids);
 }

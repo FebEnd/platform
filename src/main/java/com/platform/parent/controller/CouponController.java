@@ -8,6 +8,7 @@ import com.platform.parent.mybatis.service.UserCouponService;
 import com.platform.parent.response.coupon.UserCouponRes;
 import com.platform.parent.util.EnumUtil;
 import com.platform.parent.util.ErrorCode;
+import com.platform.parent.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,18 +33,23 @@ public class CouponController {
     @GetMapping(value = "/listCoupons")
     public @ResponseBody Object listCoupons(@RequestParam("id") String id) {
 //        User user = this.userService.queryUserById(Long.valueOf(id));
-        List<UserCoupon> userCoupons = this.userCouponService.findUserCouponByUserId(Long.valueOf(id));
+        if (!StringUtil.isNumber(id)) {
+            return EnumUtil.errorToJson(ErrorCode.ILLEGAL_REQUEST_PARAM);
+        }
+        long userId = Long.valueOf(id);
+        List<UserCoupon> userCoupons = this.userCouponService.findUserCouponByUserId(userId);
         List<UserCouponRes> coupons = new ArrayList<>();
         if (userCoupons != null && userCoupons.size() > 0) {
             for (UserCoupon userCoupon : userCoupons) {
                 UserCouponRes res;
                 Coupon coupon = this.couponService.findCouponById(userCoupon.getCouponId());
+                System.out.println(userCoupon.getCouponId());
                 if (coupon != null) {
-                    res = new UserCouponRes(coupon.getName(),coupon.getDescription(),coupon.getAmount(),userCoupon.getPublish(),userCoupon.getExpiration());
+                    res = new UserCouponRes(coupon.getName(),coupon.getDescription(),coupon.getAmount(),userCoupon.getPublish(),userCoupon.getExpiration(),userCoupon.isUsed());
                     coupons.add(res);
-                } else {
-                    return EnumUtil.errorToJson(ErrorCode.NO_SUCH_COUPON);
-                }
+                } /*else {
+//                    return EnumUtil.errorToJson(ErrorCode.NO_SUCH_COUPON);
+                }*/
             }
         } else {
             return EnumUtil.errorToJson(ErrorCode.QUERY_COUPON_ERROR);
@@ -59,7 +65,7 @@ public class CouponController {
         JSONObject data = new JSONObject();
         data.put("coupons", coupons);
         result.put("data", data);
-        result.put("status", "0");
+        result.put("status", 200);
         result.put("message", "成功");
         return result;
     }

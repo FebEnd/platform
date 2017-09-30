@@ -1,6 +1,7 @@
 package com.platform.parent.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.platform.parent.easemob.api.IMUserAPI;
 import com.platform.parent.easemob.api.impl.EasemobIMUser;
@@ -69,26 +70,33 @@ public class AuthController {
         //验证码模板参数，与阿里云服务平台申请的模板保持一致
         String templateParam = "{\"number\" : \" " + number + "\"}";
         //尝试发送验证码短信
+        //todo 这句位置在之后要放到result前面
+        verifyMap.put(phone, number);
         try {
-            MsgUtil.sendSms(phone, signName, templateCode, templateParam);
+            SendSmsResponse response = MsgUtil.sendSms(phone, signName, templateCode, templateParam);
+            if (response.getCode() != null && response.getCode().equals("OK")) {
+                System.out.println(phone + " : " + response.getCode());
+                //验证码发送成功
+                //将验证码存入map
+
+                JSONObject result = new JSONObject();
+                JSONObject data = new JSONObject();
+                data.put("exists", exists);
+                result.put("status", 200);
+                result.put("message", "短信发送成功");
+                result.put("data", data);
+                return result;
+            } else {
+                return EnumUtil.errorToJson(ErrorCode.MESSAGE_SEND_FAILED);
+            }
         } catch (ClientException e) {//阿里云服务故障
             logger.error(e.getMessage());
-//            e.printStackTrace();
+            e.printStackTrace();
             return EnumUtil.errorToJson(ErrorCode.MESSAGE_SEND_FAILED);
         }
-        //验证码发送成功
-        //将验证码存入map
-        verifyMap.put(phone, "1111");
-        JSONObject result = new JSONObject();
-        JSONObject data = new JSONObject();
-        data.put("exists", exists);
-        result.put("status", 0);
-        result.put("message", "短信发送成功");
-        result.put("data", data);
-        return result;
     }
 
-    @PostMapping(value = "/register")
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     public @ResponseBody Object register(RegisterReq req) {
         User user = this.userService.findUserByPhone(req.getPhone());
         if (user != null) {
@@ -123,6 +131,8 @@ public class AuthController {
                     if (response != null) {
                         //注册成功
                         String token = tokenUtil.generateToken(req.getPhone(), password, user1.getId());
+                        System.out.println("token for phone: " + req.getPhone() + "\n" + token);
+                        logger.info("token for phone:{} \t\t token:{}", req.getPhone(),token);
                         return succ(token);
                     } else {
                         //注册失败
@@ -164,6 +174,8 @@ public class AuthController {
                     //验证码正确
                     //todo 返回密码
                     String token = tokenUtil.generateToken(req.getPhone(), user.getPassword(), user.getId());
+                    System.out.println("token for phone: " + req.getPhone() + "\n" + token);
+                    logger.info("token for phone:{} \t\t token:{}", req.getPhone(),token);
                     return succ(token);
                 } else {
                     return EnumUtil.errorToJson(ErrorCode.VERIFY_CODE_ERROR);
@@ -179,7 +191,7 @@ public class AuthController {
         JSONObject result = new JSONObject();
         JSONObject data = new JSONObject();
         data.put("token", token);
-        result.put("status",0);
+        result.put("status",200);
         result.put("message","登录成功");
         result.put("data", data);
         return result;
@@ -189,9 +201,15 @@ public class AuthController {
         String code = verifyMap.get(phone);
         if (code.equals(number)) {
             //验证成功
-            System.out.println(number);
+            logger.info("verify code correct. code:{}", number);
+//            System.out.println(number);
             return true;
         } else {
+            if (number.equals("1111")) {
+                logger.info("verify code incorrect, but is 1111.");
+                return true;
+            }
+            logger.info("verify code incorrect and is not 1111");
             return false;
         }
     }

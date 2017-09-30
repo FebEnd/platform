@@ -13,6 +13,7 @@
             <result property="province" column="province"/>
             <result property="city" column="city"/>
             <result property="district" column="district"/>
+            <result property="six" column="six"/>
         </association>
     </resultMap>
 
@@ -21,7 +22,26 @@
         <result property="locationId" column="location_id"/>
         <result property="fullName" column="full_name"/>
         <result property="heat" column="heat"/>
-        <collection property="alias" javaType="com.platform.parent.mybatis.bean.SchoolAlias">
+        <collection property="alias" ofType="com.platform.parent.mybatis.bean.SchoolAlias">
+            <id property="id" column="id"/>
+            <result property="alias" column="alias"/>
+            <result property="schoolId" column="school_id"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="schoolWithDetail" type="com.platform.parent.mybatis.bean.School">
+        <id property="id" column="id"/>
+        <result property="locationId" column="location_id"/>
+        <result property="fullName" column="full_name"/>
+        <result property="heat" column="heat"/>
+        <association property="location" javaType="com.platform.parent.mybatis.bean.Location">
+            <id property="id" column="id"/>
+            <result property="province" column="province"/>
+            <result property="city" column="city"/>
+            <result property="district" column="district"/>
+            <result property="six" column="six"/>
+        </association>
+        <collection property="alias" ofType="com.platform.parent.mybatis.bean.SchoolAlias">
             <id property="id" column="id"/>
             <result property="alias" column="alias"/>
             <result property="schoolId" column="school_id"/>
@@ -55,8 +75,10 @@
         </foreach>
     </delete>
 
-    <select id="findSchoolById" parameterType="long" resultType="com.platform.parent.mybatis.bean.School">
-        SELECT * FROM school WHERE id = #{id}
+    <select id="findSchoolById" parameterType="long" resultMap="schoolWithDetail">
+        SELECT s.*, sa.*, l.* FROM school s LEFT JOIN school_alias sa ON s.id = sa.school_id
+        LEFT JOIN location l ON l.id = s.location_id
+        WHERE s.id = #{id}
     </select>
     
     <select id="findSchoolByFullName" parameterType="java.lang.String" resultType="com.platform.parent.mybatis.bean.School">
@@ -72,7 +94,7 @@
         LEFT JOIN school_alias sa ON s.id = sa.school_id
         WHERE s.full_name LIKE concat(concat('%',#{fuzzy}),'%')
               OR sa.alias LIKE concat(concat('%',#{fuzzy}),'%')
-        GROUP BY school.id
+        GROUP BY s.id
     </select>
 
     <select id="findAllSchool" resultMap="schoolWithLocation">

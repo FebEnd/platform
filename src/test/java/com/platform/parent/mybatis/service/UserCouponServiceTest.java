@@ -21,8 +21,11 @@ public class UserCouponServiceTest {
 
     @Test
     public void testAdd() {
-        int i = this.userCouponService.add(1l,-1l);
-        Assert.assertNotEquals(0,i);
+//        int i = this.userCouponService.add(1l,-1l);
+        for (int i = 1; i<9;i++) {
+            this.userCouponService.add(i,-1l);
+        }
+//        Assert.assertNotEquals(0,i);
     }
 
     @Test

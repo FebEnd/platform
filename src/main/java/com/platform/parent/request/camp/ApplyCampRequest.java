@@ -8,6 +8,19 @@ import java.math.BigDecimal;
 public class ApplyCampRequest {
     private long userId;//申请人id
     private BigDecimal price0, price1, price2;
+    private String description;
+
+    public ApplyCampRequest() {
+
+    }
+
+    public ApplyCampRequest(long userId, BigDecimal price0, BigDecimal price1, BigDecimal price2, String description) {
+        this.userId = userId;
+        this.price0 = price0;
+        this.price1 = price1;
+        this.price2 = price2;
+        this.description = description;
+    }
 
     public ApplyCampRequest(long userId, BigDecimal price0, BigDecimal price1, BigDecimal price2) {
         this.userId = userId;
@@ -46,5 +59,13 @@ public class ApplyCampRequest {
 
     public void setPrice2(BigDecimal price2) {
         this.price2 = price2;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

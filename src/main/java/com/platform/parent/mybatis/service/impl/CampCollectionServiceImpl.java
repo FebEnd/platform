@@ -47,7 +47,7 @@ public class CampCollectionServiceImpl implements CampCollectionService {
 
     @Override
     public long queryCountByUserId(long userId) {
-        return queryCountByUserId(userId);
+        return this.mapper.queryCountByUserId(userId);
     }
 
     @Override

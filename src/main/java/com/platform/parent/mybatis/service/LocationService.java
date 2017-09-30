@@ -1,6 +1,7 @@
 package com.platform.parent.mybatis.service;
 
 import com.platform.parent.mybatis.bean.Location;
+import com.platform.parent.response.location.CityWithDistrict;
 
 import java.util.List;
 import java.util.Map;
@@ -14,5 +15,6 @@ public interface LocationService {
     int deleteByIds(String[] ids);
     Location findLocationById(long id);
     List<Location> findLocationByParams(Map<String, String> params);
+    List<CityWithDistrict> findCitiesWithDistrict(Map<String, String[]> params);
 
 }

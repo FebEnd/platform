@@ -20,10 +20,14 @@ public class Camp {
     private int type, favor, maxLimit, minLimit, status;
     private BigDecimal price0, price1, price2;
     private String description, comment;
-    private String title, subtitle;
+    private String title, subtitle, groupId;
 
     private List<Tag> tags;
 
+    public Camp groupId(String groupId) {
+        this.groupId = groupId;
+        return this;
+    }
     public Camp id(long id) {
         this.id = id;
         return this;
@@ -223,4 +227,13 @@ public class Camp {
     public void setSubtitle(String subtitle) {
         this.subtitle = subtitle;
     }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
 }
+

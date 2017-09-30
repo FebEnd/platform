@@ -12,6 +12,7 @@ public interface CampAttendService {
     int update(CampAttend attend);
     int deleteByIds(String[] ids);
     CampAttend findCampAttendById(long id);
+    CampAttend findCampAttendByUserIdAndCampId(long userId, long campId);
     List<CampAttend> findCampAttendByUserId(long userId);
     List<CampAttend> findCampAttendByCampId(long campId);
     long countCampAttendByUserId(long userId);

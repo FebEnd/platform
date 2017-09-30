@@ -125,4 +125,18 @@ public class UserCouponServiceImpl implements UserCouponService {
     public int findCountUsableByUserId(long userId) {
         return this.userCouponMapper.findCountUsableByUserId(userId);
     }
+
+    @Override
+    public int setUserCouponUsedByIds(String[] ids) {
+        List<UserCoupon> userCoupons = this.userCouponMapper.findUserCouponByIds(ids);
+        if (userCoupons == null || userCoupons.size() < ids.length) {
+            return 0;
+        }
+        for (UserCoupon userCoupon : userCoupons) {
+            if (userCoupon.isUsed()) {
+                return 0;
+            }
+        }
+        return this.userCouponMapper.setUserCouponUsedByIds(ids);
+    }
 }

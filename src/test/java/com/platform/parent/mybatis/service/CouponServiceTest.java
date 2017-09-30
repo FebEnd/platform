@@ -22,8 +22,10 @@ public class CouponServiceTest {
 
     @Test
     public void testAdd() {
-        Coupon coupon = new Coupon().name("新用户专属").description("新注册用户的专属优惠券").amount(new BigDecimal(100.00)).duration(30);
+        Coupon coupon = new Coupon().name("新用户专属").description("新注册用户的专属优惠券").amount(new BigDecimal(100.00)).duration(40);
+        Coupon coupon1 = new Coupon().name("国庆优惠券").description("国庆节庆贺奖励优惠券").amount(new BigDecimal(50.00)).duration(30);
         int i = this.couponService.add(coupon);
+        this.couponService.add(coupon1);
         Assert.assertNotEquals(0,i);
     }
 

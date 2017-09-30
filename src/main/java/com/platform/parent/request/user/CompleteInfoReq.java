@@ -15,14 +15,14 @@ package com.platform.parent.request.user;
 public class CompleteInfoReq {
     private long id;
     private String phone, nickname, city, liveDistrict, targetDistrict,childBirth,childGender;
-    private int childGrade;
+    private String childGrade;
     private long childSchool;
 
-    public int getChildGrade() {
+    public String getChildGrade() {
         return childGrade;
     }
 
-    public void setChildGrade(int childGrade) {
+    public void setChildGrade(String childGrade) {
         this.childGrade = childGrade;
     }
 

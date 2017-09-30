@@ -45,5 +45,8 @@
     <select id="countCampAttendByCampId" parameterType="long" resultType="long">
         SELECT count(1) FROM camp_attend WHERE camp_id = #{campId}
     </select>
-
+    <!--CampAttend findCampAttendByUserIdAndCampId-->
+    <select id="findCampAttendByUserIdAndCampId" resultType="com.platform.parent.mybatis.bean.CampAttend">
+        SELECT * FROM camp_attend WHERE user_id = #{userId} AND camp_id = #{campId}
+    </select>
 </mapper>

@@ -38,16 +38,16 @@ public class TagServiceImpl implements TagService{
 
     @Override
     public List<Tag> findTagsByUserId(long id) {
-        return this.findTagsByUserId(id);
+        return this.mapper.findTagsByUserId(id);
     }
 
     @Override
     public List<Tag> findTagsByCampId(long id) {
-        return this.findTagsByCampId(id);
+        return this.mapper.findTagsByCampId(id);
     }
 
     @Override
     public Tag findTagByContent(String content) {
-        return this.findTagByContent(content);
+        return this.mapper.findTagByContent(content);
     }
 }

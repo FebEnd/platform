@@ -10,9 +10,15 @@ package com.platform.parent.mybatis.bean;
 public class Location {
     private long id;
     private String province, city, district;
+    private boolean six;
 
     public Location id(long id){
         this.id =id;
+        return this;
+    }
+
+    public Location six(boolean six) {
+        this.six = six;
         return this;
     }
     public Location province(String province) {
@@ -58,5 +64,13 @@ public class Location {
 
     public void setDistrict(String district) {
         this.district = district;
+    }
+
+    public boolean isSix() {
+        return six;
+    }
+
+    public void setSix(boolean six) {
+        this.six = six;
     }
 }

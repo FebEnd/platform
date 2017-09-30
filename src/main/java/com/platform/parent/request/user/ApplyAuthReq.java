@@ -5,7 +5,7 @@ package com.platform.parent.request.user;
  */
 public class ApplyAuthReq {
     private long id;
-    private int childGrade;
+    private String childGrade;
     private long childSchool;
     private String childGender;
 
@@ -13,7 +13,7 @@ public class ApplyAuthReq {
         this.id = id;
         return this;
     }
-    public ApplyAuthReq childGrade(int childGrade) {
+    public ApplyAuthReq childGrade(String childGrade) {
         this.childGrade = childGrade;
         return this;
     }
@@ -34,11 +34,11 @@ public class ApplyAuthReq {
         this.id = id;
     }
 
-    public int getChildGrade() {
+    public String getChildGrade() {
         return childGrade;
     }
 
-    public void setChildGrade(int childGrade) {
+    public void setChildGrade(String childGrade) {
         this.childGrade = childGrade;
     }
 

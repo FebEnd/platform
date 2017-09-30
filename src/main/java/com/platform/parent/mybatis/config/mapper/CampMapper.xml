@@ -13,10 +13,22 @@
         <result column="price2" property="price2" />
         <result column="title" property="title"/>
         <result column="subtitle" property="subtitle"/>
+        <result column="group_id" property="groupId"/>
         <collection property="tags" ofType="com.platform.parent.mybatis.bean.Tag">
             <!--<result column="id" property="id"/>-->
             <result column="name" property="name"/>
         </collection>
+    </resultMap>
+
+    <resultMap id="campWithTitle" type="com.platform.parent.response.school.CampWithTitle">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="subtitle" property="subtitle"/>
+    </resultMap>
+
+    <resultMap id="campWithGroupId" type="com.platform.parent.response.camp.CampWithGroupId">
+        <id property="campId" column="id"/>
+        <result property="groupId" column="groupId"/>
     </resultMap>
 
     <resultMap id="campWithTeacher" type="com.platform.parent.response.camp.CampWithTeacher">
@@ -31,6 +43,7 @@
         <result column="price2" property="price2" />
         <result column="title" property="title"/>
         <result column="subtitle" property="subtitle"/>
+        <result column="group_id" property="groupId"/>
         <association property="teacher" javaType="com.platform.parent.mybatis.bean.Teacher">
             <id column="id" property="id"/>
             <result column="star" property="star"/>
@@ -60,7 +73,7 @@
     </resultMap>
 
     <sql id="baseColumn" >
-        id, type, favor,description, comment, max_limit, min_limit, status, price0, price1, price2
+        id, type, favor,description, comment, max_limit, min_limit, status, price0, price1, price2, title, subtitle
     </sql>
 
     <!--this.type = type;
@@ -88,6 +101,19 @@
             #{idItem}
         </foreach>
     </delete>
+    <!--List<Camp> findCampsActiveByUserId(long userId);-->
+    <select id="findCampsActiveByUserId" parameterType="long" resultMap="campWithGroupId">
+        SELECT c.id, c.group_id FROM camp c LEFT JOIN camp_attend ca ON ca.camp_id = c.id
+        LEFT JOIN user u ON u.id = ca.user_id
+        WHERE c.status = 2 AND u.id = #{userId}
+    </select>
+    <select id="findCampByTypeWithTitle" resultMap="campWithTitle">
+        SELECT c.id, c.title, c.subtitle FROM camp c
+        LEFT JOIN camp_attend ca ON ca.camp_id = c.id
+        LEFT JOIN teacher t ON ca.user_id = t.id
+        LEFT JOIN user_detail ud ON ud.id = t.id
+        WHERE ud.city = #{city} AND c.type = #{type} AND (c.status = 1 OR c.status = 2)
+    </select>
 
     <select id="findCampList" parameterType="long" resultMap="campList">
         SELECT c.id, c.title, c.subtitle, c.comment, c.price0, t.*, tag.* FROM camp c
@@ -101,7 +127,7 @@
 
     <select id="findCampByIdWithDetail" parameterType="long" resultMap="campWithTeacher">
         SELECT c.*, t.* FROM camp c
-        LEFT JOIN camp_attend ca ON c.id = ca.camp_id AND ca.role = 2
+        LEFT JOIN camp_attend ca ON c.id = ca.camp_id
         LEFT JOIN teacher t ON ca.user_id = t.id
         WHERE c.id = #{id}
     </select>
@@ -162,7 +188,11 @@
     </delete>-->
 
     <select id="findCampByTeacherId" parameterType="long" resultType="com.platform.parent.mybatis.bean.Camp">
-        SELECT c.* FROM camp c, teacher t, camp_attend ca WHERE c.id = ca.camp_id AND t.id = ca.user_id GROUP BY c.id
+        SELECT c.* FROM camp c
+            LEFT JOIN  camp_attend ca ON c.id = ca.camp_id
+            LEFT JOIN teacher t ON t.id = ca.user_id
+            WHERE t.id = #{id}
+        GROUP BY c.id
     </select>
 
     <update id="addFavor" parameterType="long">

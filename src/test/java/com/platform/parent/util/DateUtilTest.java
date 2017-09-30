@@ -12,14 +12,15 @@ public class DateUtilTest {
 
     @Test
     public void testStringToSqlDate() throws ParseException {
-//        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-        String s = "20170815";
+//        SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
+        String s = "201708";
         java.sql.Date date = DateUtil.stringToSqlDate(s);
 //        java.sql.Date date = new java.sql.Date(format.parse("20170815").getTime());
 //        java.util.Date date1 = format.parse("20170815");
 //        System.out.println(date1);
 //        System.out.println(format.parse("20170815"));
         System.out.println(date);
-        Assert.assertEquals("2017-08-15", date.toString());
+//        System.out.println(format.parse(s));
+        Assert.assertEquals("2017-08-01", date.toString());
     }
 }

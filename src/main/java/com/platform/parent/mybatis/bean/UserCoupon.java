@@ -15,9 +15,14 @@ public class UserCoupon {
     private long id, userId;
     private int couponId;
     private Timestamp publish, expiration;
+    private boolean used;
 
     public UserCoupon id(long id) {
         this.id = id;
+        return this;
+    }
+    public UserCoupon used(boolean used) {
+        this.used = used;
         return this;
     }
     public UserCoupon userId(long userId) {
@@ -87,5 +92,13 @@ public class UserCoupon {
 
     public void setExpiration(Timestamp expiration) {
         this.expiration = expiration;
+    }
+
+    public boolean isUsed() {
+        return used;
+    }
+
+    public void setUsed(boolean used) {
+        this.used = used;
     }
 }

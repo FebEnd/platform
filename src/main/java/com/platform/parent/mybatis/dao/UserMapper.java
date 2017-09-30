@@ -18,6 +18,7 @@ public interface UserMapper {
     int deleteByIds(String[] ids);
     User queryUserById(long id);
     User queryUserByIdWithDetail(long id);
+    List<User> findUserByCampId(long campId);
     User findUserByPhone(String phone);
     User findUserByPhoneWithRole(String phone);
     List<User> queryUserList(Map<String, Object> params);

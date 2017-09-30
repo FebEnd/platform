@@ -1,7 +1,6 @@
 package com.platform.parent.mybatis.service;
 
 import com.platform.parent.mybatis.bean.Camp;
-import com.platform.parent.mybatis.bean.Tag;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +34,8 @@ public class CampServiceTest {
     @Test
     public void testAdd() {
         Camp camp = new Camp().type(0).favor(5).maxLimit(0).minLimit(0).price0(new BigDecimal(100.00))
-                .price1(new BigDecimal(150.00)).price2(new BigDecimal(200.00)).status(0);
+                .price1(new BigDecimal(150.00)).price2(new BigDecimal(200.00)).status(0).comment("倡导高效快乐的学习方法，注重自主学习习惯的培养，侠客岛成员。")
+                .description("倡导高效快乐的学习方法，注重自主学习习惯的培养，侠客岛成员。").groupId("11111222222333333").title("导师 Alex V").subtitle("世外小学二年级家长");
 //        Camp camp = new Camp(0, 5, 0, 0, 0, new BigDecimal(100.00), new BigDecimal(150.00), new BigDecimal(200.00));
         int i = service.add(camp);
         Assert.assertNotEquals(0, i);
@@ -43,7 +43,8 @@ public class CampServiceTest {
 
     @Test
     public void testUpdate() {
-        Camp camp = new Camp().type(1).favor(5).maxLimit(100).minLimit(0).price0(new BigDecimal(100.00))
+        Camp camp = this.service.queryCampById(3);
+        camp.type(1).favor(5).maxLimit(100).minLimit(0).price0(new BigDecimal(100.00))
                 .price1(new BigDecimal(150.00)).price2(new BigDecimal(200.00));
 //        Camp camp = new Camp(1, 0, 5, 100, 0, 0, new BigDecimal(100.00), new BigDecimal(150.00), new BigDecimal(200.00));
         int i = service.update(camp);
@@ -52,7 +53,7 @@ public class CampServiceTest {
 
     @Test
     public void testDelete() {
-        String[] ids = {"1", "2"};
+        String[] ids = {"5"};
         int i = service.deleteByIds(ids);
         Assert.assertNotEquals(0, i);
     }
@@ -69,7 +70,7 @@ public class CampServiceTest {
 
     @Test
     public void testQueryCampById() {
-        Camp camp = service.queryCampById(4);
+        Camp camp = service.queryCampById(3);
         System.out.println(camp.getFavor());
         Assert.assertEquals(5,camp.getFavor());
     }
@@ -78,7 +79,7 @@ public class CampServiceTest {
     public void tsetFindCampsByType() {
         int type = 0;
         List<Camp> list = service.findCampsByType(type);
-        Assert.assertEquals(2,list.size());
+        Assert.assertEquals(1,list.size());
     }
 
     @Test
@@ -93,28 +94,28 @@ public class CampServiceTest {
         Map<String, Object> params = new HashMap<>();
         params.put("type", 0);
 //        params.put("status", 1);
-        params.put("maxLimit", 500);
+        params.put("maxLimit", 0);
         List<Camp> list = service.findCampsByParams(params);
         Assert.assertEquals(1, list.size());
     }
 
     @Test
     public void testFindCampsByStatusWithTag() {
-        List<Camp> list = service.findCampsByStatusWithTag(1);
-        Assert.assertEquals(1,list.size());
-        for (Tag tag : list.get(0).getTags()) {
+        List<Camp> list = service.findCampsByStatusWithTag(0);
+        Assert.assertEquals(2,list.size());
+        /*for (Tag tag : list.get(0).getTags()) {
             System.out.println(tag.getName());
         }
-        System.out.println(list.get(0).getTags().size());
+        System.out.println(list.get(0).getTags().size());*/
     }
 
     @Test
     public void testFindCampsByTypeWithTag() {
-        List<Camp> list = service.findCampsByTypeWithTag(0);
-        Assert.assertEquals(2,list.size());
-        for (Tag tag : list.get(1).getTags()) {
+        List<Camp> list = service.findCampsByTypeWithTag(1);
+        Assert.assertEquals(1,list.size());
+        /*for (Tag tag : list.get(0).getTags()) {
             System.out.println(tag.getName());
         }
-        System.out.println(list.get(0).getTags().size());
+        System.out.println(list.get(0).getTags().size());*/
     }
 }

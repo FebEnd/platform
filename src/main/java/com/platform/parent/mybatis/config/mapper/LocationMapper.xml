@@ -3,6 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.platform.parent.mybatis.dao.LocationMapper">
+    <resultMap id="cityWithDistrict" type="com.platform.parent.response.location.CityWithDistrict">
+        <id column="id" property="id"/>
+        <result column="city" property="city"/>
+        <result column="district" property="district"/>
+        <result column="six" property="six"/>
+    </resultMap>
     <!--private long id;-->
     <!--private String province, city, district;-->
     <!--int add(Location location);-->
@@ -11,12 +17,12 @@
     <!--Location findLocationById(long id);-->
     <!--Location findLocationByParams(Map<String, String> params);-->
     <insert id="add" parameterType="com.platform.parent.mybatis.bean.Location" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO location (province, city, district)
-        VALUES (#{province}, #{city}, #{district})
+        INSERT INTO location (province, city, district, six)
+        VALUES (#{province}, #{city}, #{district}, #{six})
     </insert>
 
     <update id="update" parameterType="com.platform.parent.mybatis.bean.Location">
-        UPDATE location SET province = #{province}, city = #{city}, district = #{district}
+        UPDATE location SET province = #{province}, city = #{city}, district = #{district}, six = #{six}
         WHERE id = #{id}
     </update>
 
@@ -27,6 +33,24 @@
         </foreach>
     </delete>
 
+    <select id="findCitiesWithDistrict" parameterType="java.util.HashMap" resultMap="cityWithDistrict">
+        SELECT id, city, district,six FROM location
+        <where>
+            <if test="province != null">
+                province IN
+                <foreach collection="province" item="provinceItem" open="(" separator="," close=")">
+                    #{provinceItem}
+                </foreach>
+            </if>
+            <if test="city != null">
+                OR city IN
+                <foreach collection="city" item="cityItem" open="(" separator="," close=")">
+                    #{cityItem}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
     <select id="findLocationById" parameterType="long" resultType="com.platform.parent.mybatis.bean.Location">
         SELECT * FROM location WHERE id = #{id}
     </select>
@@ -35,13 +59,13 @@
         SELECT * FROM location
         <where>
             <if test="province != null">
-                province = #{province}
+                province LIKE concat(concat('%',#{province},'%'))
             </if>
             <if test="city != null">
-                AND city = #{city}
+                AND city LIKE concat(concat('%',#{city},'%'))
             </if>
             <if test="district != null">
-                AND district = #{district}
+                AND district LIKE concat(concat('%',#{district},'%'))
             </if>
         </where>
     </select>

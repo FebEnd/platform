@@ -79,4 +79,108 @@ public class CampWithTeacher {
         this.price2 = price2;
         return this;
     }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public int getFavor() {
+        return favor;
+    }
+
+    public void setFavor(int favor) {
+        this.favor = favor;
+    }
+
+    public int getMaxLimit() {
+        return maxLimit;
+    }
+
+    public void setMaxLimit(int maxLimit) {
+        this.maxLimit = maxLimit;
+    }
+
+    public int getMinLimit() {
+        return minLimit;
+    }
+
+    public void setMinLimit(int minLimit) {
+        this.minLimit = minLimit;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public BigDecimal getPrice0() {
+        return price0;
+    }
+
+    public void setPrice0(BigDecimal price0) {
+        this.price0 = price0;
+    }
+
+    public BigDecimal getPrice1() {
+        return price1;
+    }
+
+    public void setPrice1(BigDecimal price1) {
+        this.price1 = price1;
+    }
+
+    public BigDecimal getPrice2() {
+        return price2;
+    }
+
+    public void setPrice2(BigDecimal price2) {
+        this.price2 = price2;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public List<Teacher> getTeachers() {
+        return teachers;
+    }
+
+    public void setTeachers(List<Teacher> teachers) {
+        this.teachers = teachers;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
 }
