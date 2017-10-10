@@ -12,6 +12,7 @@ public interface CampCollectionService {
     int update(CampCollection collection);
     int deleteByIds(String[] ids);
     CampCollection findCampCollectionById(long id);
+    CampCollection queryCampCollectionByUserIdAndCampId(long userId, long campId);
     List<CampCollection> findCampCollectionsByUserId(long userId);
     List<CampCollection> findCampCollectionsByCampId(long campId);
     //获取userId 的收藏数

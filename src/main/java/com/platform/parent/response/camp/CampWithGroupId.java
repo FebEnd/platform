@@ -6,6 +6,15 @@ package com.platform.parent.response.camp;
 public class CampWithGroupId {
     private long campId;
     private String groupId;
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public long getCampId() {
         return campId;

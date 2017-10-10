@@ -50,7 +50,9 @@
     </select>
     <!--List<Topic> findTopicAccessible(long userId);-->
     <select id="findTopicAccessible" parameterType="long" resultMap="base">
-        SELECT * FROM topic WHERE owner_id = #{userId} OR pri = FALSE GROUP BY id
+        SELECT t.* FROM topic t LEFT JOIN topic_collection tc ON t.id = tc.topic_id
+        LEFT JOIN topic_involve ti ON t.id = ti.topic_id
+        WHERE t.owner_id = #{userId} OR (t.pri = FALSE AND (ti.user_id = #{userId} OR tc.user_id = #{userId})) GROUP BY t.id
         ORDER BY updated DESC
     </select>
 </mapper>

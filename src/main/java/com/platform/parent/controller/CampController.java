@@ -54,6 +54,8 @@ public class CampController {
     CampCollectionService campCollectionService;
     @Autowired
     TopicService topicService;
+    @Autowired
+    SchoolService schoolService;
 
 
     @GetMapping(value = "/getDetail")
@@ -174,6 +176,108 @@ public class CampController {
         }
     }
 
+    @RequestMapping(value = "/modifyCollection", method = RequestMethod.POST)
+    @ResponseBody
+    public Object addCollection(@RequestParam("userId") String _userId, @RequestParam("campId") String _campId, @RequestParam("add") boolean add) {
+        if (!(StringUtil.isNumber(_userId) && StringUtil.isNumber(_campId))) {
+            return EnumUtil.errorToJson(ErrorCode.ILLEGAL_REQUEST_PARAM);
+        }
+        long userId = Long.valueOf(_userId);
+        long campId = Long.valueOf(_campId);
+        User user = this.userService.queryUserById(userId);
+        if (user == null) {
+            return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
+        }
+        Camp camp = this.campService.queryCampById(campId);
+        if (camp == null) {
+            return EnumUtil.errorToJson(ErrorCode.NO_SUCH_CAMP);
+        }
+        JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
+        data.put("campId", campId);
+        data.put("userId", userId);
+        result.put("data", data);
+        result.put("status",200);
+        result.put("message","成功");
+        if (add) {
+            com.platform.parent.mybatis.bean.CampCollection _collection = this.campCollectionService.queryCampCollectionByUserIdAndCampId(userId,campId);
+            if (_collection != null) {
+                return EnumUtil.errorToJson(ErrorCode.ALREADY_IN_COLLECTION);
+            }
+            com.platform.parent.mybatis.bean.CampCollection collection = new com.platform.parent.mybatis.bean.CampCollection().userId(userId).campId(campId);
+            int i = this.campCollectionService.add(collection);
+            if (i <= 0) {
+                return EnumUtil.errorToJson(ErrorCode.ADD_COLLECTION_FAILED);
+            }
+        } else {
+            com.platform.parent.mybatis.bean.CampCollection collection = this.campCollectionService.queryCampCollectionByUserIdAndCampId(userId,campId);
+            if (collection == null) return result;
+            String[] ids = {collection.getId()+""};
+            int i = this.campCollectionService.deleteByIds(ids);
+            if (i <= 0) return EnumUtil.errorToJson(ErrorCode.DELETE_FAILED);
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/cancelCollection", method = RequestMethod.POST)
+    @ResponseBody
+    public Object cancelCollection(@RequestParam("userId") String _userId, @RequestParam("campId") String _campId) {
+        if (!(StringUtil.isNumber(_userId) && StringUtil.isNumber(_campId))) {
+            return EnumUtil.errorToJson(ErrorCode.ILLEGAL_REQUEST_PARAM);
+        }
+        long userId = Long.valueOf(_userId);
+        long campId = Long.valueOf(_campId);
+        User user = this.userService.queryUserById(userId);
+        if (user == null) {
+            return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
+        }
+        Camp camp = this.campService.queryCampById(campId);
+        if (camp == null) {
+            return EnumUtil.errorToJson(ErrorCode.NO_SUCH_CAMP);
+        }
+        JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
+        result.put("status",200);
+        result.put("message", "成功");
+        result.put("data",data);
+        com.platform.parent.mybatis.bean.CampCollection collection = this.campCollectionService.queryCampCollectionByUserIdAndCampId(userId,campId);
+        if (collection == null) return result;
+        String[] ids = {collection.getId()+""};
+        int i = this.campCollectionService.deleteByIds(ids);
+        if (i <= 0) return EnumUtil.errorToJson(ErrorCode.DELETE_FAILED);
+        return result;
+    }
+
+    @RequestMapping(value = "/searchCamp", method = RequestMethod.GET)
+    @ResponseBody
+    public Object searchCamp(@RequestParam("schoolId") String _schoolId) {
+        if (!StringUtil.isNumber(_schoolId.trim())) {
+            return EnumUtil.errorToJson(ErrorCode.ILLEGAL_REQUEST_PARAM);
+        }
+        long schoolId = Long.valueOf(_schoolId);
+        School school = this.schoolService.findSchoolById(schoolId);
+        if (school == null) return EnumUtil.errorToJson(ErrorCode.NO_SUCH_SCHOOL);
+        List<CampList> campLists = this.campService.findCampListBySchoolId(schoolId);
+        JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
+        result.put("status", 200);
+        result.put("message", "成功");
+        data.put("camps", campLists);
+        result.put("data",data);
+        return result;
+    }
+
+    @RequestMapping(value = "/getEssence", method = RequestMethod.GET)
+    @ResponseBody
+    public Object getEssence(@RequestParam("campId") String _campId) {
+
+
+        JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
+
+        return result;
+    }
+
     @RequestMapping(value = "/listActive", method = RequestMethod.GET)
     @ResponseBody
     public Object listActive(@RequestParam("userId") String _userId) {
@@ -219,6 +323,8 @@ public class CampController {
                 TopicWithGroupId t = new TopicWithGroupId();
                 t.setTopicId(topic.getId());
                 t.setGroupId(topic.getGroupId());
+                t.setName(topic.getName());
+                t.setUpdated(topic.getUpdated());
                 topics.add(t);
             }
             data.put("topics", topics);

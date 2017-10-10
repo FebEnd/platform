@@ -56,6 +56,11 @@ public class CampServiceImpl implements CampService {
     }
 
     @Override
+    public List<CampList> findCampListBySchoolId(long schoolId) {
+        return this.campMapper.findCampListBySchoolId(schoolId);
+    }
+
+    @Override
     public List<Camp> findCampsByType(int type) {
         return this.campMapper.findCampsByType(type);
     }

@@ -25,6 +25,7 @@ public interface CampMapper {
     Camp findCampByTeacherId(long id);
     CampWithTeacher findCampByIdWithDetail(long id);
     List<CampWithGroupId> findCampsActiveByUserId(long userId);
+    List<CampList> findCampListBySchoolId(long schoolId);
     List<Camp> findCampsByType(int type);
     List<Camp> findCampsByStatus(int status);
     List<Camp> findCampsByParams(Map<String, Object> params);

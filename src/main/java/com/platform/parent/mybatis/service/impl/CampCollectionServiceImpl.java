@@ -36,6 +36,11 @@ public class CampCollectionServiceImpl implements CampCollectionService {
     }
 
     @Override
+    public CampCollection queryCampCollectionByUserIdAndCampId(long userId, long campId) {
+        return this.mapper.queryCampCollectionByUserIdAndCampId(userId, campId);
+    }
+
+    @Override
     public List<CampCollection> findCampCollectionsByUserId(long userId) {
         return this.mapper.findCampCollectionsByUserId(userId);
     }
@@ -52,6 +57,6 @@ public class CampCollectionServiceImpl implements CampCollectionService {
 
     @Override
     public long queryCountByCampId(long campId) {
-        return queryCountByCampId(campId);
+        return this.mapper.queryCountByCampId(campId);
     }
 }

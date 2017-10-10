@@ -42,4 +42,8 @@
     <select id="queryCountByCampId" parameterType="long" resultType="long">
         SELECT count(1) FROM camp_collection WHERE camp_id = #{campId}
     </select>
+    <!--CampCollection queryCampCollectionByUserIdAndCampId(@Param("userId") long userId, @Param("campId") long campId);-->
+    <select id="queryCampCollectionByUserIdAndCampId" resultType="com.platform.parent.mybatis.bean.CampCollection">
+        SELECT cc.id FROM camp_collection cc WHERE cc.camp_id = #{campId} AND cc.user_id = #{userId}
+    </select>
 </mapper>

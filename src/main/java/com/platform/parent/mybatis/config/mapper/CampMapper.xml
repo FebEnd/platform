@@ -28,7 +28,8 @@
 
     <resultMap id="campWithGroupId" type="com.platform.parent.response.camp.CampWithGroupId">
         <id property="campId" column="id"/>
-        <result property="groupId" column="groupId"/>
+        <result property="groupId" column="group_id"/>
+        <result property="name" column="title"/>
     </resultMap>
 
     <resultMap id="campWithTeacher" type="com.platform.parent.response.camp.CampWithTeacher">
@@ -61,10 +62,11 @@
         <result column="comment" property="comment"/>
         <result column="price0" property="price"/>
         <collection property="teachers" ofType="com.platform.parent.mybatis.bean.Teacher">
-            <result column="account" property="account"/>
+            <!--<result column="account" property="account"/>-->
+            <result column="id" property="id"/>
             <result column="star" property="star"/>
             <result column="description" property="description"/>
-            <result column="status" property="status"/>
+            <!--<result column="status" property="status"/>-->
             <collection property="tags" ofType="com.platform.parent.mybatis.bean.Tag">
                 <id column="id" property="id"/>
                 <result column="name" property="name"/>
@@ -85,14 +87,15 @@
         this.price1 = price1;
         this.price2 = price2;-->
     <insert id="add" parameterType="com.platform.parent.mybatis.bean.Camp" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO camp (type, favor,description, comment, max_limit, min_limit, status, price0, price1, price2, title, subtitle)
-        VALUES (#{type}, #{favor},#{description}, #{comment}, #{maxLimit}, #{minLimit}, #{status}, #{price0}, #{price1}, #{price2}, #{title}, #{subtitle})
+        INSERT INTO camp (type, favor,description, comment, max_limit, min_limit, status, price0, price1, price2, title, subtitle, group_id)
+        VALUES (#{type}, #{favor},#{description}, #{comment}, #{maxLimit}, #{minLimit}, #{status}, #{price0}, #{price1}, #{price2}, #{title}, #{subtitle}, #{groupId})
     </insert>
     <update id="update" parameterType="com.platform.parent.mybatis.bean.Camp">
         UPDATE camp
         SET type   = #{type}, favor = #{favor}, max_limit = #{maxLimit}, min_limit = #{minLimit},
             status = #{status}, price0 = #{price0}, price1 = #{price1}, price2 = #{price2},
-            description = #{description}, comment = #{comment}, title = #{title}, subtitle = #{subtitle}
+            description = #{description}, comment = #{comment}, title = #{title}, subtitle = #{subtitle},
+            group_id = #{groupId}
         WHERE id = #{id}
     </update>
     <delete id="deleteByIds" parameterType="java.lang.String">
@@ -103,7 +106,7 @@
     </delete>
     <!--List<Camp> findCampsActiveByUserId(long userId);-->
     <select id="findCampsActiveByUserId" parameterType="long" resultMap="campWithGroupId">
-        SELECT c.id, c.group_id FROM camp c LEFT JOIN camp_attend ca ON ca.camp_id = c.id
+        SELECT c.id, c.group_id, c.title FROM camp c LEFT JOIN camp_attend ca ON ca.camp_id = c.id
         LEFT JOIN user u ON u.id = ca.user_id
         WHERE c.status = 2 AND u.id = #{userId}
     </select>
@@ -116,13 +119,24 @@
     </select>
 
     <select id="findCampList" parameterType="long" resultMap="campList">
-        SELECT c.id, c.title, c.subtitle, c.comment, c.price0, t.*, tag.* FROM camp c
+        SELECT c.id, c.title, c.subtitle, c.comment, c.price0, t.id, t.star, t.description, tag.* FROM camp c
         LEFT JOIN camp_attend ca ON c.id = ca.camp_id
         LEFT JOIN teacher t ON t.id = ca.user_id
         LEFT JOIN user_tag ut ON t.id = ut.user_id
         LEFT JOIN tag ON ut.tag_id = tag.id
-        LEFT JOIN camp_collection cc ON cc.camp_id = c.camp_id
-        WHERE cc.user_id = #{userId}
+        LEFT JOIN camp_collection cc ON cc.camp_id = c.id
+        WHERE cc.user_id = #{userId} AND ca.role = 2
+        GROUP BY cc.id
+    </select>
+
+    <select id="findCampListBySchoolId" parameterType="long" resultMap="campList">
+        SELECT c.id, c.title, c.subtitle, c.comment, c.price0, t.id, t.star, t.description, tag.* FROM camp c
+        LEFT JOIN camp_attend ca ON c.id = ca.camp_id
+        LEFT JOIN teacher t ON t.id = ca.user_id
+        LEFT JOIN user_tag ut ON ut.user_id = t.id
+        LEFT JOIN tag ON ut.tag_id = tag.id
+        LEFT JOIN user_detail ud ON ud.id = t.id
+        WHERE ud.child_school = #{schoolId} AND (c.status = 1 OR c.status = 2)
     </select>
 
     <select id="findCampByIdWithDetail" parameterType="long" resultMap="campWithTeacher">
