@@ -14,11 +14,17 @@ public class CampList {
     private String comment;
     private String title, subtitle;
     private int type;
+    private boolean collected;
 
     private List<Teacher> teachers;
 
     public CampList id(long id) {
         this.id = id;
+        return this;
+    }
+
+    public CampList collected(boolean collected) {
+        this.collected = collected;
         return this;
     }
 
@@ -101,5 +107,13 @@ public class CampList {
 
     public void setTeachers(List<Teacher> teachers) {
         this.teachers = teachers;
+    }
+
+    public boolean isCollected() {
+        return collected;
+    }
+
+    public void setCollected(boolean collected) {
+        this.collected = collected;
     }
 }

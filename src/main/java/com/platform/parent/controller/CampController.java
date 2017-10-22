@@ -59,7 +59,7 @@ public class CampController {
 
 
     @GetMapping(value = "/getDetail")
-    public @ResponseBody Object getDetail(@RequestParam("campId") String _campId) {
+    public @ResponseBody Object getDetail(@RequestParam("campId") String _campId, @RequestParam(required = false, value = "userId") String _userId) {
         if (!StringUtil.isNumber(_campId)) {
             return EnumUtil.errorToJson(ErrorCode.ILLEGAL_REQUEST_PARAM);
         }
@@ -82,6 +82,11 @@ public class CampController {
         JSONObject data = new JSONObject();
         result.put("status", 200);
         result.put("message", "成功");
+        if (!StringUtil.isNull(_userId)) {
+            long userId = Long.valueOf(_userId.trim());
+            CampCollection collection = this.campCollectionService.queryCampCollectionByUserIdAndCampId(userId,campId);
+            data.put("collected", (collection == null)? false : true);
+        }
         data.put("id", camp.getId());
         data.put("type", camp.getType());
         data.put("favor", camp.getFavor());
@@ -102,21 +107,6 @@ public class CampController {
         data.put("collection",(l==null)? 0 : l.size());
         result.put("data", data);
         return result;
-        /*result.put("id","1");
-        result.put("type","0");
-        result.put("favor","2000");
-        result.put("collection","500");
-        result.put("member","167");
-        result.put("comment","倡导高效快乐的学习方法，注重自主学习习惯的培养，侠客岛成员。");
-        result.put("description","倡导高效快乐的学习方法，注重自主学习习惯的培养，侠客岛成员。");
-        result.put("price",price);
-        List<Tag> tags = new ArrayList<>();
-        tags.add(new Tag().name("学霸家长"));
-        tags.add(new Tag().name("奥数获奖"));
-        tags.add(new Tag().name("门萨会员"));
-        Teacher teacher = new Teacher().id(1).star(5).tags(tags).description("上外附小三年级家长");
-        result.put("teacher",teacher);
-        return result;*/
     }
 
 //    @GetMapping("/listCampCollection")
@@ -134,24 +124,22 @@ public class CampController {
         if (collection == null) {
             return EnumUtil.errorToJson(ErrorCode.QUERY_COLLECTION_FAILED);
         }
+//        checkCollected(collection, userId);
         JSONObject result = new JSONObject();
         JSONObject data = new JSONObject();
         data.put("collection", collection);
         result.put("status", 200);
         result.put("message", "成功");
         result.put("data", data);
-        /*result.put("status", "0");
-        List<CampCollection> collection = new ArrayList<>();
-        List<Teacher> teachers = new ArrayList<>();
-        teachers.add(new Teacher().id(1).description("上外附小三年级家长").star(4));
-        CampCollection camp = new CampCollection().id(1).price(new BigDecimal(200.00)).comment("倡导高效快乐的学习方法，注重自主学习习惯的培养，侠客岛成员。")
-                .title("导师  BlueFirefly66 V").subtitle("上外附小三年级家长").teachers(teachers);
-        CampCollection camp1 = new CampCollection().id(1).price(new BigDecimal(200.00)).comment("倡导高效快乐的学习方法，注重自主学习习惯的培养，侠客岛成员。")
-                .title("导师  BlueFirefly66 V").subtitle("上外附小三年级家长").teachers(teachers);
-        collection.add(camp);
-        collection.add(camp1);
-        result.put("collection", collection);*/
         return result;
+    }
+
+    private List<CampList> checkCollected(List<CampList> list, long userId) {
+        for (CampList campList : list) {
+            CampCollection collection = this.campCollectionService.queryCampCollectionByUserIdAndCampId(userId, campList.getId());
+            campList.setCollected((collection == null)? false : true);
+        }
+        return list;
     }
 
     @PostMapping(value = "/addFavor")
@@ -252,7 +240,7 @@ public class CampController {
 
     @RequestMapping(value = "/searchCamp", method = RequestMethod.GET)
     @ResponseBody
-    public Object searchCamp(@RequestParam("schoolId") String _schoolId) {
+    public Object searchCamp(@RequestParam("schoolId") String _schoolId, @RequestParam(required = false, value = "userId") String _userId) {
         if (!StringUtil.isNumber(_schoolId.trim())) {
             return EnumUtil.errorToJson(ErrorCode.ILLEGAL_REQUEST_PARAM);
         }
@@ -260,6 +248,10 @@ public class CampController {
         School school = this.schoolService.findSchoolById(schoolId);
         if (school == null) return EnumUtil.errorToJson(ErrorCode.NO_SUCH_SCHOOL);
         List<CampList> campLists = this.campService.findCampListBySchoolId(schoolId);
+        if (!StringUtil.isNull(_userId)) {
+            long userId = Long.valueOf(_userId);
+            checkCollected(campLists, userId);
+        }
         JSONObject result = new JSONObject();
         JSONObject data = new JSONObject();
         result.put("status", 200);
