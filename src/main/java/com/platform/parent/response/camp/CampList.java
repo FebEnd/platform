@@ -13,6 +13,7 @@ public class CampList {
     private BigDecimal price;
     private String comment;
     private String title, subtitle;
+    private int type;
 
     private List<Teacher> teachers;
 
@@ -44,6 +45,14 @@ public class CampList {
 
     public CampList() {
 
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public long getId() {

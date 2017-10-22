@@ -6,6 +6,15 @@ package com.platform.parent.response.school;
 public class CampWithTitle {
     private long id;
     private String title, subtitle;
+    private int type;
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public long getId() {
         return id;

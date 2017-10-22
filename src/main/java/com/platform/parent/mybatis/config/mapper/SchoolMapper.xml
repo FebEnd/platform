@@ -92,8 +92,10 @@
     <select id="findSchoolFuzzy" parameterType="java.lang.String" resultMap="schoolWithAlias">
         SELECT s.*, sa.* FROM school s
         LEFT JOIN school_alias sa ON s.id = sa.school_id
-        WHERE s.full_name LIKE concat(concat('%',#{fuzzy}),'%')
-              OR sa.alias LIKE concat(concat('%',#{fuzzy}),'%')
+        LEFT JOIN location l ON l.id = s.location_id
+        WHERE (s.full_name LIKE concat(concat('%',#{fuzzy}),'%')
+              OR sa.alias LIKE concat(concat('%',#{fuzzy}),'%'))
+            AND l.city = #{city}
         GROUP BY s.id
     </select>
 

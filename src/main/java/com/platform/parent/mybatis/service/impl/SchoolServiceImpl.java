@@ -69,8 +69,8 @@ public class SchoolServiceImpl implements SchoolService {
         return school;
     }
 
-    public List<School> findSchoolFuzzy(String fuzzy) {
-        List<School> schools = this.schoolMapper.findSchoolFuzzy(fuzzy);
+    public List<School> findSchoolFuzzy(String fuzzy, String city) {
+        List<School> schools = this.schoolMapper.findSchoolFuzzy(fuzzy, city);
         for (School school : schools) {
             this.schoolMapper.addHeat(school.getId());
         }

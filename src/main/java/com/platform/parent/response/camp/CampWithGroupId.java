@@ -7,6 +7,15 @@ public class CampWithGroupId {
     private long campId;
     private String groupId;
     private String name;
+    private int type;
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public String getName() {
         return name;

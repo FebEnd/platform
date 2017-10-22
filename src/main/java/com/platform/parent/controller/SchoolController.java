@@ -81,7 +81,7 @@ public class SchoolController {
             for (Order order : orders) {
                 User user = this.userService.queryUserById(order.getUserId());
                 List<User> teacher = this.userService.findUserByCampId(order.getType());
-                String s = user.getNickname() + " 加入了 " + teacher.get(0).getNickname() + " 开办的训练营";
+                String s = user.getNickname() + " " + teacher.get(0).getNickname() ;
                 news.add(s);
             }
             data.put("news", news);
@@ -101,7 +101,7 @@ public class SchoolController {
             User user = this.userService.queryUserById(userId);
             User teacher = this.userService.queryUserById(teacherId);
             if (user != null && teacher != null) {
-                res.add(user.getNickname() + " 加入了 " + teacher.getNickname() + " 开办的训练营");
+                res.add(user.getNickname() + " " + teacher.getNickname() );
             }
         }
         return res;
@@ -110,11 +110,11 @@ public class SchoolController {
 
     @GetMapping(value = "/search")
     public @ResponseBody
-    Object searchSchool(@RequestParam("name") String name) {
-        if (StringUtil.isNull(name)) {
+    Object searchSchool(@RequestParam("name") String name, @RequestParam("city") String city) {
+        if (StringUtil.isNull(name)|| StringUtil.isNull(city)) {
             return EnumUtil.errorToJson(ErrorCode.KEYWORD_IS_NULL);
         } else {
-            List<School> schools = schoolService.findSchoolFuzzy(name);
+            List<School> schools = schoolService.findSchoolFuzzy(name, city);
         /*List<School> result = new ArrayList<>();
         School school = new School().id(1).fullName("上海世外小学").alias("世外小学").locationId(1);
         School school1 = new School().id(2).fullName("上海世界小学").alias("世界小学").locationId(2);

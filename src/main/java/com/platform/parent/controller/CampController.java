@@ -77,6 +77,7 @@ public class CampController {
             return EnumUtil.errorToJson(ErrorCode.QUERY_TEACHER_FAILED);
         }
         List<Tag> tags = this.tagService.findTagsByCampId(campId);
+        List<CampCollection> l = this.campCollectionService.findCampCollectionsByCampId(campId);
         JSONObject result = new JSONObject();
         JSONObject data = new JSONObject();
         result.put("status", 200);
@@ -98,6 +99,7 @@ public class CampController {
         data.put("subtitle", camp.getSubtitle());
         data.put("teachers", teachers);
         data.put("tags", tags);
+        data.put("collection",(l==null)? 0 : l.size());
         result.put("data", data);
         return result;
         /*result.put("id","1");
@@ -271,7 +273,7 @@ public class CampController {
     @ResponseBody
     public Object getEssence(@RequestParam("campId") String _campId) {
 
-
+    //todo haven't implemented
         JSONObject result = new JSONObject();
         JSONObject data = new JSONObject();
 

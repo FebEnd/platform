@@ -16,7 +16,7 @@ public interface SchoolService {
     School findSchoolById(long id);
     School findSchoolByFullName(String name);
     School findSchoolByAlias(String alias);
-    List<School> findSchoolFuzzy(String fuzzy);
+    List<School> findSchoolFuzzy(String fuzzy, String city);
     List<School> findAllSchools();
     List<School> findHotSchool(String location);
 }
