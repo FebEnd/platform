@@ -1,6 +1,7 @@
 package com.platform.parent.mybatis.service;
 
 import com.platform.parent.mybatis.bean.Topic;
+import com.platform.parent.mybatis.bean.User;
 
 import java.util.List;
 
@@ -9,6 +10,7 @@ import java.util.List;
  */
 public interface TopicService {
     int add(Topic topic);
+    int add(Topic topic, List<User> teachers);
     int update(Topic topic);
     int deleteByIds(String[] ids);
     Topic findTopicById(long topicId);

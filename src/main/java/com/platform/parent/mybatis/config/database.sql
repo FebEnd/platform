@@ -1,7 +1,7 @@
 #用户共有属性表
 DROP TABLE IF EXISTS user;
 CREATE TABLE user (
-    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    user_id BIGINT(20) NOT NULL AUTO_INCREMENT,
     phone  VARCHAR(20) NOT NULL,
     nickname VARCHAR(50) NOT NULL,
     password VARCHAR(50) NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE user (
 #用户详情表（一般为不常用数据）
 DROP TABLE IF EXISTS user_detail;
 CREATE TABLE user_detail(
-    id BIGINT(20) NOT NULL ,
+    ud_id BIGINT(20) NOT NULL ,
     city VARCHAR(50),
     live_district VARCHAR(50),
     target_district VARCHAR(50),
@@ -27,7 +27,7 @@ CREATE TABLE user_detail(
 #会员表，当用户包名训练营时加入信息
 DROP TABLE IF EXISTS member;
 CREATE TABLE member(
-    id BIGINT(20) NOT NULL, #与用户id相匹配
+    member_id BIGINT(20) NOT NULL, #与用户id相匹配
     vip TIMESTAMP DEFAULT NOW(), #vip过期时间
 
     PRIMARY KEY (id)
@@ -35,7 +35,7 @@ CREATE TABLE member(
 #导师信息表
 DROP TABLE IF EXISTS teacher;
 CREATE TABLE teacher(
-    id BIGINT(20) NOT NULL, #与用户id相匹配
+    teacher_id BIGINT(20) NOT NULL, #与用户id相匹配
     star INT(11) NOT NULL DEFAULT 1, #星级
     account TEXT,
     description TEXT,
@@ -46,7 +46,7 @@ CREATE TABLE teacher(
 #训练营信息表
 DROP TABLE IF EXISTS camp;
 CREATE TABLE camp (
-    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    camp_id BIGINT(20) NOT NULL AUTO_INCREMENT,
     type INT(11) DEFAULT 0, #0 家长创建， 1 专项， 2 机构
     favor INT(11) DEFAULT 0,#点赞数
     description TEXT,#导师说
@@ -66,7 +66,7 @@ CREATE TABLE camp (
 #储存会员加入的训练营
 DROP TABLE IF EXISTS camp_attend;
 CREATE TABLE camp_attend(
-    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    ca_id BIGINT(20) NOT NULL AUTO_INCREMENT,
     user_id BIGINT(20) NOT NULL,
     camp_id BIGINT(20) NOT NULL,
     expiration TIMESTAMP NOT NULL, #训练营到期时间
@@ -78,7 +78,7 @@ CREATE TABLE camp_attend(
 # 储存用户收藏的训练营 */
 DROP TABLE IF EXISTS camp_collection;
 CREATE TABLE camp_collection(
-    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    cc_id BIGINT(20) NOT NULL AUTO_INCREMENT,
     user_id BIGINT(20) NOT NULL,
     camp_id BIGINT(20) NOT NULL,
     
@@ -88,7 +88,7 @@ CREATE TABLE camp_collection(
 #话题 */
 DROP TABLE IF EXISTS topic;
 CREATE TABLE topic(
-    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    topic_id BIGINT(20) NOT NULL AUTO_INCREMENT,
     owner_id BIGINT(20) NOT NULL,/* 发起者 id*/
     name VARCHAR(100) NOT NULL,
     pri BOOLEAN DEFAULT FALSE , /* 0 公开群聊话题, 1 临时1v1, 2 持久1v1*/
@@ -98,13 +98,14 @@ CREATE TABLE topic(
     camp_id BIGINT(20) DEFAULT NULL, /* 话题归属， NULL 表示不属于群聊 */
     created TIMESTAMP NOT NULL DEFAULT now(),
     updated TIMESTAMP NOT NULL DEFAULT now(),
+    temp TINYINT(1) NOT NULL DEFAULT 0,
 
     PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS topic_content;
 CREATE TABLE topic_content(
-    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    t_content_id BIGINT(20) NOT NULL AUTO_INCREMENT,
     speaker_id BIGINT(20) NOT NULL,
     content TEXT NOT NULL,
     time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -115,7 +116,7 @@ CREATE TABLE topic_content(
 /* 储存用户参与的话题 */
 DROP TABLE IF EXISTS topic_involve;
 CREATE TABLE topic_involve(
-    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    ti_id BIGINT(20) NOT NULL AUTO_INCREMENT,
     user_id BIGINT(20) NOT NULL,
     topic_id BIGINT(20) NOT NULL,
 
@@ -125,7 +126,7 @@ CREATE TABLE topic_involve(
 /* 储存用户关注的话题 */
 DROP TABLE IF EXISTS topic_collection;
 CREATE TABLE topic_collection(
-    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    t_collection_id BIGINT(20) NOT NULL AUTO_INCREMENT,
     user_id BIGINT(20) NOT NULL,
     topic_id BIGINT(20) NOT NULL,
 
@@ -134,7 +135,7 @@ CREATE TABLE topic_collection(
 
 DROP TABLE IF EXISTS order;
 CREATE TABLE order(
-    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    order_id BIGINT(20) NOT NULL AUTO_INCREMENT,
     user_id BIGINT(20) NOT NULL,
     amount DECIMAL(10,2) NOT NULL,
     type BIGINT(20) NOT NULL, /* -1 表示购买vip, 其余与训练营id配对表示为加入训练营付费 */
@@ -150,7 +151,7 @@ CREATE TABLE order(
 /* tag 存储表 */
 DROP TABLE IF EXISTS tag;
 CREATE TABLE tag(
-    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    tag_id BIGINT(20) NOT NULL AUTO_INCREMENT,
     name TEXT NOT NULL ,
 
     PRIMARY KEY (id)
@@ -159,7 +160,7 @@ CREATE TABLE tag(
 /* tag 与目标id对应表 */
 DROP TABLE IF EXISTS user_tag;
 CREATE TABLE user_tag(
-    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    ut_id BIGINT(20) NOT NULL AUTO_INCREMENT,
     user_id BIGINT(20) NOT NULL ,
     tag_id BIGINT(20) NOT NULL ,
 
@@ -168,7 +169,7 @@ CREATE TABLE user_tag(
 
 DROP TABLE IF EXISTS camp_tag;
 CREATE TABLE camp_tag(
-    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    ct_id BIGINT(20) NOT NULL AUTO_INCREMENT,
     camp_id BIGINT(20) NOT NULL ,
     tag_id BIGINT(20) NOT NULL ,
 
@@ -177,7 +178,7 @@ CREATE TABLE camp_tag(
 
 DROP TABLE IF EXISTS role;
 CREATE TABLE role(
-    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    role_id BIGINT(20) NOT NULL AUTO_INCREMENT,
     name TEXT NOT NULL ,
 
     PRIMARY KEY (id)
@@ -185,7 +186,7 @@ CREATE TABLE role(
 
 DROP TABLE IF EXISTS user_role;
 CREATE TABLE user_role(
-    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    ur_id BIGINT(20) NOT NULL AUTO_INCREMENT,
     user_id BIGINT(20) NOT NULL ,
     role_id BIGINT(20) NOT NULL ,
 
@@ -194,7 +195,7 @@ CREATE TABLE user_role(
 
 DROP TABLE IF EXISTS school;
 CREATE TABLE school(
-    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    school_id BIGINT(20) NOT NULL AUTO_INCREMENT,
     full_name TEXT NOT NULL ,
     heat INT(11) NOT NULL DEFAULT 0,
     location_id BIGINT(20) NOT NULL ,
@@ -204,24 +205,13 @@ CREATE TABLE school(
 
 DROP TABLE IF EXISTS location;
 CREATE TABLE location(
-    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    location_id BIGINT(20) NOT NULL AUTO_INCREMENT,
     province TEXT,
     city TEXT NOT NULL ,
     district TEXT NOT NULL ,
 
     PRIMARY KEY (id)
 ) ENGINE =InnoDB DEFAULT CHARSET =utf8;
-
-DROP TABLE IF EXISTS coupon;
-CREATE TABLE coupon(
-    id BIGINT(20) NOT NULL AUTO_INCREMENT,
-    name VARCHAR(50) NOT NULL ,
-    description TEXT ,
-    amount DECIMAL(10,2) NOT NULL ,
-    duration INT(11) NOT NULL DEFAULT 30,
-
-    PRIMARY KEY (id)
-)ENGINE=InnoDB DEFAULT CHARSET =utf8;
 
 # 记录用户获得优惠券的记录的表
 # user_id 这笔优惠券记录属于哪个user
@@ -232,7 +222,7 @@ CREATE TABLE coupon(
 # used 表示该优惠券是否已经使用
 DROP TABLE IF EXISTS user_coupon;
 CREATE TABLE user_coupon(
-    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    uc_id BIGINT(20) NOT NULL AUTO_INCREMENT,
     user_id BIGINT(20) NOT NULL ,
     coupon_id INT(11) NOT NULL ,
     publish TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -249,7 +239,7 @@ CREATE TABLE user_coupon(
 # duration 优惠券有效期（天数）
 DROP TABLE IF EXISTS coupon;
 CREATE TABLE coupon(
-    id INT(11) NOT NULL AUTO_INCREMENT,
+    coupon_id INT(11) NOT NULL AUTO_INCREMENT,
     name TEXT NOT NULL ,
     description TEXT NOT NULL ,
     amount DECIMAL(10,2) NOT NULL ,
@@ -264,7 +254,7 @@ CREATE TABLE coupon(
 #number 表示发放多少张该base_id的优惠券
 DROP TABLE IF EXISTS coupon_strategy;
 CREATE TABLE coupon_strategy(
-    id INT(11) NOT NULL AUTO_INCREMENT,
+    cs_id INT(11) NOT NULL AUTO_INCREMENT,
     channel INT(11) NOT NULL ,
     base_id INT(11) NOT NULL ,
     number INT(11) NOT NULL ,
@@ -275,7 +265,7 @@ CREATE TABLE coupon_strategy(
 #学校别名表
 DROP TABLE IF EXISTS school_alias;
 CREATE TABLE school_alias(
-    id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    sa_id BIGINT(20) NOT NULL AUTO_INCREMENT,
     alias TEXT NOT NULL ,
     school_id BIGINT(20) NOT NULL ,
 
@@ -285,7 +275,7 @@ CREATE TABLE school_alias(
 #群组信息表
 DROP TABLE IF EXISTS chat_group;
 CREATE TABLE chat_group(
-    id VARCHAR(20) NOT NULL ,
+    cg_id VARCHAR(20) NOT NULL ,
     name TEXT NOT NULL,
     description TEXT NOT NULL,
     owner VARCHAR(20) NOT NULL ,

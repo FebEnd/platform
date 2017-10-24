@@ -48,7 +48,7 @@ public class OrderController {
             return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
         }
         Order order = new Order();
-        order.amount(req.getAmount()).userId(req.getUserId()).type(req.getType()).create(new Timestamp(System.currentTimeMillis()))
+        order.amount(req.getAmount()).userId(req.getUserId()).type(req.getType()).created(new Timestamp(System.currentTimeMillis()))
                 .confirm(true).coupons(req.getCouponIds()).duration(req.getDuration());
         int i = this.orderService.add(order);
         if (i <= 0) {
@@ -61,7 +61,7 @@ public class OrderController {
         result.put("status", 200);
         result.put("message", "成功");
         data.put("paymentId", order.getId());
-        data.put("create", order.getCreate());
+        data.put("create", order.getCreated());
         data.put("userId", order.getUserId());
         data.put("payed", order.getPayed());
         data.put("coupons", order.getCoupons());

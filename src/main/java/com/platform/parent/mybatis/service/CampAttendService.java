@@ -1,6 +1,7 @@
 package com.platform.parent.mybatis.service;
 
 import com.platform.parent.mybatis.bean.CampAttend;
+import com.platform.parent.mybatis.bean.User;
 
 import java.util.List;
 
@@ -17,4 +18,5 @@ public interface CampAttendService {
     List<CampAttend> findCampAttendByCampId(long campId);
     long countCampAttendByUserId(long userId);
     long countCampAttendByCampId(long campId);
+    List<User> findTeachersAndObserverByCampId(long campId);
 }

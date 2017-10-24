@@ -6,7 +6,7 @@
         <result column="user_id" property="userId"/>
         <result column="amount" property="amount"/>
         <result column="type" property="type"/>
-        <result column="create" property="create"/>
+        <result column="created" property="created"/>
         <result column="payed" property="payed"/>
         <result column="coupons" property="coupons"/>
         <result column="duration" property="duration"/>
@@ -21,8 +21,8 @@
 
     <!--int add(Order order);-->
     <insert id="add" parameterType="com.platform.parent.mybatis.bean.Order" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO `order` (user_id, amount, type, create, payed, coupons, duration, confirm)
-        VALUES (#{userId}, #{amount}, #{type}, #{create}, #{payed}, #{coupons}, #{duration}, #{confirm})
+        INSERT INTO `order` (user_id, amount, type, created, payed, coupons, duration, confirm)
+        VALUES (#{userId}, #{amount}, #{type}, #{created}, #{payed}, #{coupons}, #{duration}, #{confirm})
     </insert>
     <!--int update(Order order);-->
     <update id="update" parameterType="com.platform.parent.mybatis.bean.Order">

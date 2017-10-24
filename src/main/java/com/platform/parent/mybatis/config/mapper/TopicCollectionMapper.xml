@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.TopicCollectionMapper">
+
+    <resultMap id="base" type="com.platform.parent.mybatis.bean.TopicCollection">
+        <id property="id" column="t_collection_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="topicId" column="topic_id"/>
+    </resultMap>
+
+    <!--int add(TopicCollection collection);-->
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.TopicCollection" useGeneratedKeys="true" keyProperty="t_collection_id">
+        INSERT INTO topic_collection (user_id, topic_id) VALUES (#{userId}, #{topicId})
+    </insert>
+    <!--int update(TopicCollection collection);-->
+    <update id="update" parameterType="com.platform.parent.mybatis.bean.TopicCollection">
+        UPDATE topic_collection SET user_id = #{userId}, topic_id = #{topicId} WHERE t_collection_id = #{id}
+    </update>
+
+    <!--TopicCollection findTopicCollectionById(long collectionId);-->
+    <select id="findTopicCollectionById" parameterType="long" resultMap="base">
+        SELECT * FROM topic_collection WHERE t_collection_id = #{collectionId}
+    </select>
+    <!--List<TopicCollection> findTopicCollectionByUserId(long userId);-->
+    <select id="findTopicCollectionByUserId" parameterType="long" resultMap="base">
+        SELECT * FROM topic_collection WHERE user_id = #{userId}
+    </select>
+    <!--List<TopicCollection> findTopicCollectionByTopicId(long topicId);-->
+    <select id="findTopicCollectionByTopicId" parameterType="long" resultMap="base">
+        SELECT * FROM topic_collection WHERE topic_id = #{topicId}
+    </select>
+    <!--List<TopicCollection> findTopicCollectionByGap(long gap);-->
+    <select id="findTopicCollectionByLine" resultMap="base">
+        SELECT tc.t_collection_id FROM topic_collection tc
+        LEFT JOIN teacher t ON t.id = tc.user_id
+        LEFT JOIN topic ON topic.topic_id = tc.topic_id
+        WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) > date(created)
+    </select>
+
+    <!--int deleteByIds(String[] ids);-->
+    <delete id="deleteByIds" parameterType="java.lang.String">
+        DELETE FROM `topic_collection`
+        <foreach collection="array" item="idItem" open="(" separator="," close=")">
+            WHERE t_collection_id IN #{idItem}
+        </foreach>
+
+    </delete>
+
+</mapper>

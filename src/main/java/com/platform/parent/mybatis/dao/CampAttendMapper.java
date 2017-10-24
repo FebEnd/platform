@@ -1,6 +1,7 @@
 package com.platform.parent.mybatis.dao;
 
 import com.platform.parent.mybatis.bean.CampAttend;
+import com.platform.parent.mybatis.bean.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
@@ -22,4 +23,5 @@ public interface CampAttendMapper {
     List<CampAttend> findCampAttendByCampId(long campId);
     long countCampAttendByUserId(long userId);
     long countCampAttendByCampId(long campId);
+    List<User> findTeachersAndObserverByCampId(long campId);
 }

@@ -1,6 +1,7 @@
 package com.platform.parent.mybatis.service.impl;
 
 import com.platform.parent.mybatis.bean.CampAttend;
+import com.platform.parent.mybatis.bean.User;
 import com.platform.parent.mybatis.dao.CampAttendMapper;
 import com.platform.parent.mybatis.service.CampAttendService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,5 +59,10 @@ public class CampAttendServiceImpl implements CampAttendService {
     @Override
     public long countCampAttendByCampId(long campId) {
         return this.mapper.countCampAttendByCampId(campId);
+    }
+
+    @Override
+    public List<User> findTeachersAndObserverByCampId(long campId) {
+        return this.mapper.findTeachersAndObserverByCampId(campId);
     }
 }

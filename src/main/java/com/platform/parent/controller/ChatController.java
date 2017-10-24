@@ -72,7 +72,7 @@ public class ChatController {
         String groupId = data.getString("groupid");
         Timestamp now = new Timestamp(System.currentTimeMillis());
         Topic topic = new Topic().campId(campId).created(now).essence(false).groupId(groupId)
-                .name(NAME).ownerId(userId).pri(true).top(false).updated(now);
+                .name(NAME).ownerId(userId).pri(true).top(false).updated(now).temp(true);
         ChatGroup chatGroup = new ChatGroup().id(groupId).name(NAME).description(DESC).owner(owner.getPhone()).member(members);
         //todo insert into database
         int i = this.chatGroupService.add(chatGroup);
@@ -173,7 +173,12 @@ public class ChatController {
         if (campAttend == null) {
             return EnumUtil.errorToJson(ErrorCode.USER_NOT_ATTEND_CAMP);
         }
-        Group group = new Group().groupname("话题："+ title)._public(true).approval(false).owner(owner.getPhone());
+        List<User> users = this.campAttendService.findTeachersAndObserverByCampId(campId);
+        UserName userList = new UserName();
+        for (User user : users) {
+            userList.add(user.getPhone());
+        }
+        Group group = new Group().groupname("话题："+ title)._public(true).approval(false).owner(owner.getPhone()).members(userList);
         String createResult = (String)easemobChatGroup.createChatGroup(group);
         logger.info("create chat group result:{}", createResult);
         if (createResult == null) return EnumUtil.errorToJson(ErrorCode.CREATE_CHAT_GROUP_FAILED);
@@ -182,11 +187,12 @@ public class ChatController {
         String groupId = data.getString("groupid");
         Timestamp now = new Timestamp(System.currentTimeMillis());
         Topic topic = new Topic().campId(campId).created(now).essence(false).groupId(groupId)
-                .name("话题："+ title).ownerId(userId).pri(false).top(false).updated(now);
+                .name("话题："+ title).ownerId(userId).pri(false).top(false).updated(now).temp(false);
         ChatGroup chatGroup = new ChatGroup().id(groupId).name(NAME).description(DESC).owner(owner.getPhone()).member("");
         //todo insert into database
         int i = this.chatGroupService.add(chatGroup);
-        int j = this.topicService.add(topic);
+        List<User> teachers = this.userService.findUserByCampId(campId);
+        int j = this.topicService.add(topic, teachers);
         JSONObject result = new JSONObject();
         data = new JSONObject();
         result.put("status",200);
@@ -194,13 +200,6 @@ public class ChatController {
         data.put("groupId", groupId);
         result.put("data",data);
         return result;
-    }
-
-    @RequestMapping(value = "/changeToPrivate", method = RequestMethod.POST)
-    @ResponseBody
-    public Object changeToPrivate(@RequestParam("owner") String _owner, @RequestParam("groupId") String groupId, @RequestParam("campId") String _campId) {
-        //todo 根据传入参数查找topic并将群修改为public=false，members_only=true，allowinvites=false，存入数据库
-        return null;
     }
 
     @RequestMapping(value = "/modify", method = RequestMethod.POST)
@@ -233,7 +232,7 @@ public class ChatController {
             if (!(user.getPhone().equals(chatGroup.getOwner()) || campAttend.getRole() == 2)) {
                 return EnumUtil.errorToJson(ErrorCode.NO_AUTH_ERROR);
             }
-            topic.pri(true);
+            topic.pri(true).temp(false);
             topic.updated(new Timestamp(System.currentTimeMillis()));
             int i = this.topicService.update(topic);
             if (i <= 0) {
@@ -269,20 +268,6 @@ public class ChatController {
         data.put("groupId", topic.getGroupId());
         result.put("data", data);
         return result;
-    }
-
-    @RequestMapping(value = "/setEssence", method = RequestMethod.POST)
-    @ResponseBody
-    public Object setEssence(@RequestParam("groupId") String groupId, @RequestParam("userId") String _userId) {
-        //todo 设置groupId的话题为精华,更新数据库
-        return null;
-    }
-
-    @RequestMapping(value = "/setTop")
-    @ResponseBody
-    public Object setTop(@RequestParam("groupId") String groupId) {
-        //todo 设置groupId的话题为置顶，更新数据库
-        return null;
     }
 
     private String getMembers(String member, long campId, UserName userList) {

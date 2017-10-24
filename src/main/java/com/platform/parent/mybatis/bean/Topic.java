@@ -17,13 +17,18 @@ public class Topic {
     private long id;
     private long ownerId;
     private String name;
-    private boolean pri, essence, top;
+    private boolean pri, essence, top, temp;
     private long campId;
     private String groupId;
     private Timestamp created, updated;
 
     public Topic id(long id) {
         this.id = id;
+        return this;
+    }
+
+    public Topic temp(boolean temp) {
+        this.temp = temp;
         return this;
     }
 
@@ -173,6 +178,14 @@ public class Topic {
 
     public Timestamp getUpdated() {
         return updated;
+    }
+
+    public boolean isTemp() {
+        return temp;
+    }
+
+    public void setTemp(boolean temp) {
+        this.temp = temp;
     }
 
     public void setUpdated(Timestamp updated) {

@@ -49,4 +49,10 @@
     <select id="findCampAttendByUserIdAndCampId" resultType="com.platform.parent.mybatis.bean.CampAttend">
         SELECT * FROM camp_attend WHERE user_id = #{userId} AND camp_id = #{campId}
     </select>
+    <!-- List<User> findTeachersAndObserverByCampId -->
+    <select id="findTeachersAndObserverByCampId" parameterType="long" resultMap="com.platform.parent.mybatis.dao.UserMapper.userMapBase">
+        SELECT u.* FROM user u
+        LEFT JOIN camp_attend ca ON u.id = ca.user_id
+        WHERE ca.camp_id = #{campId} AND (ca.role = 2 OR ca.role = 3);
+    </select>
 </mapper>

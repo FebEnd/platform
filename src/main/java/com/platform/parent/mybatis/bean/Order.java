@@ -19,7 +19,7 @@ public class Order {
     private long userId;
     private BigDecimal amount;
     private long type;
-    private Timestamp create, payed;
+    private Timestamp created, payed;
     private boolean confirm;
     private String coupons;
     private int duration;
@@ -64,8 +64,8 @@ public class Order {
         return this;
     }
 
-    public Order create(Timestamp create) {
-        this.create = create;
+    public Order created(Timestamp created) {
+        this.created = created;
         return this;
     }
 
@@ -135,8 +135,8 @@ public class Order {
         this.coupons = coupons;
     }
 
-    public Timestamp getCreate() {
-        return create;
+    public Timestamp getCreated() {
+        return created;
     }
 
     public int getDuration() {
@@ -147,8 +147,8 @@ public class Order {
         this.duration = duration;
     }
 
-    public void setCreate(Timestamp create) {
-        this.create = create;
+    public void setCreated(Timestamp created) {
+        this.created = created;
     }
 
     public boolean isConfirm() {
