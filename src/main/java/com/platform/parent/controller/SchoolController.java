@@ -1,6 +1,7 @@
 package com.platform.parent.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.platform.parent.config.NewsConfig;
 import com.platform.parent.mybatis.bean.Location;
 import com.platform.parent.mybatis.bean.Order;
 import com.platform.parent.mybatis.bean.School;
@@ -16,10 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by tqyao.
@@ -43,6 +41,8 @@ public class SchoolController {
     UserService userService;
     @Autowired
     TeacherService teacherService;
+    @Autowired
+    NewsConfig newsConfig;
 
     @RequestMapping(value = "/getDiscovery", method = RequestMethod.GET)
     @ResponseBody
@@ -76,7 +76,7 @@ public class SchoolController {
             data.put("orgs", null);
         }
         List<Order> orders = this.orderService.findCompleteOrderForCamp();
-        List<String> news = new ArrayList<>();
+        ArrayList<String> news = new ArrayList<>();
         if (orders != null && orders.size()>0) {
             for (Order order : orders) {
                 User user = this.userService.queryUserById(order.getUserId());
@@ -84,27 +84,27 @@ public class SchoolController {
                 String s = user.getNickname() + " " + teacher.get(0).getNickname() ;
                 news.add(s);
             }
+            generateRandomNews(news);
+            System.out.println("here");
             data.put("news", news);
         } else {
-            data.put("news", generateRandomNews());
+            generateRandomNews(news);
+            data.put("news", news);
         }
         result.put("data", data);
         return result;
 
     }
 
-    private List<String> generateRandomNews() {
-        List<String> res = new ArrayList<>();
-        for (int i = 0; i < 50; i++) {
-            long userId = (long)Math.random()*100;
-            long teacherId = userId + 10;
-            User user = this.userService.queryUserById(userId);
-            User teacher = this.userService.queryUserById(teacherId);
-            if (user != null && teacher != null) {
-                res.add(user.getNickname() + " " + teacher.getNickname() );
-            }
+    private void generateRandomNews(ArrayList<String> news) {
+        if (news.size() >= 20) return ;
+        int i = 20 - news.size();
+        for (int j = 0; j < i; j++) {
+            int random = new Random().nextInt(20);
+            String s = newsConfig.getName().get(random);
+            System.out.println(s);
+            news.add(s);
         }
-        return res;
     }
 
 

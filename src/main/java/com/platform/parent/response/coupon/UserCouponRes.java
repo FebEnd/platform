@@ -11,8 +11,10 @@ public class UserCouponRes {
     private BigDecimal amount;
     private Timestamp publish, expiration;
     private boolean used;
+    private long couponId;
 
-    public UserCouponRes(String name, String description, BigDecimal amount, Timestamp publish, Timestamp expiration, boolean used) {
+    public UserCouponRes(long couponId, String name, String description, BigDecimal amount, Timestamp publish, Timestamp expiration, boolean used) {
+        this.couponId = couponId;
         this.name = name;
         this.description = description;
         this.amount = amount;
@@ -67,5 +69,13 @@ public class UserCouponRes {
 
     public void setUsed(boolean used) {
         this.used = used;
+    }
+
+    public long getCouponId() {
+        return couponId;
+    }
+
+    public void setCouponId(long couponId) {
+        this.couponId = couponId;
     }
 }

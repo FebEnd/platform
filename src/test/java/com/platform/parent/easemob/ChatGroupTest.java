@@ -35,7 +35,7 @@ public class ChatGroupTest {
     @Test
     public void createGroup() {
         Group group = new Group();
-        group.desc("org camp")._public(true).maxusers(50).approval(false).owner("13127502773");
+        group.desc("org camp")._public(true).maxusers(50).approval(false).owner("11111111111");
         Object result = easemobChatGroup.createChatGroup(group);
         System.out.println(result);
         logger.info(result.toString());

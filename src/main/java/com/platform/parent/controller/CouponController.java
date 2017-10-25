@@ -45,7 +45,7 @@ public class CouponController {
                 Coupon coupon = this.couponService.findCouponById(userCoupon.getCouponId());
                 System.out.println(userCoupon.getCouponId());
                 if (coupon != null) {
-                    res = new UserCouponRes(coupon.getName(),coupon.getDescription(),coupon.getAmount(),userCoupon.getPublish(),userCoupon.getExpiration(),userCoupon.isUsed());
+                    res = new UserCouponRes(userCoupon.getId(), coupon.getName(),coupon.getDescription(),coupon.getAmount(),userCoupon.getPublish(),userCoupon.getExpiration(),userCoupon.isUsed());
                     coupons.add(res);
                 } /*else {
 //                    return EnumUtil.errorToJson(ErrorCode.NO_SUCH_COUPON);
