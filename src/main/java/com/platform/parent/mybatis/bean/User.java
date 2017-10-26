@@ -7,7 +7,7 @@ import java.util.List;
  */
 public class User {
     private long id;
-    private String phone, nickname, password;
+    private String phone, nickname, password, avatar;
     private long referee;
     private int auth;//申请实名认证 0 未申请， 1 已申请未审核， 2 已审核通过， 3 未通过
 
@@ -17,6 +17,11 @@ public class User {
 
     public User id(long id) {
         this.id = id;
+        return this;
+    }
+
+    public User avatar(String avatar) {
+        this.avatar = avatar;
         return this;
     }
 
@@ -203,5 +208,13 @@ public class User {
 
     public void setReferee(long referee) {
         this.referee = referee;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

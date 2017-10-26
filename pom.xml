@@ -5,7 +5,7 @@
 
 	<groupId>com.platform.parent</groupId>
 	<artifactId>platform</artifactId>
-	<version>0.0.30</version>
+	<version>0.0.31</version>
 	<packaging>jar</packaging>
 
 	<name>platform</name>

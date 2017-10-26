@@ -68,12 +68,12 @@
     </select>
 
     <insert id="add" parameterType="com.platform.parent.mybatis.bean.User" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO user (phone, password, nickname, referee) VALUES (#{phone}, #{password}, #{nickname}, #{referee})
+        INSERT INTO user (phone, password, nickname, referee, avatar) VALUES (#{phone}, #{password}, #{nickname}, #{referee}, #{avatar})
     </insert>
 
     <update id="update" parameterType="com.platform.parent.mybatis.bean.User">
         UPDATE user
-        SET phone = #{phone}, password = #{password}, nickname = #{nickname}, auth = #{auth}, referee = #{referee}
+        SET phone = #{phone}, password = #{password}, nickname = #{nickname}, auth = #{auth}, referee = #{referee}, avatar = #{avatar}
         WHERE id = #{id}
     </update>
 
