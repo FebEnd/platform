@@ -1,7 +1,9 @@
 package com.platform.parent.mybatis.dao;
 
 import com.platform.parent.mybatis.bean.User;
+import com.platform.parent.response.camp.UserMini;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,4 +24,5 @@ public interface UserMapper {
     User findUserByPhone(String phone);
     User findUserByPhoneWithRole(String phone);
     List<User> queryUserList(Map<String, Object> params);
+    List<UserMini> findRoleByCampId(@Param("role") int role, @Param("campId") long campId);
 }

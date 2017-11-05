@@ -8,10 +8,8 @@ import com.platform.parent.mybatis.service.*;
 import com.platform.parent.request.camp.AddFavorReq;
 import com.platform.parent.request.camp.ApplyCampRequest;
 import com.platform.parent.request.camp.PassCampReq;
-import com.platform.parent.response.camp.CampList;
-import com.platform.parent.response.camp.CampWithGroupId;
-import com.platform.parent.response.camp.CampWithTeacher;
-import com.platform.parent.response.camp.TopicWithGroupId;
+import com.platform.parent.response.camp.*;
+import com.platform.parent.response.camp.CampDetail;
 import com.platform.parent.util.EnumUtil;
 import com.platform.parent.util.ErrorCode;
 import com.platform.parent.util.StringUtil;
@@ -261,14 +259,51 @@ public class CampController {
         return result;
     }
 
+    @RequestMapping(value = "/getSetting", method = RequestMethod.GET)
+    @ResponseBody
+    public Object getSetting(@RequestParam("campId") String _campId) {
+        if (!StringUtil.isNumber(_campId)) {
+            return EnumUtil.errorToJson(ErrorCode.ILLEGAL_REQUEST_PARAM);
+        }
+        long campId = Long.valueOf(_campId);
+        CampDetail campDetail = this.campService.findCampDetailByCampId(campId);
+        JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
+        result.put("status",200);
+        result.put("message","成功");
+        data.put("campDetail", campDetail);
+        result.put("data",data);
+        return result;
+    }
+
     @RequestMapping(value = "/getEssence", method = RequestMethod.GET)
     @ResponseBody
     public Object getEssence(@RequestParam("campId") String _campId) {
-
-    //todo haven't implemented
+        if (!StringUtil.isNumber(_campId)) {
+            return EnumUtil.errorToJson(ErrorCode.ILLEGAL_REQUEST_PARAM);
+        }
+        long campId = Long.valueOf(_campId);
+        List<TopicWithGroupId> topics = new ArrayList<>();
         JSONObject result = new JSONObject();
         JSONObject data = new JSONObject();
-
+        List<Topic> _topics = this.topicService.findTopicEssence(campId);
+        if (_topics == null || _topics.size()==0) {
+            data.put("topics",null);
+        } else {
+            for (Topic topic : _topics) {
+                TopicWithGroupId t = new TopicWithGroupId();
+                t.setTopicId(topic.getId());
+                t.setGroupId(topic.getGroupId());
+                t.setName(topic.getName());
+                t.setUpdated(topic.getUpdated());
+                t.setTemp(topic.isTemp());
+                topics.add(t);
+            }
+            data.put("topics", topics);
+        }
+        result.put("status",200);
+        result.put("message", "成功");
+        result.put("data",data);
         return result;
     }
 
@@ -319,6 +354,10 @@ public class CampController {
                 t.setGroupId(topic.getGroupId());
                 t.setName(topic.getName());
                 t.setUpdated(topic.getUpdated());
+                t.setTemp(topic.isTemp());
+                t.setPri(topic.isPri());
+                t.setEssence(topic.isEssence());
+                t.setTop(topic.isTop());
                 topics.add(t);
             }
             data.put("topics", topics);

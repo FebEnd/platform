@@ -20,6 +20,37 @@
         </collection>
     </resultMap>
 
+    <resultMap id="base" type="com.platform.parent.mybatis.bean.Camp">
+        <id property="id" column="id"/>
+        <result column="type" property="type" />
+        <result column="favor" property="favor" />
+        <result column="max_limit" property="maxLimit" />
+        <result column="min_limit" property="minLimit" />
+        <result column="status" property="status" />
+        <result column="price0" property="price0" />
+        <result column="price1" property="price1" />
+        <result column="price2" property="price2" />
+        <result column="title" property="title"/>
+        <result column="subtitle" property="subtitle"/>
+        <result column="description" property="description" />
+        <result column="comment" property="comment"/>
+        <result column="group_id" property="groupId"/>
+    </resultMap>
+    
+    <resultMap id="campDetail" type="com.platform.parent.response.camp.CampDetail">
+        <id property="campId" column="id"/>
+        <result property="title" column="title"/>
+        <result property="announcement" column="announcement"/>
+        <!--<collection property="teachers" ofType="com.platform.parent.mybatis.bean.User">
+            <id property="id" column="id"/>
+            <result property="nickname" column="nickname"/>
+            <result property="avatar" column="avatar"/>
+        </collection>
+        <collection property="members" ofType="com.platform.parent.mybatis.bean.User">
+            <id property="id" column="id" />
+        </collection>-->
+    </resultMap>
+
     <resultMap id="campWithTitle" type="com.platform.parent.response.school.CampWithTitle">
         <id column="id" property="id"/>
         <result column="title" property="title"/>
@@ -78,7 +109,7 @@
     </resultMap>
 
     <sql id="baseColumn" >
-        id, type, favor,description, comment, max_limit, min_limit, status, price0, price1, price2, title, subtitle
+        id, type, favor,description, comment, max_limit, min_limit, status, price0, price1, price2, title, subtitle, group_id
     </sql>
 
     <!--this.type = type;
@@ -148,8 +179,14 @@
         LEFT JOIN teacher t ON ca.user_id = t.id
         WHERE c.id = #{id}
     </select>
+    
+    <select id="findCampDetailByCampId" parameterType="long" resultMap="campDetail">
+        SELECT c.title, c.id, cd.announcement FROM camp c
+        LEFT JOIN camp_detail cd ON c.id = cd.cd_id
+        WHERE c.id = #{campId}
+    </select>
 
-    <select id="queryCampById" parameterType="long" resultType="com.platform.parent.mybatis.bean.Camp">
+    <select id="queryCampById" parameterType="long" resultMap="base">
         SELECT <include refid="baseColumn"/> FROM camp WHERE id = #{id}
     </select>
 

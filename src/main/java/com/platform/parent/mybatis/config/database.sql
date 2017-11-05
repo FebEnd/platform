@@ -283,3 +283,12 @@ CREATE TABLE chat_group(
 
     PRIMARY KEY (id)
 )ENGINE =InnoDB DEFAULT CHARSET =utf8;
+
+#训练营
+DROP TABLE IF EXISTS camp_detail;
+CREATE TABLE camp_detail(
+    cd_id BIGINT(20) NOT NULL ,
+    announcement TEXT,
+
+    PRIMARY KEY (cd_id)
+)ENGINE =InnoDB DEFAULT CHARSET =utf8;

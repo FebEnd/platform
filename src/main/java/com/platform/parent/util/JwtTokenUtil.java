@@ -1,5 +1,6 @@
 package com.platform.parent.util;
 
+import com.platform.parent.mybatis.bean.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -22,6 +23,12 @@ public class JwtTokenUtil implements Serializable {
     private static final String CLAIM_KEY_USERNAME = "sub";
     private static final String CLAIM_KEY_CREATED = "created";
     private static final String CLAIM_KEY_PASSWORD = "pwd";
+    private static final String CLAIM_KEY_CITY = "city";
+    private static final String CLAIM_KEY_DISTRICT = "district";
+    private static final String CLAIM_KEY_GENDER = "gender";
+    private static final String CLAIM_KEY_GRADE = "grade";
+    private static final String CLAIM_KEY_SCHOOL = "school";
+    private static final String CLAIM_KEY_NICKNAME = "nickname";
     private static final String CLAIM_KEY_ID = "id";
 
 
@@ -109,12 +116,14 @@ public class JwtTokenUtil implements Serializable {
         return (lastPasswordReset != null && created.before(lastPasswordReset));
     }*/
 
-    public String generateToken(String phone, String password, long id) {
+    public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put(CLAIM_KEY_USERNAME, phone);
+        claims.put(CLAIM_KEY_USERNAME, user.getPhone());
         claims.put(CLAIM_KEY_CREATED, new Date());
-        claims.put(CLAIM_KEY_PASSWORD, password);
-        claims.put(CLAIM_KEY_ID, id);
+        claims.put(CLAIM_KEY_PASSWORD, user.getPassword());
+        claims.put(CLAIM_KEY_ID, user.getId());
+        claims.put(CLAIM_KEY_CITY, user.getDetail().getCity());
+        claims.put(C)
         return generateToken(claims);
     }
 

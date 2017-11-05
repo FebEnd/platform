@@ -1,6 +1,7 @@
 package com.platform.parent.mybatis.service;
 
 import com.platform.parent.mybatis.bean.Camp;
+import com.platform.parent.response.camp.CampDetail;
 import com.platform.parent.response.camp.CampList;
 import com.platform.parent.response.camp.CampWithGroupId;
 import com.platform.parent.response.camp.CampWithTeacher;
@@ -30,4 +31,5 @@ public interface CampService {
     List<CampList> findCampList(long userId);
     List<CampWithTitle> findCampByTypeWithTitle(int type, String city);
     int addFavor(long id);
+    CampDetail findCampDetailByCampId(long campId);
 }

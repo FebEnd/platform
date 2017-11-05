@@ -5,6 +5,7 @@ import com.platform.parent.mybatis.bean.UserDetail;
 import com.platform.parent.mybatis.dao.UserDetailMapper;
 import com.platform.parent.mybatis.dao.UserMapper;
 import com.platform.parent.mybatis.service.UserService;
+import com.platform.parent.response.camp.UserMini;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -78,5 +79,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> queryUserList(Map<String, Object> params) {
         return this.userMapper.queryUserList(params);
+    }
+
+    @Override
+    public List<UserMini> findRoleByCampId(int role, long campId) {
+        return this.userMapper.findRoleByCampId(role, campId);
     }
 }

@@ -49,6 +49,12 @@
         </collection>
     </resultMap>
 
+    <resultMap id="detailBase" type="com.platform.parent.response.camp.UserMini">
+        <id property="id" column="id"/>
+        <result property="nickname" column="nickname"/>
+        <result property="avatar" column="avatar"/>
+    </resultMap>
+
     <select id="findUserByPhone" parameterType="java.lang.String" resultType="com.platform.parent.mybatis.bean.User">
         SELECT
             U.id,
@@ -83,6 +89,12 @@
             #{idItem}
         </foreach>
     </delete>
+
+    <select id="findRoleByCampId" resultMap="detailBase">
+        SELECT u.id, u.nickname, u.avatar FROM user u
+        LEFT JOIN camp_attend ca ON u.id = ca.user_id
+        WHERE ca.role = #{role} AND ca.camp_id = #{campId}
+    </select>
 
     <!--User findUserByCampId(long campId);-->
     <select id="findUserByCampId" parameterType="long" resultMap="userMapBase">

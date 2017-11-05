@@ -1,6 +1,7 @@
 package com.platform.parent.mybatis.dao;
 
 import com.platform.parent.mybatis.bean.Camp;
+import com.platform.parent.response.camp.CampDetail;
 import com.platform.parent.response.camp.CampList;
 import com.platform.parent.response.camp.CampWithGroupId;
 import com.platform.parent.response.camp.CampWithTeacher;
@@ -35,4 +36,5 @@ public interface CampMapper {
     List<CampList> findCampList(long userId);
     List<CampWithTitle> findCampByTypeWithTitle(@Param("type") int type, @Param("city") String city);
     int addFavor(long id);
+    CampDetail findCampDetailByCampId(long campId);
 }

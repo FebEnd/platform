@@ -18,5 +18,6 @@ public interface TopicMapper {
     Topic findTopicById(long topicId);
     Topic findTopicByGroupId(String groupId);
     List<Topic> findTopicAccessible(long userId);
+    List<Topic> findTopicEssence(long campId);
 
 }

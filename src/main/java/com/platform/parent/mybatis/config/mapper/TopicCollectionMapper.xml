@@ -9,7 +9,7 @@
     </resultMap>
 
     <!--int add(TopicCollection collection);-->
-    <insert id="add" parameterType="com.platform.parent.mybatis.bean.TopicCollection" useGeneratedKeys="true" keyProperty="t_collection_id">
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.TopicCollection" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO topic_collection (user_id, topic_id) VALUES (#{userId}, #{topicId})
     </insert>
     <!--int update(TopicCollection collection);-->

@@ -2,10 +2,9 @@ package com.platform.parent.mybatis.service.impl;
 
 import com.platform.parent.mybatis.bean.Camp;
 import com.platform.parent.mybatis.dao.CampMapper;
+import com.platform.parent.mybatis.dao.UserMapper;
 import com.platform.parent.mybatis.service.CampService;
-import com.platform.parent.response.camp.CampList;
-import com.platform.parent.response.camp.CampWithGroupId;
-import com.platform.parent.response.camp.CampWithTeacher;
+import com.platform.parent.response.camp.*;
 import com.platform.parent.response.school.CampWithTitle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +19,8 @@ import java.util.Map;
 public class CampServiceImpl implements CampService {
     @Autowired
     CampMapper campMapper;
+    @Autowired
+    UserMapper userMapper;
     @Override
     public int add(Camp camp) {
         return this.campMapper.add(camp);
@@ -103,6 +104,22 @@ public class CampServiceImpl implements CampService {
     @Override
     public int addFavor(long id) {
         return this.campMapper.addFavor(id);
+    }
+
+    @Override
+    public CampDetail findCampDetailByCampId(long campId) {
+        CampDetail campDetail = this.campMapper.findCampDetailByCampId(campId);
+        List<UserMini> teachers = this.userMapper.findRoleByCampId(2,campId);
+        List<UserMini> observers = this.userMapper.findRoleByCampId(3,campId);
+        List<UserMini> members = this.userMapper.findRoleByCampId(0,campId);
+        List<UserMini> managers = this.userMapper.findRoleByCampId(1,campId);
+        List<UserMini> noneMembers = this.userMapper.findRoleByCampId(4,campId);
+        campDetail.setTeachers(teachers);
+        campDetail.setObservers(observers);
+        campDetail.setMembers(members);
+        campDetail.setManagers(managers);
+        campDetail.setNoneMembers(noneMembers);
+        return campDetail;
     }
 
 }

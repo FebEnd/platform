@@ -2,6 +2,7 @@ package com.platform.parent.mybatis.service;
 
 import com.platform.parent.mybatis.bean.User;
 import com.platform.parent.mybatis.bean.UserDetail;
+import com.platform.parent.response.camp.UserMini;
 
 import java.util.List;
 import java.util.Map;
@@ -19,4 +20,5 @@ public interface UserService {
     User findUserByPhone(String phone);
     User findUserByPhoneWithRole(String phone);
     List<User> queryUserList(Map<String, Object> params);
+    List<UserMini> findRoleByCampId(int role, long campId);
 }

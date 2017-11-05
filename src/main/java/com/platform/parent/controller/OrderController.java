@@ -119,13 +119,13 @@ public class OrderController {
             UserName userList = new UserName();
             userList.add(user.getPhone());
             userNames.usernames(userList);
+            System.out.println(groupId);
             Object response = easemobChatGroup.addBatchUsersToChatGroup(groupId, userNames);
             if (response == null) {
                 logger.error("Add user to easemob chat group failed, groupId:{}, userId:{}", groupId, user.getId());
                 return EnumUtil.errorToJson(ErrorCode.ATTEND_CAMP_FAILED);
             }
-            CampAttend campAttend = new CampAttend().userId(order.getUserId()).role(0).campId(order.getType())
-                    .expiration(calculateExpiration(order.getDuration()));
+            CampAttend campAttend = new CampAttend().userId(order.getUserId()).role(0).campId(order.getType());
             int j = this.campAttendService.add(campAttend);
             if (j <= 0) {
                 logger.error("Add user to camp_attend table failed, campId:{}, userId:{}", order.getType(), user.getId());
@@ -138,12 +138,6 @@ public class OrderController {
         result.put("message","成功");
         result.put("data",data);
         return result;
-    }
-
-    private Timestamp calculateExpiration(int delay) {
-        long now = System.currentTimeMillis();
-        long exp = now + delay*24*3600*1000;
-        return new Timestamp(now + exp);
     }
 
 //    @PostMapping(value = "/cancelOrder")

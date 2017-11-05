@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.platform.parent.easemob.api.ChatGroupAPI;
 import com.platform.parent.easemob.api.impl.EasemobChatGroup;
 import com.platform.parent.mybatis.bean.CampAttend;
-import com.platform.parent.mybatis.bean.ChatGroup;
 import com.platform.parent.mybatis.bean.Topic;
 import com.platform.parent.mybatis.bean.User;
 import com.platform.parent.mybatis.service.CampAttendService;
@@ -73,9 +72,9 @@ public class ChatController {
         Timestamp now = new Timestamp(System.currentTimeMillis());
         Topic topic = new Topic().campId(campId).created(now).essence(false).groupId(groupId)
                 .name(NAME).ownerId(userId).pri(true).top(false).updated(now).temp(true);
-        ChatGroup chatGroup = new ChatGroup().id(groupId).name(NAME).description(DESC).owner(owner.getPhone()).member(members);
-        //todo insert into database
-        int i = this.chatGroupService.add(chatGroup);
+//        ChatGroup chatGroup = new ChatGroup().id(groupId).name(NAME).description(DESC).owner(owner.getPhone()).member(members);
+//        //todo insert into database
+//        int i = this.chatGroupService.add(chatGroup);
         int j = this.topicService.add(topic);
         JSONObject result = new JSONObject();
         data = new JSONObject();
@@ -188,9 +187,9 @@ public class ChatController {
         Timestamp now = new Timestamp(System.currentTimeMillis());
         Topic topic = new Topic().campId(campId).created(now).essence(false).groupId(groupId)
                 .name("话题："+ title).ownerId(userId).pri(false).top(false).updated(now).temp(false);
-        ChatGroup chatGroup = new ChatGroup().id(groupId).name(NAME).description(DESC).owner(owner.getPhone()).member("");
+        /*ChatGroup chatGroup = new ChatGroup().id(groupId).name(NAME).description(DESC).owner(owner.getPhone()).member("");
         //todo insert into database
-        int i = this.chatGroupService.add(chatGroup);
+        int i = this.chatGroupService.add(chatGroup);*/
         List<User> teachers = this.userService.findUserByCampId(campId);
         int j = this.topicService.add(topic, teachers);
         JSONObject result = new JSONObject();
@@ -224,12 +223,12 @@ public class ChatController {
             return EnumUtil.errorToJson(ErrorCode.USER_NOT_ATTEND_CAMP);
         }
         Topic topic = this.topicService.findTopicByGroupId(groupId);
-        ChatGroup chatGroup = this.chatGroupService.findChatGroupById(groupId);
+//        ChatGroup chatGroup = this.chatGroupService.findChatGroupById(groupId);
         if (topic == null) {
             return EnumUtil.errorToJson(ErrorCode.TOPIC_NOT_EXIST);
         }
         if (pri) {
-            if (!(user.getPhone().equals(chatGroup.getOwner()) || campAttend.getRole() == 2)) {
+            if (!(user.getId() == topic.getOwnerId() || campAttend.getRole() == 2)) {
                 return EnumUtil.errorToJson(ErrorCode.NO_AUTH_ERROR);
             }
             topic.pri(true).temp(false);

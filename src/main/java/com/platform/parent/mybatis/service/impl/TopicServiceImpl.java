@@ -67,4 +67,9 @@ public class TopicServiceImpl implements TopicService {
     public List<Topic> findTopicAccessible(long userId) {
         return this.topicMapper.findTopicAccessible(userId);
     }
+
+    @Override
+    public List<Topic> findTopicEssence(long campId) {
+        return this.topicMapper.findTopicEssence(campId);
+    }
 }

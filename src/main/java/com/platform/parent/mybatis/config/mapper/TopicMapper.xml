@@ -24,7 +24,7 @@
 
 
     <!--int add(Topic topic);-->
-    <insert id="add" parameterType="com.platform.parent.mybatis.bean.Topic" useGeneratedKeys="true" keyProperty="topic_id">
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.Topic" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO topic (owner_id, name, pri, essence, top, camp_id, group_id, created, updated, temp)
         VALUES (#{ownerId}, #{name},#{pri},#{essence},#{top},#{campId},#{groupId},#{created},#{updated}, #{temp})
     </insert>
@@ -56,5 +56,9 @@
         LEFT JOIN topic_involve ti ON t.topic_id = ti.topic_id
         WHERE t.owner_id = #{userId} OR (t.pri = FALSE AND (ti.user_id = #{userId} OR tc.user_id = #{userId})) GROUP BY t.topic_id
         ORDER BY updated DESC
+    </select>
+
+    <select id="findTopicEssence" parameterType="long" resultMap="base">
+        SELECT t.* FROM topic t WHERE t.camp_id = #{campId} AND t.essence = TRUE
     </select>
 </mapper>
