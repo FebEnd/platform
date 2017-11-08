@@ -7,6 +7,7 @@ import com.platform.parent.response.camp.CampWithGroupId;
 import com.platform.parent.response.camp.CampWithTeacher;
 import com.platform.parent.response.school.CampWithTitle;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -32,4 +33,5 @@ public interface CampService {
     List<CampWithTitle> findCampByTypeWithTitle(int type, String city);
     int addFavor(long id);
     CampDetail findCampDetailByCampId(long campId);
+    int updateLastSettlementDate(long id, Timestamp lastSettlementDate);
 }

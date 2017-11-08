@@ -51,4 +51,7 @@
     <select id="findCompleteOrderForCamp" parameterType="long" resultMap="tiny">
         SELECT o.id, o.user_id, o.type FROM `order` o WHERE o.type != -1 AND o.payed != NULL ORDER BY o.payed DESC LIMIT 20
     </select>
+    <select id="findOrdersBetweenTime" resultMap="base">
+        SELECT * FROM `order` WHERE payed between #{start} AND #{end}
+    </select>
 </mapper>

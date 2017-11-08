@@ -25,6 +25,8 @@ public class UserDetail {
     private String childGender;
     private long childSchool;
 
+    private String school;
+
     public UserDetail id(long id) {
         this.id = id;
         return this;
@@ -56,6 +58,14 @@ public class UserDetail {
     public UserDetail childSchool(long childSchool) {
         this.childSchool = childSchool;
         return this;
+    }
+
+    public String getSchool() {
+        return school;
+    }
+
+    public void setSchool(String school) {
+        this.school = school;
     }
 
     public long getId() {

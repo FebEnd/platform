@@ -1,7 +1,8 @@
-package com.platform.parent.mybatis.service;
+package com.platform.parent.mybatis.service.impl;
 
 import com.platform.parent.mybatis.bean.CampDetail;
 import com.platform.parent.mybatis.dao.CampDetailMapper;
+import com.platform.parent.mybatis.service.CampDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

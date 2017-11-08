@@ -54,15 +54,31 @@
         <result property="nickname" column="nickname"/>
         <result property="avatar" column="avatar"/>
     </resultMap>
+    
+    <resultMap id="userLogin" type="com.platform.parent.mybatis.bean.User">
+        <id property="id" column="id"/>
+        <result property="phone" column="phone"/>
+        <result property="password" column="password"/>
+        <result property="nickname" column="nickname"/>
+        <result property="auth" column="auth"/>
+        <association property="detail" javaType="com.platform.parent.mybatis.bean.UserDetail">
+            <id column="id" property="id"/>
+            <result property="city" column="city"/>
+            <result property="liveDistrict" column="live_district" />
+            <result property="childGrade" column="child_grade" />
+            <result property="childGender" column="child_gender" />
+            <result property="school" column="alias" />
+        </association>
+    </resultMap>
 
-    <select id="findUserByPhone" parameterType="java.lang.String" resultType="com.platform.parent.mybatis.bean.User">
-        SELECT
-            U.id,
-            U.phone,
-            U.nickname,
-            U.password
-        FROM user AS U
-        WHERE phone = #{phone}
+    <select id="findUserByPhone" parameterType="java.lang.String" resultMap="userLogin">
+        SELECT u.id, u.phone, u.password, u.nickname, u.auth, ud.id, ud.city, ud.live_district, ud.child_grade,
+            ud.child_gender, sa.alias
+        FROM user u
+        LEFT JOIN user_detail ud ON u.id = ud.id
+        LEFT JOIN school s ON s.id = ud.child_school
+        LEFT JOIN school_alias sa ON sa.school_id = s.id
+        WHERE u.phone = #{phone} LIMIT 1
     </select>
 
     <select id="queryUserById" parameterType="long" resultType="com.platform.parent.mybatis.bean.User">

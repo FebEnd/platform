@@ -130,7 +130,7 @@ public class AuthController {
 //                    JSONArray array = JSONArray.parseArray(response);
                     if (response != null) {
                         //注册成功
-                        String token = tokenUtil.generateToken(req.getPhone(), password, user1.getId());
+                        String token = tokenUtil.generateToken(user1);
                         System.out.println("token for phone: " + req.getPhone() + "\n" + token);
                         logger.info("token for phone:{} \t\t token:{}", req.getPhone(),token);
                         return succ(token);
@@ -173,7 +173,7 @@ public class AuthController {
                 if (verify(req.getPhone(), req.getNumber())) {
                     //验证码正确
                     //todo 返回密码
-                    String token = tokenUtil.generateToken(req.getPhone(), user.getPassword(), user.getId());
+                    String token = tokenUtil.generateToken(user);
                     System.out.println("token for phone: " + req.getPhone() + "\n" + token);
                     logger.info("token for phone:{} \t\t token:{}", req.getPhone(),token);
                     return succ(token);

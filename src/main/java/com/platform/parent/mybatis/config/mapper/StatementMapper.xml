@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.StatementMapper">
+    <resultMap id="base" type="com.platform.parent.mybatis.bean.Statement">
+        <id property="dividendId" column="dividend_id"/>
+        <result column="dividend_name" property="dividendName"/>
+        <result column="camp_id" property="campId"/>
+        <result column="camp_title" property="campTitle"/>
+        <result column="deduction_id" property="deductionId"/>
+        <result column="deduction_name" property="deductionName"/>
+        <result column="bill_start_date" property="billStartDate"/>
+        <result column="bill_end_date" property="billEndDate"/>
+        <result column="settlement_days" property="settlementDays"/>
+        <result column="settlement_unit_price" property="settlementUnitPrice"/>
+        <result column="last_settlement_date" property="lastSettlementDate"/>
+    </resultMap>    
+
+    <select id="findStatements" resultMap="base">
+        select  dividends.user_id as dividend_id, dividends.nickname as dividend_name, dividends.role, dividends.level,
+                dividends.camp_id as camp_id, dividends.camp_title as camp_title,
+                deductions.user_id as deduction_id, deductions.nickname as deduction_name,
+                if (dividends.bill_start_date &gt;= deductions.bill_start_date, dividends.bill_start_date, deductions.bill_start_date) AS bill_start_date,
+                if (dividends.bill_end_date &gt;= deductions.bill_end_date, deductions.bill_end_date, dividends.bill_end_date) AS bill_end_date,
+                DATEDIFF(if (dividends.bill_end_date &gt;= deductions.bill_end_date, deductions.bill_end_date, dividends.bill_end_date),
+                         if (dividends.bill_start_date &gt;= deductions.bill_start_date, dividends.bill_start_date, deductions.bill_start_date))
+                AS settlement_days,
+                deductions.settlement_unit_price,
+                TIMESTAMP(LAST_DAY(now() - interval 1 month)) as last_settlement_date
+        from (
+              select deductions_tmp.* from
+              (select user.id as user_id, user.nickname, camp.id AS camp_id, `order`.id AS order_id, camp.description,
+                    # 从未结算过则从生效日起做首次结算，否则从上次结算日起做结算
+                    if (camp.last_settlement_date IS NULL, `camp_attend`.`effective_date`, DATE_ADD(camp.last_settlement_date, INTERVAL 1 DAY)) AS bill_start_date,
+                    if ( DATE_ADD(`camp_attend`.`effective_date`, INTERVAL `order`.duration DAY) &gt; LAST_DAY(now() - interval 1 month ) , # 上月底订单是否到期
+                         # 到上月底仍未到期，则结算至上月底
+                         LAST_DAY(now() - interval 1 month ),
+                         # 否则结算至到期日
+                         DATE_ADD(`camp_attend`.`effective_date`, INTERVAL order.duration DAY) ) as bill_end_date,
+                    (`order`.amount - if (`coupon`.amount IS NULL, 0, `coupon`.amount))/`order`.duration AS settlement_unit_price
+                from user
+                inner join `order` on   user.id = `order`.user_id and `order`.confirm = 1
+                inner join camp_attend on  user.id = camp_attend.user_id
+                                       and `camp_attend`.`effective_date` IS NOT NULL
+                                       and `camp_attend`.`effective_date` &lt; LAST_DAY(now() - interval 1 month )
+                                       and `order`.type = camp_attend.camp_id
+                                       and `order`.id = camp_attend.order_id
+                inner join camp on camp_attend.camp_id = camp.id
+                                # 在本结算周期内尚未结算过
+                                and (camp.last_settlement_date IS NULL OR camp.last_settlement_date &lt; LAST_DAY(now() - interval 1 month ))
+                                # 在本结算周期内还有未结算费用
+                                and (camp.last_settlement_date IS NULL OR camp.last_settlement_date &lt; camp_attend.expiration)
+                left join `coupon` on `coupon`.id = `order`.coupons)
+                AS deductions_tmp
+                where bill_start_date &lt;= bill_end_date
+             ) AS deductions
+             inner join
+             (
+              select dividends_tmp.* from
+              (select user.id as user_id, user.nickname, camp.id AS camp_id, camp.title as camp_title, camp_attend.role, teacher.star as level,
+                    if (camp.last_settlement_date IS NULL, `camp_attend`.`effective_date`, DATE_ADD(camp.last_settlement_date, INTERVAL 1 DAY)) AS bill_start_date,
+                    # TODO 切换到导师或管理员被取消任命的日期，目前缺失这个属性
+                    LAST_DAY(now() - interval 1 month ) as bill_end_date
+                from user
+                inner join camp_attend on  user.id = camp_attend.user_id
+                                       and `camp_attend`.`effctive_date` IS NOT NULL
+                                       and `camp_attend`.`effective_date` &lt; LAST_DAY(now() - interval 1 month)
+                                       and (camp_attend.role = 1 OR camp_attend.role = 2)
+                inner join camp on camp_attend.camp_id = camp.id
+                                and (camp.last_settlement_date IS NULL OR camp.last_settlement_date &lt; LAST_DAY(now() - interval 1 month ))
+                                and (camp.last_settlement_date IS NULL OR camp.last_settlement_date &lt; camp_attend.expiration)
+                left join teacher on teacher.id = camp_attend.user_id)
+                AS dividends_tmp
+                where bill_start_date &lt;= bill_end_date
+              ) AS dividends
+             on  deductions.camp_id = dividends.camp_id
+                                  and ( (dividends.bill_start_date &gt;= deductions.bill_start_date and dividends.bill_end_date &lt;= deductions.bill_end_date)
+                                        or
+                                        (deductions.bill_start_date &gt;= dividends.bill_start_date and deductions.bill_end_date &lt;= dividends.bill_end_date)
+                                        or
+                                        (dividends.bill_start_date &gt;= deductions.bill_start_date and dividends.bill_start_date  &lt;= deductions.bill_end_date and dividends.bill_end_date &gt;= deductions.bill_end_date)
+                                        or
+                                        (deductions.bill_start_date &gt;= dividends.bill_start_date and deductions.bill_start_date  &lt;= dividends.bill_end_date and deductions.bill_end_date &gt;= dividends.bill_end_date))
+    </select>
+</mapper>

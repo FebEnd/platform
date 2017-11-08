@@ -13,7 +13,7 @@ import java.util.Map;
 @ConfigurationProperties( prefix = "price")
 @PropertySource("classpath:config/price.properties")
 public class PriceConfig {
-    private Map<String, String> sprint, ordinary;
+    private Map<String, String> sprint, ordinary, dividend;
 
     public Map<String, String> getSprint() {
         return sprint;
@@ -29,5 +29,15 @@ public class PriceConfig {
 
     public void setOrdinary(Map<String, String> ordinary) {
         this.ordinary = ordinary;
+    }
+
+    public  Map<String, String> getDividend()
+    {
+        return dividend;
+    }
+
+    public void setDividend(Map<String, String> dividend)
+    {
+        this.dividend = dividend;
     }
 }

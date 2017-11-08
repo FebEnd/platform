@@ -14,7 +14,8 @@ public class CampAttend {
     private long id;
     private long userId;
     private long campId;
-    private Timestamp expiration;
+    private long orderId;
+    private Timestamp expiration, effectiveDate;
     private int role;
 
     /**public CampAttend(long userId, long campId, Timestamp expiration, int role) {
@@ -91,5 +92,21 @@ public class CampAttend {
 
     public void setRole(int role) {
         this.role = role;
+    }
+
+    public long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(long orderId) {
+        this.orderId = orderId;
+    }
+
+    public Timestamp getEffectiveDate() {
+        return effectiveDate;
+    }
+
+    public void setEffectiveDate(Timestamp effectiveDate) {
+        this.effectiveDate = effectiveDate;
     }
 }

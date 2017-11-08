@@ -9,6 +9,7 @@ import com.platform.parent.response.school.CampWithTitle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -120,6 +121,12 @@ public class CampServiceImpl implements CampService {
         campDetail.setManagers(managers);
         campDetail.setNoneMembers(noneMembers);
         return campDetail;
+    }
+
+    @Override
+    public int updateLastSettlementDate(long id, Timestamp lastSettlementDate)
+    {
+        return this.campMapper.updateLastSettlementDate(id, lastSettlementDate);
     }
 
 }

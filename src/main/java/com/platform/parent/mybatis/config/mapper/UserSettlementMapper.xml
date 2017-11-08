@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.UserSettlementMapper">
+    <resultMap id="base" type="com.platform.parent.mybatis.bean.UserSettlement">
+        <id property="id" column="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="camp_id" property="campId"/>
+        <result column="role" property="role"/>
+        <result column="level" property="level"/>
+        <result column="dividend_rate" property="dividendRate"/>
+        <result column="settlement_date" property="settlementDate"/>
+        <result column="settlement_amount" property="settlementAmount"/>
+    </resultMap>
+
+    <resultMap id="settlementAmount" type="com.platform.parent.response.financial.Income">
+        <id property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="campId" column="camp_id"/>
+        <result property="campTitle" column="camp_title"/>
+        <result property="orderAmount" column="order_amount"/>
+        <result property="couponAmount" column="coupon_amount"/>
+        <result property="netAmount" column="net_amount"/>
+        <result property="transactionDate" column="transaction_date"/>
+    </resultMap>
+
+    <resultMap id="expense" type="com.platform.parent.response.financial.Expense">
+        <id property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="campId" column="camp_id"/>
+        <result property="campTitle" column="camp_title"/>
+        <result property="amount" column="amount"/>
+        <result property="transactionDate" column="transaction_date"/>
+    </resultMap>
+
+    <resultMap id="profit" type="com.platform.parent.response.financial.Profit">
+        <result property="totalOrderAmount" column="total_order_amount"/>
+        <result property="totalCouponAmount" column="total_coupon_amount"/>
+        <result property="totalNetAmount" column="total_net_amount"/>
+        <result property="totalExpense" column="total_expense"/>
+        <result property="profit" column="profit"/>
+    </resultMap>
+
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.UserSettlement" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user_settlement (user_id, camp_id, role, level, dividend_rate, settlement_date, settlement_amount)
+                VALUES (#{userId}, #{campId}, #{role}, #{level}, #{dividendRate}, #{settlementDate}, #{settlementAmount})
+    </insert>
+
+    <update id="update" parameterType="com.platform.parent.mybatis.bean.UserSettlement">
+        UPDATE user_settlement SET user_id = #{userId}, camp_id = #{campId}, role = #{role}, level = #{level},
+         dividend_rate = #{dividendRate}, settlement_date = #{settlementDate},
+         settlement_amount = #{settlementAmount}
+        WHERE id = #{id}
+    </update>
+
+    <select id="findUserSettlementById" parameterType="long" resultMap="base">
+        SELECT * FROM user_settlement WHERE id = #{id}
+    </select>
+
+    <select id="findUserSettlementByCampUser" parameterType="long" resultMap="base">
+        SELECT * FROM user_settlement WHERE camp_id = #{campId} and user_id = #{userId}
+    </select>
+
+    <select id="findUserSettlementBetweenTime" resultMap="base">
+        SELECT * FROM user_settlement WHERE settlement_date between #{start} and #{end}
+    </select>
+
+    <select id="findAllUserSettlements" resultMap="base">
+        SELECT * FROM user_settlement
+    </select>
+
+    <select id="findIncomeBetweenTime" resultMap="settlementAmount">
+        SELECT user.id AS user_id, user.nickname AS user_name, camp.id AS camp_id, camp.title AS camp_title,
+                IFNULL(`order`.amount, 0) AS order_amount, IFNULL(`coupon`.amount, 0) as coupon_amount,
+                (IFNULL(`order`.amount, 0) - IFNULL(`coupon`.amount, 0)) as net_amount, `order`.payed AS transaction_date
+        FROM `order`
+        inner join user on user.id = `order`.user_id
+        inner join camp on camp.id = `order`.type
+        left join coupon on coupon.id = `order`.coupons
+        where `order`.payed between #{start} and #{end}
+    </select>
+
+    <select id="findExpenseBetweenTime" resultMap="expense">
+        SELECT user.id AS user_id, user.nickname AS user_name, camp.id AS camp_id, camp.title AS camp_title,
+        user_settlement.settlement_amount AS amount, user_settlement.settlement_date AS transaction_date
+        FROM user_settlement
+        inner join user on user.id = user_settlement.user_id
+        inner join camp on camp.id = user_settlement.camp_id
+        where user_settlement.settlement_date between #{start} and #{end}
+    </select>
+
+    <select id="findProfitBetweenTime" resultMap="profit">
+        select  IFNULL(settlementAmount.total_order_amount, 0) as total_order_amount, IFNULL(settlementAmount.total_coupon_amount, 0) as total_coupon_amount,
+                IFNULL(settlementAmount.total_net_amount, 0) as total_net_amount, IFNULL(expense.total_expense, 0) as total_expense,
+                IFNULL(settlementAmount.total_net_amount - expense.total_expense, 0) AS profit
+        from
+          (SELECT sum(`order`.amount) AS total_order_amount, sum(if(`coupon`.amount IS NULL, 0, `coupon`.amount)) as total_coupon_amount,
+                sum((`order`.amount - if(`coupon`.amount IS NULL, 0, coupon.amount))) as total_net_amount
+          FROM `order`
+          inner join user on user.id = `order`.user_id
+          inner join camp on camp.id = `order`.type
+          left join `coupon` on coupon.id = `order`.coupons
+          where `order`.payed between #{start} and #{end})
+          AS settlementAmount,
+          (SELECT sum(user_settlement.settlement_amount) AS total_expense
+          FROM user_settlement
+          inner join user on user.id = user_settlement.user_id
+          inner join camp on camp.id = user_settlement.camp_id
+          where user_settlement.settlement_date between #{start} and #{end})
+          AS expense
+    </select>
+
+    <select id="findDividendUsersByCampId" parameterType="long" resultType="java.lang.Long">
+        select user.id as user_id
+        from user
+        inner join camp_attend on  user.id = camp_attend.user_id
+        and camp_attend.effective_date IS NOT NULL
+        and camp_attend.effective_date &lt; LAST_DAY(now() - interval 1 month)
+        and (camp_attend.role = 1 OR camp_attend.role = 2)
+        inner join camp on camp_attend.camp_id = camp.id
+        and (camp.last_settlement_date IS NULL OR camp.last_settlement_date &lt; LAST_DAY(now() - interval 1 month ))
+        and (camp.last_settlement_date IS NULL OR camp.last_settlement_date &lt; camp_attend.expiration)
+        where camp_id = #{campId};
+    </select>
+</mapper>

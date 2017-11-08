@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -37,4 +38,5 @@ public interface CampMapper {
     List<CampWithTitle> findCampByTypeWithTitle(@Param("type") int type, @Param("city") String city);
     int addFavor(long id);
     CampDetail findCampDetailByCampId(long campId);
+    int updateLastSettlementDate(@Param("id") long id, @Param("lastSettlementDate") Timestamp lastSettlementDate);
 }

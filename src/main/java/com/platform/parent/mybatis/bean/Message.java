@@ -1,6 +1,6 @@
 package com.platform.parent.mybatis.bean;
 
-import com.platform.parent.mybatis.bean.msgbody.Body;
+import com.platform.parent.mybatis.bean.msgpayload.Body;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -15,6 +15,7 @@ public class Message {
     private String to;
     private String from;
     private String chatType;
+
     private List<Body> bodies;
 
     public Message msgId(String msgId) {

@@ -253,4 +253,9 @@
         UPDATE camp SET favor = favor + 1 WHERE id = #{id}
     </update>
 
+    <update id="updateLastSettlementDate">
+        UPDATE camp SET last_settlement_date = #{lastSettlementDate} WHERE id = #{id}
+    </update>
+
+
 </mapper>

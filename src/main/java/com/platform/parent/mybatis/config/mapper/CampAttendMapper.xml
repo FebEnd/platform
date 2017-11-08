@@ -35,7 +35,7 @@
     </select>
     <!--List<CampAttend> findCampAttendByCampId(long campId);-->
     <select id="findCampAttendByCampId" parameterType="long" resultType="com.platform.parent.mybatis.bean.CampAttend">
-        SELECT * FROM camp_attend WHERE camp_id = #{campId}
+        SELECT * FROM camp_attend WHERE camp_id = #{campId} GROUP BY camp_attend.user_id
     </select>
     <!--long countCampAttendByUserId(long userId);-->
     <select id="countCampAttendByUserId" parameterType="long" resultType="long">
@@ -43,7 +43,7 @@
     </select>
     <!--long countCampAttendByCampId(long campId);-->
     <select id="countCampAttendByCampId" parameterType="long" resultType="long">
-        SELECT count(1) FROM camp_attend WHERE camp_id = #{campId}
+        SELECT count(1) FROM (SELECT DISTINCT user_id FROM camp_attend WHERE camp_id = #{campId}) AS users
     </select>
     <!--CampAttend findCampAttendByUserIdAndCampId-->
     <select id="findCampAttendByUserIdAndCampId" resultType="com.platform.parent.mybatis.bean.CampAttend">
