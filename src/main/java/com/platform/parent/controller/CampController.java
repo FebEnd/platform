@@ -307,6 +307,58 @@ public class CampController {
         return result;
     }
 
+    @RequestMapping(value = "/getCampHome", method = RequestMethod.GET)
+    @ResponseBody
+    public Object getCampHome(@RequestParam("userId") String _userId) {
+        if (!StringUtil.isNumber(_userId)) {
+            return EnumUtil.errorToJson(ErrorCode.ILLEGAL_REQUEST_PARAM);
+        }
+        long userId = Long.valueOf(_userId.trim());
+        User user = this.userService.queryUserById((userId));
+        if (user == null) {
+            return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
+        }
+        List<CampWithGroupId> camps = _getActive(userId);
+        List<TopicWithGroupId> topics = _getAccessible(userId);
+        JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
+        data.put("camps", camps);
+        data.put("topics", topics);
+        result.put("status", 200);
+        result.put("message", "成功");
+        result.put("data",data);
+        return result;
+
+    }
+
+    private List<CampWithGroupId> _getActive (long userId) {
+        return this.campService.findCampsActiveByUserId(userId);
+    }
+
+    private List<TopicWithGroupId> _getAccessible(long userId) {
+        List<TopicWithGroupId> topics = new ArrayList<>();
+        List<Topic> _topics = this.topicService.findTopicAccessible(userId);
+        if (_topics == null) {
+            return null;
+        } else {
+            for (Topic topic : _topics) {
+                TopicWithGroupId t = new TopicWithGroupId();
+                t.setTopicId(topic.getId());
+                t.setGroupId(topic.getGroupId());
+                t.setName(topic.getName());
+                t.setUpdated(topic.getUpdated());
+                t.setTemp(topic.isTemp());
+                t.setPri(topic.isPri());
+                t.setEssence(topic.isEssence());
+                t.setTop(topic.isTop());
+                t.setLevel();
+                topics.add(t);
+            }
+            return topics;
+        }
+    }
+
+
     @RequestMapping(value = "/listActive", method = RequestMethod.GET)
     @ResponseBody
     public Object listActive(@RequestParam("userId") String _userId) {
@@ -343,25 +395,27 @@ public class CampController {
         }
         JSONObject result = new JSONObject();
         JSONObject data = new JSONObject();
-        List<TopicWithGroupId> topics = new ArrayList<>();
-        List<Topic> _topics = this.topicService.findTopicAccessible(userId);
-        if (_topics == null) {
-            data.put("topics", null);
-        } else {
-            for (Topic topic : _topics) {
-                TopicWithGroupId t = new TopicWithGroupId();
-                t.setTopicId(topic.getId());
-                t.setGroupId(topic.getGroupId());
-                t.setName(topic.getName());
-                t.setUpdated(topic.getUpdated());
-                t.setTemp(topic.isTemp());
-                t.setPri(topic.isPri());
-                t.setEssence(topic.isEssence());
-                t.setTop(topic.isTop());
-                topics.add(t);
-            }
-            data.put("topics", topics);
-        }
+        List<TopicWithGroupId> topics = _getAccessible(userId);
+        data.put("topics", topics);
+//        List<Topic> _topics = this.topicService.findTopicAccessible(userId);
+//        if (_topics == null) {
+//            data.put("topics", null);
+//        } else {
+//            for (Topic topic : _topics) {
+//                TopicWithGroupId t = new TopicWithGroupId();
+//                t.setTopicId(topic.getId());
+//                t.setGroupId(topic.getGroupId());
+//                t.setName(topic.getName());
+//                t.setUpdated(topic.getUpdated());
+//                t.setTemp(topic.isTemp());
+//                t.setPri(topic.isPri());
+//                t.setEssence(topic.isEssence());
+//                t.setTop(topic.isTop());
+//                t.setLevel();
+//                topics.add(t);
+//            }
+//            data.put("topics", topics);
+//        }
         result.put("status", 200);
         result.put("message", "成功");
         result.put("data",data);

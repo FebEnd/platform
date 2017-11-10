@@ -15,6 +15,7 @@ import com.platform.parent.util.ErrorCode;
 import com.platform.parent.util.StringUtil;
 import io.swagger.client.model.Group;
 import io.swagger.client.model.UserName;
+import io.swagger.client.model.UserNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -199,6 +200,47 @@ public class ChatController {
         data.put("groupId", groupId);
         result.put("data",data);
         return result;
+    }
+
+    @RequestMapping(value = "/join", method = RequestMethod.POST)
+    @ResponseBody
+    public Object join(@RequestParam("groupId") String groupId, @RequestParam("campId") String _campId, @RequestParam("userId") String _userId) {
+        if (!(StringUtil.isNumber(_campId) && StringUtil.isNumber(_userId))) {
+            return EnumUtil.errorToJson(ErrorCode.ILLEGAL_REQUEST_PARAM);
+        }
+        long campId = Long.valueOf(_campId);
+        long userId = Long.valueOf(_userId);
+        User user = this.userService.queryUserById(userId);
+        if (user == null) {
+            return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
+        }
+        CampAttend campAttend = this.campAttendService.findCampAttendByUserIdAndCampId(userId, campId);
+        if (campAttend == null) {
+            return EnumUtil.errorToJson(ErrorCode.USER_NOT_ATTEND_CAMP);
+        }
+        Topic topic = this.topicService.findTopicByGroupId(groupId);
+//        ChatGroup chatGroup = this.chatGroupService.findChatGroupById(groupId);
+        if (topic == null) {
+            return EnumUtil.errorToJson(ErrorCode.TOPIC_NOT_EXIST);
+        }
+        if (topic.isPri()) {
+            return EnumUtil.errorToJson(ErrorCode.NO_AUTH_JOIN);
+        } else {
+            _addMember(new String[]{user.getPhone()}, topic.getGroupId());
+        }
+    }
+
+    private Object _addMember(String[] usernames, String groupId, long[] userIds) {
+        UserNames userNames = new UserNames();
+        UserName userList = new UserName();
+        for (int i = 0; i < usernames.length; i++) {
+            userList.add(usernames[i]);
+        }
+        userNames.usernames(userList);
+        String result =  (String) easemobChatGroup.addBatchUsersToChatGroup(groupId, userNames);
+        if (result != null) {
+            this
+        }
     }
 
     @RequestMapping(value = "/modify", method = RequestMethod.POST)

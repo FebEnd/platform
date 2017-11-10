@@ -1,18 +1,29 @@
 package com.platform.parent.response.camp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.sql.Timestamp;
 
 /**
  * Created by tqyao.
  */
 public class TopicWithGroupId {
+    static final int TEMP = 0, PRI = 1, ESSENCE = 2, TOP = 3, ESSENCE_TOP = 4;
     private long topicId;
     private String groupId;
     private String name;
     private Timestamp updated;
+    private int level; // 0 临时私聊，1 永久私聊，2 精华话题，3 置顶话题， 4 精华+置顶
+
+    @JsonIgnore
     private boolean temp;
+    @JsonIgnore
     private boolean pri;
-    private boolean essence, top;
+    @JsonIgnore
+    private boolean essence;
+    @JsonIgnore
+    private boolean top;
+
 
     public boolean isEssence() {
         return essence;
@@ -76,5 +87,25 @@ public class TopicWithGroupId {
 
     public void setPri(boolean pri) {
         this.pri = pri;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel() {
+        if (temp) {
+            this.level = TEMP;
+        } else if (pri) {
+            this.level = PRI;
+        } else if (essence && !top) {
+            this.level = ESSENCE;
+        } else if (!essence && top) {
+            this.level = TOP;
+        } else if (essence && top) {
+            this.level = ESSENCE_TOP;
+        } else {
+            this.level = TEMP;
+        }
     }
 }
