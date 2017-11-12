@@ -17,4 +17,8 @@ public interface TopicService {
     Topic findTopicByGroupId(String groupId);
     List<Topic> findTopicAccessible(long userId);
     List<Topic> findTopicEssence(long campId);
+    List<Topic> findTopicByCampId(long campId);
+    int addRead(long topicId);
+    int clearTopicsOverSevenDays();
+    List<Topic> findTopicsOverSenvenDays();
 }

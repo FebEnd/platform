@@ -60,6 +60,7 @@ CREATE TABLE camp (
     name TEXT,
     subtitle TEXT,
     group_id TEXT,
+    last_settlement_date  TIMESTAMP,       #TODO, 用户在训练营上次结算时间 每次结算的时候更新
 
     PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -70,10 +71,25 @@ CREATE TABLE camp_attend(
     user_id BIGINT(20) NOT NULL,
     camp_id BIGINT(20) NOT NULL,
     expiration TIMESTAMP NOT NULL, #训练营到期时间
-    role TINYINT(1) DEFAULT 0, #会员在训练营中的身份 0 普通成员, 1 管理员, 2 导师, 3 观察员, 4 编制外成员
+    order_id BIGINT(20) ,          #TODO 1:  用户可以在一个训练营购买多张，比如续费。所以会有多条记录。 对于分成用户，为空
+    effctive_date  TIMESTAMP,      #TODO 2:  用户在训练营开课生效时间, 或者分成用户加入时间, 默认为空，开班时对已有记录一起更新， 后续用户加入时更新
+    role INT(11) DEFAULT 0, #会员在训练营中的身份 0 普通成员, 1 管理员, 2 导师, 3 观察员, 4 编制外成员
 
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS user_settlement;
+CREATE TABLE `user_settlement` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `user_id` bigint(20) NOT NULL,                        # 结算用户
+    `camp_id` bigint(20) NOT NULL,                        # 结算用户参与的训练营
+    `settlement_date` timestamp NULL DEFAULT NULL,        # 结算日
+    `settlement_amount` decimal(10,2) NOT NULL,           # 结算金额
+    `role` int(11) DEFAULT NULL,                          # 结算用户的角色， 导师或者管理员
+    `level` int(11) DEFAULT NULL,                         # 结算用户的星级， 管理员为0。
+    `dividend_rate` int(11) DEFAULT NULL,                 # 结算用户的分成比例
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=146 DEFAULT CHARSET=utf8
 
 # 储存用户收藏的训练营 */
 DROP TABLE IF EXISTS camp_collection;
@@ -99,6 +115,7 @@ CREATE TABLE topic(
     created TIMESTAMP NOT NULL DEFAULT now(),
     updated TIMESTAMP NOT NULL DEFAULT now(),
     temp TINYINT(1) NOT NULL DEFAULT 0,
+    `read` INT(11) NOT NULL DEFAULT 0,
 
     PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -292,3 +309,47 @@ CREATE TABLE camp_detail(
 
     PRIMARY KEY (cd_id)
 )ENGINE =InnoDB DEFAULT CHARSET =utf8;
+
+#聊天记录
+DROP TABLE IF EXISTS `message`;
+CREATE TABLE `message`(
+    msg_id VARCHAR(200) NOT NULL, #消息id
+    direction VARCHAR(50), #消息方向
+    `to` VARCHAR(100), #消息接受对象
+    `from` VARCHAR(100), #消息发出对象
+    `chat_type` VARCHAR(10), #消息所属聊天类型
+
+    PRIMARY KEY (msg_id)
+
+)ENGINE =InnoDB DEFAULT CHARSET =utf8;
+#聊天body
+DROP TABLE IF EXISTS `msg_body`;
+CREATE TABLE `msg_body` (
+    msg_body_id BIGINT(20) NOT NULL AUTO_INCREMENT,
+    msg_id VARCHAR(200) NOT NULL ,
+    `type` VARCHAR(10), #消息类型
+    `msg` TEXT, #消息内容
+    `file_length` INT(11), #文件大小
+    `filename` VARCHAR(300), #文件名
+    `secret` VARCHAR(300), #上传文件后返回
+    `url` TEXT, #文件上传地址
+    `size` TEXT, #图片宽高
+    `length` INT(11), # 音视频秒数
+    `thumb` TEXT, # 视频缩略图url
+    `thumbSecret` VARCHAR(300), # 上传视频缩略图后返回
+    `addr` TEXT, # 地址
+    `lat` DOUBLE, #纬度
+    `lng` DOUBLE, #经度
+
+    PRIMARY KEY (msg_body_id)
+
+) ENGINE =InnoDB DEFAULT CHARSET =utf8;
+
+#聊天Ext
+DROP TABLE IF EXISTS `msg_ext`;
+CREATE TABLE `msg_ext` (
+    msg_ext_id VARCHAR(200) NOT NULL ,
+    `map` TEXT,
+
+    PRIMARY KEY (msg_ext_id)
+) ENGINE =InnoDB DEFAULT CHARSET =utf8;

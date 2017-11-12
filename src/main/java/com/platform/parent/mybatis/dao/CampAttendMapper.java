@@ -18,7 +18,7 @@ public interface CampAttendMapper {
     int update(CampAttend attend);
     int deleteByIds(String[] ids);
     CampAttend findCampAttendById(long id);
-    CampAttend findCampAttendByUserIdAndCampId(@Param("userId") long userId, @Param("campId") long campId);
+    List<CampAttend> findCampAttendByUserIdAndCampId(@Param("userId") long userId, @Param("campId") long campId);
     List<CampAttend> findCampAttendByUserId(long userId);
     List<CampAttend> findCampAttendByCampId(long campId);
     long countCampAttendByUserId(long userId);

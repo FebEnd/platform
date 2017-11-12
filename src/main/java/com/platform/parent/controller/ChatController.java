@@ -5,11 +5,9 @@ import com.platform.parent.easemob.api.ChatGroupAPI;
 import com.platform.parent.easemob.api.impl.EasemobChatGroup;
 import com.platform.parent.mybatis.bean.CampAttend;
 import com.platform.parent.mybatis.bean.Topic;
+import com.platform.parent.mybatis.bean.TopicInvolve;
 import com.platform.parent.mybatis.bean.User;
-import com.platform.parent.mybatis.service.CampAttendService;
-import com.platform.parent.mybatis.service.ChatGroupService;
-import com.platform.parent.mybatis.service.TopicService;
-import com.platform.parent.mybatis.service.UserService;
+import com.platform.parent.mybatis.service.*;
 import com.platform.parent.util.EnumUtil;
 import com.platform.parent.util.ErrorCode;
 import com.platform.parent.util.StringUtil;
@@ -41,6 +39,8 @@ public class ChatController {
     ChatGroupService chatGroupService;
     @Autowired
     TopicService topicService;
+    @Autowired
+    TopicInvolveService topicInvolveService;
 
     @RequestMapping(value = "/createPrivate", method = RequestMethod.POST)
     @ResponseBody
@@ -56,8 +56,8 @@ public class ChatController {
             return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
         }
         long campId = Long.valueOf(_campId);
-        CampAttend campAttend = this.campAttendService.findCampAttendByUserIdAndCampId(owner.getId(),campId);
-        if (campAttend == null) {
+        List<CampAttend> campAttend = this.campAttendService.findCampAttendByUserIdAndCampId(owner.getId(),campId);
+        if (campAttend == null || campAttend.size() <= 0) {
             return EnumUtil.errorToJson(ErrorCode.USER_NOT_ATTEND_CAMP);
         }
         String members = "";
@@ -169,8 +169,8 @@ public class ChatController {
             return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
         }
         long campId = Long.valueOf(_campId);
-        CampAttend campAttend = this.campAttendService.findCampAttendByUserIdAndCampId(owner.getId(),campId);
-        if (campAttend == null) {
+        List<CampAttend> campAttend = this.campAttendService.findCampAttendByUserIdAndCampId(owner.getId(),campId);
+        if (campAttend == null || campAttend.size() <= 0) {
             return EnumUtil.errorToJson(ErrorCode.USER_NOT_ATTEND_CAMP);
         }
         List<User> users = this.campAttendService.findTeachersAndObserverByCampId(campId);
@@ -214,8 +214,8 @@ public class ChatController {
         if (user == null) {
             return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
         }
-        CampAttend campAttend = this.campAttendService.findCampAttendByUserIdAndCampId(userId, campId);
-        if (campAttend == null) {
+        List<CampAttend> campAttend = this.campAttendService.findCampAttendByUserIdAndCampId(userId, campId);
+        if (campAttend == null || campAttend.size() <= 0) {
             return EnumUtil.errorToJson(ErrorCode.USER_NOT_ATTEND_CAMP);
         }
         Topic topic = this.topicService.findTopicByGroupId(groupId);
@@ -223,14 +223,29 @@ public class ChatController {
         if (topic == null) {
             return EnumUtil.errorToJson(ErrorCode.TOPIC_NOT_EXIST);
         }
-        if (topic.isPri()) {
-            return EnumUtil.errorToJson(ErrorCode.NO_AUTH_JOIN);
+        TopicInvolve involve = this.topicInvolveService.queryTopicInvolveByUserIdAndTopicId(userId, topic.getId());
+        if (involve == null) {
+            if (topic.isPri()) {
+                return EnumUtil.errorToJson(ErrorCode.NO_AUTH_JOIN);
+            } else {
+                Object res = _addMember(new String[]{user.getPhone()}, topic.getGroupId(), new long[] {userId}, topic.getId());
+                if (res == null) {
+                    return EnumUtil.errorToJson(ErrorCode.TOPIC_JOIN_ERROR);
+                } else {
+                }
+            }
         } else {
-            _addMember(new String[]{user.getPhone()}, topic.getGroupId());
+            this.topicService.addRead(topic.getId());
         }
+        JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
+        result.put("status", 200);
+        result.put("message", "成功");
+        result.put("data", data);
+        return result;
     }
 
-    private Object _addMember(String[] usernames, String groupId, long[] userIds) {
+    private Object _addMember(String[] usernames, String groupId, long[] userIds, long topicId) {
         UserNames userNames = new UserNames();
         UserName userList = new UserName();
         for (int i = 0; i < usernames.length; i++) {
@@ -239,8 +254,13 @@ public class ChatController {
         userNames.usernames(userList);
         String result =  (String) easemobChatGroup.addBatchUsersToChatGroup(groupId, userNames);
         if (result != null) {
-            this
+            for (int i = 0; i < userIds.length; i++) {
+                TopicInvolve involve = new TopicInvolve().userId(userIds[i]).topicId(topicId);
+                this.topicInvolveService.add(involve);
+                this.topicService.addRead(topicId);
+            }
         }
+        return  result;
     }
 
     @RequestMapping(value = "/modify", method = RequestMethod.POST)
@@ -260,8 +280,8 @@ public class ChatController {
         if (user == null) {
             return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
         }
-        CampAttend campAttend = this.campAttendService.findCampAttendByUserIdAndCampId(userId, campId);
-        if (campAttend == null) {
+        List<CampAttend> campAttend = this.campAttendService.findCampAttendByUserIdAndCampId(userId, campId);
+        if (campAttend == null || campAttend.size() <= 0) {
             return EnumUtil.errorToJson(ErrorCode.USER_NOT_ATTEND_CAMP);
         }
         Topic topic = this.topicService.findTopicByGroupId(groupId);
@@ -270,7 +290,7 @@ public class ChatController {
             return EnumUtil.errorToJson(ErrorCode.TOPIC_NOT_EXIST);
         }
         if (pri) {
-            if (!(user.getId() == topic.getOwnerId() || campAttend.getRole() == 2)) {
+            if (!(user.getId() == topic.getOwnerId() || campAttend.get(0).getRole() == 2)) {
                 return EnumUtil.errorToJson(ErrorCode.NO_AUTH_ERROR);
             }
             topic.pri(true).temp(false);
@@ -280,7 +300,7 @@ public class ChatController {
                 return EnumUtil.errorToJson(ErrorCode.UPDATE_FAILED);
             }
         } else if (essence) {
-            if (!(campAttend.getRole() == 1|| campAttend.getRole() == 2 || campAttend.getRole() == 3)) {
+            if (!(campAttend.get(0).getRole() == 1|| campAttend.get(0).getRole() == 2 || campAttend.get(0).getRole() == 3)) {
                 return EnumUtil.errorToJson(ErrorCode.NO_AUTH_ERROR);
             }
             topic.essence(true);
@@ -290,7 +310,7 @@ public class ChatController {
                 return EnumUtil.errorToJson(ErrorCode.UPDATE_FAILED);
             }
         } else if (top) {
-            if (!(campAttend.getRole() == 1|| campAttend.getRole() == 2 || campAttend.getRole() == 3)) {
+            if (!(campAttend.get(0).getRole() == 1|| campAttend.get(0).getRole() == 2 || campAttend.get(0).getRole() == 3)) {
                 return EnumUtil.errorToJson(ErrorCode.NO_AUTH_ERROR);
             }
             topic.top(true);

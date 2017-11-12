@@ -8,12 +8,14 @@ import java.sql.Timestamp;
  * Created by tqyao.
  */
 public class TopicWithGroupId {
-    static final int TEMP = 0, PRI = 1, ESSENCE = 2, TOP = 3, ESSENCE_TOP = 4;
+    static final int TEMP = 0, PRI = 1, ESSENCE = 2, TOP = 3, ESSENCE_TOP = 4, NORMAL = 5;
     private long topicId;
     private String groupId;
     private String name;
     private Timestamp updated;
-    private int level; // 0 临时私聊，1 永久私聊，2 精华话题，3 置顶话题， 4 精华+置顶
+    private int level; // 0 临时私聊，1 永久私聊，2 精华话题，3 置顶话题， 4 精华+置顶, 5 普通
+    private int read, reply;
+    private String owner;
 
     @JsonIgnore
     private boolean temp;
@@ -105,7 +107,31 @@ public class TopicWithGroupId {
         } else if (essence && top) {
             this.level = ESSENCE_TOP;
         } else {
-            this.level = TEMP;
+            this.level = NORMAL;
         }
+    }
+
+    public int getRead() {
+        return read;
+    }
+
+    public void setRead(int read) {
+        this.read = read;
+    }
+
+    public int getReply() {
+        return reply;
+    }
+
+    public void setReply(int reply) {
+        this.reply = reply;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 }

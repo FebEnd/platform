@@ -4,19 +4,24 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.platform.parent.easemob.api.impl.EasemobChatMessage;
+import com.platform.parent.mybatis.bean.Message;
+import com.platform.parent.mybatis.bean.msgpayload.Body;
+import com.platform.parent.mybatis.bean.msgpayload.Ext;
+import com.platform.parent.mybatis.bean.msgpayload.Payload;
+import com.platform.parent.mybatis.service.MessageService;
+import com.platform.parent.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -27,6 +32,8 @@ public class RestoreChatTask {
     private static final EasemobChatMessage easemobChatMessage = new EasemobChatMessage();
     private static final Logger logger = LoggerFactory.getLogger(RestoreChatTask.class);
     private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyyMMddHH");
+    @Autowired
+    MessageService messageService;
 
     /**
      * 每50分钟拉取一次聊天记录
@@ -37,14 +44,18 @@ public class RestoreChatTask {
         calendar.add(Calendar.HOUR_OF_DAY, -2);
         String timeStr = SDF.format(calendar.getTime());
         Object result = easemobChatMessage.exportChatMessages(timeStr);
-        String url = getUrl((String) result);
-        String savePath = "C:/platform/";
-        String filename = url.substring(url.lastIndexOf("/"), url.indexOf("?"));
-        try {
-            downLoadFromUrl(url, filename,"C:/platform/");
+        if (result == null) {
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            String url = getUrl((String) result);
+            String savePath = "C:/platform/";
+            String filename = url.substring(url.lastIndexOf("/"), url.indexOf("?"));
+            try {
+                downLoadFromUrl(url, filename, savePath);
+                readRecordAndRestore(savePath + filename);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -105,7 +116,28 @@ public class RestoreChatTask {
         return bos.toByteArray();
     }
 
-    private static void readRecordAndRestore(String filename) {
+   /* {
+        "msg_id": "397624713213379676",
+            "timestamp": "1510144017932",
+            "direction": "outgoing",
+            "to": "qwqwqww",
+            "from": "admin@easemob.com",
+            "chat_type": "chat",
+            "payload": {
+        "ext": {
+            "test_key": "test_value"
+        },
+        "bodies": [
+        {
+            "msg": "helloword",
+                "type": "txt"
+        }
+            ],
+        "from": "stringa",
+                "to": "qwqwqww"
+    }
+    }*/
+    private  void readRecordAndRestore(String filename) {
         InputStream in = null;
         try {
             in = new GZIPInputStream(new FileInputStream(filename));
@@ -116,8 +148,49 @@ public class RestoreChatTask {
             }
             String all = lines.toString();
             JSONArray msgs = JSON.parseArray(all);
-            for (Object o : msgs) {
-
+            for (int i = 0; i < msgs.size(); i++) {
+                JSONObject o = msgs.getJSONObject(i);
+                Message message = new Message();
+                message.msgId(o.getString("msg_id"))
+                        .timestamp(new Timestamp(o.getLongValue("timestamp")))
+                        .direction(o.getString("direction"))
+                        .chatType(o.getString("chat_type"));
+                JSONObject _payload = o.getJSONObject("payload");
+                JSONObject _ext = _payload.getJSONObject("ext");
+                JSONArray _bodies = _payload.getJSONArray("bodies");
+                String map = "";
+                for (Map.Entry<String, Object> entry : _ext.entrySet()) {
+                    map += entry.getKey() + ":" + entry.getValue() + ",";
+                }
+                Ext ext = new Ext();
+                ext.setMap(map);
+                List<Body> bodies = new ArrayList<>();
+                for (int k = 0; k <_bodies.size(); k++) {
+                    Body body = new Body();
+                    JSONObject _body = _bodies.getJSONObject(k);
+                    body.setAddr(_body.getString("addr"));
+                    body.setFileLength(_body.getIntValue("file_length"));
+                    body.setMsg(_body.getString("msg"));
+                    body.setType(_body.getString("type"));
+                    body.setFilename(_body.getString("filename"));
+                    body.setSecret(_body.getString("secret"));
+                    String size = _body.getString("size");
+                    if(StringUtil.isNull(size)) {}
+                    else {body.setSize(size.substring(1,size.length()-1));}
+                    body.setUrl(_body.getString("url"));
+                    body.setLat(_body.getDoubleValue("lat"));
+                    body.setLng(_body.getDoubleValue("lng"));
+                    body.setLength(_body.getIntValue("length"));
+                    body.setThumb(_body.getString("thumb"));
+                    body.setThumbSecret(_body.getString("thumb_secret"));
+                    body.setMsgId(o.getString("msg_id"));
+                    bodies.add(body);
+                }
+                Payload payload = new Payload().bodies(bodies).ext(ext);
+                message.from(_payload.getString("from"));
+                message.to(_payload.getString("to" ));
+                message.setPayload(payload);
+                this.messageService.add(message);
             }
             System.out.println(lines.toString());
         } catch (IOException e) {
@@ -141,8 +214,11 @@ public class RestoreChatTask {
                 lines.add(sc.nextLine());
             }
             String all = lines.toString();
-            System.out.println(all.substring(1,all.length()-1));
-//            System.out.println(lines.toString());
+//            System.out.println(all.substring(0,all.length()));
+            JSONArray array = JSON.parseArray(all);
+            JSONObject o = array.getJSONObject(0);
+            System.out.println(o.getString("file_length"));
+            System.out.println(lines.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }

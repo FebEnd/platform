@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.TopicInvolveMapper">
+    <resultMap id="base" type="com.platform.parent.mybatis.bean.TopicInvolve">
+        <id property="id" column="ti_id" />
+        <result property="userId" column="user_id" />
+        <result property="topicId" column="topic_id" />
+    </resultMap>
+
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.TopicInvolve" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `topic_involve` (user_id, topic_id) VALUES (#{userId}, #{topicId})
+    </insert>
+
+    <update id="update" parameterType="com.platform.parent.mybatis.bean.TopicInvolve">
+        UPDATE `topic_involve` SET user_id = #{userId}, topic_id = #{topicId} WHERE ti_id = #{id}
+    </update>
+
+    <delete id="deleteByIds" parameterType="java.lang.String">
+        DELETE FROM `topic_involve`
+        <foreach collection="array" item="idItem" open="(" separator="," close=")">
+            WHERE id IN #{idItem}
+        </foreach>
+    </delete>
+
+    <select id="queryTopicInvolveById" parameterType="long" resultMap="base">
+        SELECT * FROM `topic_involve` WHERE ti_id = #{id}
+    </select>
+
+    <select id="queryTopicInvolveByUserIdAndTopicId" resultMap="base">
+        SELECT * FROM `topic_involve` WHERE user_id = #{userId} AND topic_id = #{topicId}
+    </select>
+
+    <select id="queryInvolveCountByTopicId" parameterType="long" resultType="int">
+        SELECT count(1) FROM `topic_involve` WHERE topic_id = #{topicId}
+    </select>
+
+</mapper>

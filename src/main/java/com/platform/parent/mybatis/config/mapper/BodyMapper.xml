@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.BodyMapper">
+
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.msgpayload.Body" useGeneratedKeys="true" keyProperty="bodyId">
+        INSERT INTO `msg_body` (`msg_id`,`type`, `msg`, `file_length`,`filename`,`secret`,`url`,`size`,`length`,`thumb`,`thumbSecret`,`addr`,`lat`,`lng`)
+                VALUES (#{msgId}, #{type}, #{msg}, #{fileLength}, #{filename}, #{secret}, #{url}, #{size},
+                #{length},#{thumb},#{thumbSecret},#{addr},#{lat},#{lng})
+    </insert>
+</mapper>

@@ -72,4 +72,24 @@ public class TopicServiceImpl implements TopicService {
     public List<Topic> findTopicEssence(long campId) {
         return this.topicMapper.findTopicEssence(campId);
     }
+
+    @Override
+    public List<Topic> findTopicByCampId(long campId) {
+        return this.topicMapper.findTopicByCampId(campId);
+    }
+
+    @Override
+    public int addRead(long topicId) {
+        return this.topicMapper.addRead(topicId);
+    }
+
+    @Override
+    public int clearTopicsOverSevenDays() {
+        return this.topicMapper.clearTopicsOverSevenDays();
+    }
+
+    @Override
+    public List<Topic> findTopicsOverSenvenDays() {
+        return this.topicMapper.findTopicsOverSenvenDays();
+    }
 }

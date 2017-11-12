@@ -20,6 +20,9 @@
         <result column="created" property="created"/>
         <result column="updated" property="updated"/>
         <result column="temp" property="temp"/>
+        <result column="read" property="read"/>
+        <result column="reply" property="reply"/>
+        <result column="nickname" property="owner" />
     </resultMap>
 
 
@@ -35,6 +38,9 @@
             temp = #{temp}
         WHERE topic_id = #{id}
     </update>
+    <update id="addRead" parameterType="long">
+        UPDATE topic set `read` = `read`+1 WHERE topic_id = #{topicId}
+    </update>
     <!--int deleteByIds(String[] ids);-->
     <delete id="deleteByIds" parameterType="java.lang.String">
         DELETE FROM topic WHERE topic_id IN
@@ -44,21 +50,47 @@
     </delete>
     <!--Topic findTopicById(long topicId);-->
     <select id="findTopicById" parameterType="long" resultMap="base">
-        SELECT * FROM topic WHERE topic_id = #{id}
+        SELECT t.*, u.nickname FROM topic t
+        LEFT JOIN `user` u ON u.id = t.owner_id
+        WHERE topic_id = #{id}
     </select>
     <!--Topic findTopicByGroupId(String groupId);-->
     <select id="findTopicByGroupId" parameterType="java.lang.String" resultMap="base">
-        SELECT * FROM topic WHERE topic.group_id = #{groupId}
+        SELECT t.*, u.nickname FROM topic t
+        LEFT JOIN `user` u ON u.id = t.owner_id
+        WHERE topic.group_id = #{groupId}
     </select>
     <!--List<Topic> findTopicAccessible(long userId);-->
     <select id="findTopicAccessible" parameterType="long" resultMap="base">
-        SELECT t.* FROM topic t LEFT JOIN topic_collection tc ON t.topic_id = tc.topic_id
+        SELECT t.*, ifnull(mm.`reply`,0), u.nickname FROM topic t
+        LEFT JOIN topic_collection tc ON t.topic_id = tc.topic_id
         LEFT JOIN topic_involve ti ON t.topic_id = ti.topic_id
-        WHERE t.owner_id = #{userId} OR (t.pri = FALSE AND (ti.user_id = #{userId} OR tc.user_id = #{userId})) GROUP BY t.topic_id
+        LEFT JOIN  (SELECT count(1) `reply`, `to` FROM message) mm ON mm.`to` = t.group_id
+        LEFT JOIN `user` u ON u.id = t.owner_id
+        WHERE t.owner_id = #{userId} OR (t.pri = FALSE AND (ti.user_id = #{userId} OR tc.user_id = #{userId}))
+        GROUP BY t.topic_id
         ORDER BY updated DESC
     </select>
 
+    <select id="findTopicByCampId" parameterType="long" resultMap="base">
+        SELECT t.* , IFNULL(mm.`reply`, 0), u.nickname FROM topic t
+        LEFT JOIN  (SELECT count(1) `reply`, `to` FROM message) mm ON mm.`to` = t.group_id
+        LEFT JOIN `user` u ON u.id = t.owner_id
+        WHERE camp_id = #{campId} AND t.pri = FALSE
+    </select>
+
     <select id="findTopicEssence" parameterType="long" resultMap="base">
-        SELECT t.* FROM topic t WHERE t.camp_id = #{campId} AND t.essence = TRUE
+        SELECT t.*, ifnull(mm.`reply`, 0), u.nickname FROM topic t
+        LEFT JOIN (SELECT count(1) `reply`, `to` FROM message) mm ON mm.`to` = t.group_id
+        LEFT JOIN `user` u ON u.id = t.owner_id
+        WHERE t.camp_id = #{campId} AND t.essence = TRUE
+    </select>
+
+    <delete id="clearTopicsOverSevenDays" >
+        DELETE FROM topic t WHERE  DateDiff(dd,t.created,getdate()) > 7 AND t.essence = FALSE AND t.pri = FALSE AND t.top = FALSE
+    </delete>
+    
+    <select id="findTopicsOverSevenDays" resultMap="base">
+        SELECT t.* FROM topic t WHERE DateDiff(dd,t.created,getdate()) > 7 AND t.essence = FALSE AND t.pri = FALSE AND t.top = FALSE
     </select>
 </mapper>

@@ -290,15 +290,7 @@ public class CampController {
         if (_topics == null || _topics.size()==0) {
             data.put("topics",null);
         } else {
-            for (Topic topic : _topics) {
-                TopicWithGroupId t = new TopicWithGroupId();
-                t.setTopicId(topic.getId());
-                t.setGroupId(topic.getGroupId());
-                t.setName(topic.getName());
-                t.setUpdated(topic.getUpdated());
-                t.setTemp(topic.isTemp());
-                topics.add(t);
-            }
+            topics = _combine(_topics);
             data.put("topics", topics);
         }
         result.put("status",200);
@@ -331,6 +323,30 @@ public class CampController {
 
     }
 
+    private List<TopicWithGroupId> _combine(List<Topic> topics) {
+        if (topics == null || topics.size()==0) {
+            return null;
+        } else {
+            List<TopicWithGroupId> result = new ArrayList<>();
+            for (Topic topic : topics) {
+                TopicWithGroupId t = new TopicWithGroupId();
+                t.setTopicId(topic.getId());
+                t.setGroupId(topic.getGroupId());
+                t.setName(topic.getName());
+                t.setUpdated(topic.getUpdated());
+                t.setTemp(topic.isTemp());
+                t.setPri(topic.isPri());
+                t.setEssence(topic.isEssence());
+                t.setTop(topic.isTop());
+                t.setRead(topic.getRead());
+                t.setReply(topic.getReply());
+                t.setLevel();
+                result.add(t);
+            }
+            return result;
+        }
+    }
+
     private List<CampWithGroupId> _getActive (long userId) {
         return this.campService.findCampsActiveByUserId(userId);
     }
@@ -351,6 +367,34 @@ public class CampController {
                 t.setPri(topic.isPri());
                 t.setEssence(topic.isEssence());
                 t.setTop(topic.isTop());
+                t.setRead(topic.getRead());
+                t.setReply(topic.getReply());
+                t.setOwner(topic.getOwner());
+                t.setLevel();
+                topics.add(t);
+            }
+            return topics;
+        }
+    }
+    private List<TopicWithGroupId> _getTopics(long campId) {
+        List<TopicWithGroupId> topics = new ArrayList<>();
+        List<Topic> _topics = this.topicService.findTopicByCampId(campId);
+        if (_topics == null) {
+            return null;
+        } else {
+            for (Topic topic : _topics) {
+                TopicWithGroupId t = new TopicWithGroupId();
+                t.setTopicId(topic.getId());
+                t.setGroupId(topic.getGroupId());
+                t.setName(topic.getName());
+                t.setUpdated(topic.getUpdated());
+                t.setTemp(topic.isTemp());
+                t.setPri(topic.isPri());
+                t.setOwner(topic.getOwner());
+                t.setEssence(topic.isEssence());
+                t.setTop(topic.isTop());
+                t.setRead(topic.getRead());
+                t.setReply(topic.getReply());
                 t.setLevel();
                 topics.add(t);
             }
@@ -358,6 +402,32 @@ public class CampController {
         }
     }
 
+
+    @RequestMapping(value = "/getTopics", method = RequestMethod.GET)
+    @ResponseBody
+    public Object getTopics(@RequestParam("campId") String _campId, @RequestParam("userId") String _userId) {
+        if (!(StringUtil.isNumber(_campId) && StringUtil.isNumber(_userId))) {
+            return EnumUtil.errorToJson(ErrorCode.ILLEGAL_REQUEST_PARAM);
+        }
+        long campId = Long.valueOf(_campId);
+        long userId = Long.valueOf(_userId);
+        User user = this.userService.queryUserById(userId);
+        if (user == null) {
+            return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
+        }
+        List<CampAttend> campAttend = this.campAttendService.findCampAttendByUserIdAndCampId(userId, campId);
+        if (campAttend == null || campAttend.size() <= 0) {
+            return EnumUtil.errorToJson(ErrorCode.USER_NOT_ATTEND_CAMP);
+        }
+        List<TopicWithGroupId> topics = _getTopics(campId);
+        JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
+        result.put("status", 200);
+        result.put("message", "成功");
+        data.put("topics", topics);
+        result.put("data", data);
+        return result;
+    }
 
     @RequestMapping(value = "/listActive", method = RequestMethod.GET)
     @ResponseBody

@@ -7,6 +7,7 @@ import java.util.Map;
  */
 public class Ext {
     private Map<String, String> map;
+    private String extId;
 
     public String getMap() {
         String result = null;
@@ -34,5 +35,13 @@ public class Ext {
             String value = sets[i].substring(sets[i].lastIndexOf(":")+1,sets[i].length());
             this.map.put(key,value);
         }
+    }
+
+    public String getExtId() {
+        return extId;
+    }
+
+    public void setExtId(String extId) {
+        this.extId = extId;
     }
 }

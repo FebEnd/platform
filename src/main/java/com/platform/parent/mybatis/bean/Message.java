@@ -1,9 +1,8 @@
 package com.platform.parent.mybatis.bean;
 
-import com.platform.parent.mybatis.bean.msgpayload.Body;
+import com.platform.parent.mybatis.bean.msgpayload.Payload;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 /**
  * Created by tqyao.
@@ -16,7 +15,7 @@ public class Message {
     private String from;
     private String chatType;
 
-    private List<Body> bodies;
+    private Payload payload;
 
     public Message msgId(String msgId) {
         this.msgId = msgId;
@@ -42,11 +41,6 @@ public class Message {
         this.chatType = chatType;
         return this;
     }
-    public Message bodies(List<Body> bodies) {
-        this.bodies = bodies;
-        return this;
-    }
-
     public String getMsgId() {
         return msgId;
     }
@@ -95,11 +89,11 @@ public class Message {
         this.chatType = chatType;
     }
 
-    public List<Body> getBodies() {
-        return bodies;
+    public Payload getPayload() {
+        return payload;
     }
 
-    public void setBodies(List<Body> bodies) {
-        this.bodies = bodies;
+    public void setPayload(Payload payload) {
+        this.payload = payload;
     }
 }

@@ -22,6 +22,25 @@ public class Topic {
     private String groupId;
     private Timestamp created, updated;
 
+    private int read, reply;
+    private String owner;
+
+    public int getRead() {
+        return read;
+    }
+
+    public void setRead(int read) {
+        this.read = read;
+    }
+
+    public int getReply() {
+        return reply;
+    }
+
+    public void setReply(int reply) {
+        this.reply = reply;
+    }
+
     public Topic id(long id) {
         this.id = id;
         return this;
@@ -190,5 +209,13 @@ public class Topic {
 
     public void setUpdated(Timestamp updated) {
         this.updated = updated;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 }

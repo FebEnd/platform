@@ -17,6 +17,9 @@ public class Body {
     private String addr;//地址
     private double lat,lng;//纬度，经度
 
+    private long bodyId;
+    private String msgId;
+
 
     public Body type(String type) {
         this.type = type;
@@ -129,6 +132,22 @@ public class Body {
         this.lng = lng;
     }
 
+    public long getBodyId() {
+        return bodyId;
+    }
+
+    public void setBodyId(long bodyId) {
+        this.bodyId = bodyId;
+    }
+
+    public String getMsgId() {
+        return msgId;
+    }
+
+    public void setMsgId(String msgId) {
+        this.msgId = msgId;
+    }
+
     enum Type {
         TXT("txt"),
         IMG("img"),
@@ -179,6 +198,7 @@ public class Body {
             this.width = width;
         }
     }
+
 }
 
 
