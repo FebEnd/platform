@@ -45,6 +45,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public int updateAOrN(User user) {
+        return this.userMapper.updateAOrN(user);
+    }
+
+    @Override
     public int deleteByIds(String[] ids) {
         int u = this.userMapper.deleteByIds(ids);
         int d = this.detailMapper.deleteByIds(ids);

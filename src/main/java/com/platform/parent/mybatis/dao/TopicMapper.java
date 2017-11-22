@@ -22,6 +22,6 @@ public interface TopicMapper {
     List<Topic> findTopicByCampId(long campId);
     int addRead(long topicId);
     int clearTopicsOverSevenDays();
-    List<Topic> findTopicsOverSenvenDays();
+    List<Topic> findTopicsOverSevenDays();
 
 }

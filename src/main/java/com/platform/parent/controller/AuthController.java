@@ -133,7 +133,7 @@ public class AuthController {
                         String token = tokenUtil.generateToken(user1);
                         System.out.println("token for phone: " + req.getPhone() + "\n" + token);
                         logger.info("token for phone:{} \t\t token:{}", req.getPhone(),token);
-                        return succ(token);
+                        return succ(token,null);
                     } else {
                         //注册失败
                         logger.error("register easemob user failed");
@@ -176,7 +176,7 @@ public class AuthController {
                     String token = tokenUtil.generateToken(user);
                     System.out.println("token for phone: " + req.getPhone() + "\n" + token);
                     logger.info("token for phone:{} \t\t token:{}", req.getPhone(),token);
-                    return succ(token);
+                    return succ(token,user);
                 } else {
                     return EnumUtil.errorToJson(ErrorCode.VERIFY_CODE_ERROR);
                 }
@@ -187,10 +187,13 @@ public class AuthController {
         }
     }
 
-    private Object succ(String token) {
+    private Object succ(String token, User user) {
         JSONObject result = new JSONObject();
         JSONObject data = new JSONObject();
         data.put("token", token);
+        System.out.println(user.getAvatar());
+        if (user != null) data.put("avatar", user.getAvatar());
+//        data.put("avatar", user.getAvatar());
         result.put("status",200);
         result.put("message","登录成功");
         result.put("data", data);

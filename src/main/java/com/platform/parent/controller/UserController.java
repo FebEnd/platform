@@ -9,8 +9,16 @@ import com.platform.parent.request.user.ApplyAuthReq;
 import com.platform.parent.request.user.CompleteInfoReq;
 import com.platform.parent.util.*;
 import io.swagger.client.model.Nickname;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Created by tqyao.
@@ -19,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/user")
 //@PreAuthorize(value = "hasAnyRole('USER', 'ADMIN')")
 public class UserController {
-
+    static final Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
     UserService userService;
     @Autowired
@@ -34,6 +42,54 @@ public class UserController {
     SchoolService schoolService;
 
     private static final IMUserAPI imUser = new EasemobIMUser();
+
+    @RequestMapping(value = "/updateInfo", method = RequestMethod.POST)
+    @ResponseBody
+    public Object updateInfo(@RequestParam(required = false, value = "nickname") String nickname,
+                             @RequestParam(required = false, value = "avatar") boolean avatar,
+                             @RequestParam(value = "userId") String _userId,
+                             @RequestParam(required = false, value = "file")MultipartFile file) {
+//        System.out.println(avatar);
+//        System.out.println(nickname);
+//        System.out.println(_userId);
+//        if (file == null) System.out.println("no file");
+        if ((StringUtil.isNull(nickname)&& (!avatar|| file == null)) || !StringUtil.isNumber(_userId.trim())) {
+            return EnumUtil.errorToJson(ErrorCode.ILLEGAL_REQUEST_PARAM);
+        }
+        long userId = Long.valueOf(_userId.trim());
+        User user = this.userService.queryUserById(userId);
+        if (user == null) return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
+        if (avatar) {
+            String name = user.getPhone() + "_avatar";
+            String _filename = file.getOriginalFilename();
+            String type = _filename.substring(_filename.lastIndexOf('.'));
+            String filename = name + type;
+            String path = "C:/platform/avatar/" + filename;
+            String url = "http://101.132.71.121:8080/platform/avatar/" + filename;
+            Path path1 = Paths.get(path);
+            try {
+                Files.deleteIfExists(path1);
+                Files.copy(file.getInputStream(),path1);
+                user.avatar(url);
+            } catch (IOException e) {
+                logger.error("Copy file {} error, failed.", path1);
+                e.printStackTrace();
+                return EnumUtil.errorToJson(ErrorCode.COPY_FILE_ERROR);
+            }
+//            System.out.println(path);
+        }
+        if (!StringUtil.isNull(nickname)) {
+            user.nickname(nickname);
+        }
+        int i = this.userService.updateAOrN(user);
+        if (i <= 0) return EnumUtil.errorToJson(ErrorCode.UPDATE_FAILED);
+        JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
+        result.put("status", 200);
+        result.put("message", "成功");
+        result.put("data",data);
+        return result;
+    }
 
     @RequestMapping(value = "/completeInfo", method = RequestMethod.POST)
     public @ResponseBody
@@ -165,6 +221,7 @@ public class UserController {
             data.put("nickname", user.getNickname());
             data.put("childGrade", user.getDetail().getChildGrade());
             data.put("auth", user.getAuth());
+            data.put("avatar", user.getAvatar());
         } else {
             return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
         }

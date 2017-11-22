@@ -87,10 +87,10 @@
     </select>
 
     <delete id="clearTopicsOverSevenDays" >
-        DELETE FROM topic t WHERE  DateDiff(dd,t.created,getdate()) > 7 AND t.essence = FALSE AND t.pri = FALSE AND t.top = FALSE
+        DELETE FROM topic WHERE  DATE_SUB(CURDATE(), INTERVAL 7 DAY) > date(created) AND !(essence  AND pri AND top )
     </delete>
     
     <select id="findTopicsOverSevenDays" resultMap="base">
-        SELECT t.* FROM topic t WHERE DateDiff(dd,t.created,getdate()) > 7 AND t.essence = FALSE AND t.pri = FALSE AND t.top = FALSE
+        SELECT * FROM topic  WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) > date(created) AND !(essence  AND pri  AND top )
     </select>
 </mapper>

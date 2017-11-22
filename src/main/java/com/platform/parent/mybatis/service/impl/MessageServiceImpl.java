@@ -7,11 +7,13 @@ import com.platform.parent.mybatis.dao.ExtMapper;
 import com.platform.parent.mybatis.dao.MessageMapper;
 import com.platform.parent.mybatis.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by tqyao.
  */
+@Service
 public class MessageServiceImpl implements MessageService {
     @Autowired
     MessageMapper messageMapper;

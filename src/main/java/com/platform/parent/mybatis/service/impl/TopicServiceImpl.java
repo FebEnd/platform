@@ -89,7 +89,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public List<Topic> findTopicsOverSenvenDays() {
-        return this.topicMapper.findTopicsOverSenvenDays();
+    public List<Topic> findTopicsOverSevenDays() {
+        return this.topicMapper.findTopicsOverSevenDays();
     }
 }

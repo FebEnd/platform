@@ -13,6 +13,7 @@ import java.util.Map;
 public interface UserService {
     long add(User user);
     int update(User user, UserDetail detail);
+    int updateAOrN(User user);
     int deleteByIds(String[] ids);
     User queryUserById(long id);
     User queryUserByIdWithDetail(long id);

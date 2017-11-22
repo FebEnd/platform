@@ -17,6 +17,7 @@ import java.util.Map;
 public interface UserMapper {
     int add(User user);
     int update(User user);
+    int updateAOrN(User user);
     int deleteByIds(String[] ids);
     User queryUserById(long id);
     User queryUserByIdWithDetail(long id);

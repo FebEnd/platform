@@ -61,6 +61,7 @@
         <result property="password" column="password"/>
         <result property="nickname" column="nickname"/>
         <result property="auth" column="auth"/>
+        <result property="avatar" column="avatar" />
         <association property="detail" javaType="com.platform.parent.mybatis.bean.UserDetail">
             <id column="id" property="id"/>
             <result property="city" column="city"/>
@@ -72,7 +73,7 @@
     </resultMap>
 
     <select id="findUserByPhone" parameterType="java.lang.String" resultMap="userLogin">
-        SELECT u.id, u.phone, u.password, u.nickname, u.auth, ud.id, ud.city, ud.live_district, ud.child_grade,
+        SELECT u.id, u.phone, u.password, u.nickname, u.auth, u.avatar, ud.id, ud.city, ud.live_district, ud.child_grade,
             ud.child_gender, sa.alias
         FROM user u
         LEFT JOIN user_detail ud ON u.id = ud.id
@@ -96,6 +97,11 @@
     <update id="update" parameterType="com.platform.parent.mybatis.bean.User">
         UPDATE user
         SET phone = #{phone}, password = #{password}, nickname = #{nickname}, auth = #{auth}, referee = #{referee}, avatar = #{avatar}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateAOrN" parameterType="com.platform.parent.mybatis.bean.User">
+        UPDATE `user` SET avatar = #{avatar}, nickname = #{nickname}
         WHERE id = #{id}
     </update>
 

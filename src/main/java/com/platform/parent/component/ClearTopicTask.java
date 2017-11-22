@@ -23,7 +23,7 @@ public class ClearTopicTask {
 
     @Scheduled(fixedRate = 24*3600*1000)
     public void clearTopicTask() {
-        List<Topic> topics = this.topicService.findTopicsOverSenvenDays();
+        List<Topic> topics = this.topicService.findTopicsOverSevenDays();
         logger.info("Start clear topics created over 7 days");
         for (Topic topic : topics) {
             chatGroup.deleteChatGroup(topic.getGroupId());
