@@ -5,8 +5,9 @@
 
 	<groupId>com.platform.parent</groupId>
 	<artifactId>platform</artifactId>
-	<version>0.0.41</version>
-	<packaging>jar</packaging>
+	<version>0.0.43</version>
+	<!--<packaging>jar</packaging>-->
+	<packaging>war</packaging>
 
 	<name>platform</name>
 	<description>server for platform</description>
@@ -29,6 +30,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -75,6 +82,12 @@
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.apache.tomcat</groupId>-->
+			<!--<artifactId>tomcat-servlet-api</artifactId>-->
+			<!--<version>8.0.36</version>-->
+			<!--<scope>provided</scope>-->
+		<!--</dependency>-->
 		<!-- 阿里云短信服务包 -->
 		<dependency>
 			<groupId>com.aliyun</groupId>
@@ -113,20 +126,36 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
-		</dependency>
 	</dependencies>
 
 	<build>
-		<plugins>
+		<!--<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<includeSystemScope>true</includeSystemScope>
+				</configuration>
+			</plugin>
+		</plugins>-->
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<webResources>
+						<resource>
+							<directory>lib</directory>
+							<targetPath>WEB-INF/lib/</targetPath>
+							<includes>
+								<include>**/*.jar</include>
+							</includes>
+						</resource>
+					</webResources>
+				</configuration>
 			</plugin>
 		</plugins>
+
 		<resources>
 			<resource>
 				<directory>src/main/java/com/platform/parent/mybatis/config</directory>
@@ -135,13 +164,6 @@
 					<include>**/*.properties</include>
 				</includes>
 				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<directory>lib/</directory>
-				<targetPath>BOOT-INF/lib/</targetPath>
-				<includes>
-					<include>**/*.jar</include>
-				</includes>
 			</resource>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -155,14 +177,6 @@
 				<directory>src/main/resources/config</directory>
 				<includes>
 					<include>**/*.yml</include>
-					<include>**/*.properties</include>
-				</includes>
-				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<directory>src/main/resources/pic</directory>
-				<includes>
-					<include>**/*.jpg</include>
 					<include>**/*.properties</include>
 				</includes>
 				<filtering>true</filtering>

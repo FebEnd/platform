@@ -16,6 +16,7 @@ public class TopicWithGroupId {
     private int level; // 0 临时私聊，1 永久私聊，2 精华话题，3 置顶话题， 4 精华+置顶, 5 普通
     private int read, reply;
     private String owner;
+    private String avatar;
 
     @JsonIgnore
     private boolean temp;
@@ -133,5 +134,13 @@ public class TopicWithGroupId {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

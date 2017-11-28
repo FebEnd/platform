@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.FileRecordMapper">
+    <resultMap id="base" type="com.platform.parent.mybatis.bean.FileRecord">
+        <id property="id" column="file_id" />
+        <result property="filename" column="filename" />
+        <result property="url" column="url" />
+        <result property="campId" column="camp_id" />
+        <result property="ownerId" column="owner_id" />
+        <result property="created" column="created" />
+        <result property="updated" column="updated" />
+        <result property="size" column="size" />
+    </resultMap>
+
+    <resultMap id="baseRes" type="com.platform.parent.response.file.FileResponse">
+        <id property="id" column="file_id" />
+        <result property="filename" column="filename" />
+        <result property="url" column="url" />
+        <result property="campId" column="camp_id" />
+        <result property="ownerName" column="nickname" />
+        <result property="created" column="created" />
+        <result property="updated" column="updated" />
+        <result property="size" column="size" />
+    </resultMap>
+
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.FileRecord" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `file_record` (filename, `url`, `camp_id`, `owner_id`, `created`, `updated`, `size`)
+                VALUES (#{filename}, #{url}, #{campId}, #{ownerId}, #{created}, #{updated}, #{size})
+    </insert>
+
+    <update id="update" parameterType="com.platform.parent.mybatis.bean.FileRecord">
+        UPDATE `file_record` SET `filename` = #{filename}, `url` = #{url}, `camp_id` = #{campId}, `owner_id` = #{ownerId},
+            `created` = #{created}, `updated` = #{updated}, `size` = #{size} WHERE `file_id` = #{id}
+    </update>
+
+    <delete id="deleteByIds" parameterType="java.lang.String">
+        DELETE FROM `file_record`
+        <foreach collection="array" item="idItem" open="(" separator="," close=")">
+            WHERE `file_id` IN #{idItem}
+        </foreach>
+    </delete>
+
+    <select id="findFileRecordById" parameterType="long" resultMap="baseRes" >
+        SELECT f.*, u.nickname FROM `file_record` f
+        LEFT JOIN `user` u ON u.id = f.`owner_id`
+        WHERE f.`file_id` = #{id}
+    </select>
+
+    <select id="findFileRecordsByCampId" parameterType="long" resultMap="baseRes">
+        SELECT f.*, u.nickname FROM `file_record` f
+        LEFT JOIN `user` u ON u.id = f.`owner_id`
+        WHERE f.`camp_id` = #{campId}
+    </select>
+
+    <select id="findFileRecordsByOwnerId" parameterType="long" resultMap="baseRes">
+        SELECT f.*, u.nickname FROM `file_record` f
+        LEFT JOIN `user` u ON u.id = f.`owner_id`
+        WHERE f.`owner_id` = #{ownerId}
+    </select>
+</mapper>

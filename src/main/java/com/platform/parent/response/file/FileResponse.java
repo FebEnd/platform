@@ -1,25 +1,17 @@
-package com.platform.parent.mybatis.bean;
+package com.platform.parent.response.file;
 
 import java.sql.Timestamp;
 
 /**
  * Created by tqyao.
  */
-public class FileRecord {
+public class FileResponse {
     private long id;
     private String filename, url;
     private long campId; // -1 public, others campId
-    private long ownerId;
+    private String ownerName;
     private Timestamp created, updated;
     private long size;
-
-    public long getSize() {
-        return size;
-    }
-
-    public void setSize(long size) {
-        this.size = size;
-    }
 
     public long getId() {
         return id;
@@ -53,12 +45,12 @@ public class FileRecord {
         this.campId = campId;
     }
 
-    public long getOwnerId() {
-        return ownerId;
+    public String getOwnerName() {
+        return ownerName;
     }
 
-    public void setOwnerId(long ownerId) {
-        this.ownerId = ownerId;
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
     }
 
     public Timestamp getCreated() {
@@ -75,5 +67,13 @@ public class FileRecord {
 
     public void setUpdated(Timestamp updated) {
         this.updated = updated;
+    }
+
+    public long getSize() {
+        return size;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
     }
 }

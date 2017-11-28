@@ -12,7 +12,7 @@ public class AvatarConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/platform/avatar/**").addResourceLocations("file:/C:/platform/avatar/");
+        registry.addResourceHandler("/avatar/**").addResourceLocations("file:/C:/platform/avatar/");
         super.addResourceHandlers(registry);
     }
 }

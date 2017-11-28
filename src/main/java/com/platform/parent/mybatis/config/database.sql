@@ -353,3 +353,18 @@ CREATE TABLE `msg_ext` (
 
     PRIMARY KEY (msg_ext_id)
 ) ENGINE =InnoDB DEFAULT CHARSET =utf8;
+
+#文件记录
+DROP TABLE IF EXISTS `file_record`;
+CREATE TABLE `file_record`(
+    `file_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+    `filename` VARCHAR(300) NOT NULL ,
+    `url` VARCHAR(500) NOT NULL ,
+    `camp_id` BIGINT(20) NOT NULL ,
+    `owner_id` BIGINT(20) NOT NULL ,
+    `created` TIMESTAMP DEFAULT now(),
+    `updated` TIMESTAMP DEFAULT now(),
+    `size` BIGINT(20) NOT NULL DEFAULT 0,
+
+    PRIMARY KEY (`file_id`)
+) ENGINE =InnoDB DEFAULT CHARSET =utf8;

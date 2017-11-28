@@ -89,8 +89,7 @@ public class AuthController {
             } else {
                 return EnumUtil.errorToJson(ErrorCode.MESSAGE_SEND_FAILED);
             }
-        } catch (ClientException e) {//阿里云服务故障
-            logger.error(e.getMessage());
+        }catch (ClientException e) {
             e.printStackTrace();
             return EnumUtil.errorToJson(ErrorCode.MESSAGE_SEND_FAILED);
         }

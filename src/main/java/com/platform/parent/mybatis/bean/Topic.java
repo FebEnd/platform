@@ -23,7 +23,7 @@ public class Topic {
     private Timestamp created, updated;
 
     private int read, reply;
-    private String owner;
+    private String owner,avatar;
 
     public int getRead() {
         return read;
@@ -217,5 +217,13 @@ public class Topic {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

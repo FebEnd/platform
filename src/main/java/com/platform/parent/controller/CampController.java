@@ -340,6 +340,7 @@ public class CampController {
                 t.setTop(topic.isTop());
                 t.setRead(topic.getRead());
                 t.setReply(topic.getReply());
+                t.setAvatar(topic.getAvatar());
                 t.setLevel();
                 result.add(t);
             }
@@ -370,6 +371,7 @@ public class CampController {
                 t.setRead(topic.getRead());
                 t.setReply(topic.getReply());
                 t.setOwner(topic.getOwner());
+                t.setAvatar(topic.getAvatar());
                 t.setLevel();
                 topics.add(t);
             }
@@ -395,6 +397,7 @@ public class CampController {
                 t.setTop(topic.isTop());
                 t.setRead(topic.getRead());
                 t.setReply(topic.getReply());
+                t.setAvatar(topic.getAvatar());
                 t.setLevel();
                 topics.add(t);
             }
