@@ -31,6 +31,7 @@ public class UserServiceImpl implements UserService {
         } else {
             int u = this.userMapper.add(user);
             UserDetail detail = new UserDetail().id(user.getId());
+            user.detail(detail);
             int d = this.detailMapper.add(detail);
             return ((u > 0) && (d > 0)) ? 1 : 0;
         }
@@ -89,5 +90,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserMini> findRoleByCampId(int role, long campId) {
         return this.userMapper.findRoleByCampId(role, campId);
+    }
+
+    @Override
+    public User findUserInfoById(long userId) {
+        return this.userMapper.findUserInfoById(userId);
     }
 }

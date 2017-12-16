@@ -22,4 +22,5 @@ public interface UserService {
     User findUserByPhoneWithRole(String phone);
     List<User> queryUserList(Map<String, Object> params);
     List<UserMini> findRoleByCampId(int role, long campId);
+    User findUserInfoById(long userId);
 }

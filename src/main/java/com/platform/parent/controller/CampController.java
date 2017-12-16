@@ -5,11 +5,9 @@ import com.platform.parent.config.MaxMemberConfig;
 import com.platform.parent.config.PriceConfig;
 import com.platform.parent.mybatis.bean.*;
 import com.platform.parent.mybatis.service.*;
-import com.platform.parent.request.camp.AddFavorReq;
-import com.platform.parent.request.camp.ApplyCampRequest;
-import com.platform.parent.request.camp.PassCampReq;
-import com.platform.parent.response.camp.*;
+import com.platform.parent.request.camp.*;
 import com.platform.parent.response.camp.CampDetail;
+import com.platform.parent.response.camp.*;
 import com.platform.parent.util.EnumUtil;
 import com.platform.parent.util.ErrorCode;
 import com.platform.parent.util.StringUtil;
@@ -54,6 +52,10 @@ public class CampController {
     TopicService topicService;
     @Autowired
     SchoolService schoolService;
+    @Autowired
+    ComplaintRecordService complaintRecordService;
+    @Autowired
+    ExchangeRecordService exchangeRecordService;
 
 
     @GetMapping(value = "/getDetail")
@@ -323,89 +325,6 @@ public class CampController {
 
     }
 
-    private List<TopicWithGroupId> _combine(List<Topic> topics) {
-        if (topics == null || topics.size()==0) {
-            return null;
-        } else {
-            List<TopicWithGroupId> result = new ArrayList<>();
-            for (Topic topic : topics) {
-                TopicWithGroupId t = new TopicWithGroupId();
-                t.setTopicId(topic.getId());
-                t.setGroupId(topic.getGroupId());
-                t.setName(topic.getName());
-                t.setUpdated(topic.getUpdated());
-                t.setTemp(topic.isTemp());
-                t.setPri(topic.isPri());
-                t.setEssence(topic.isEssence());
-                t.setTop(topic.isTop());
-                t.setRead(topic.getRead());
-                t.setReply(topic.getReply());
-                t.setAvatar(topic.getAvatar());
-                t.setLevel();
-                result.add(t);
-            }
-            return result;
-        }
-    }
-
-    private List<CampWithGroupId> _getActive (long userId) {
-        return this.campService.findCampsActiveByUserId(userId);
-    }
-
-    private List<TopicWithGroupId> _getAccessible(long userId) {
-        List<TopicWithGroupId> topics = new ArrayList<>();
-        List<Topic> _topics = this.topicService.findTopicAccessible(userId);
-        if (_topics == null) {
-            return null;
-        } else {
-            for (Topic topic : _topics) {
-                TopicWithGroupId t = new TopicWithGroupId();
-                t.setTopicId(topic.getId());
-                t.setGroupId(topic.getGroupId());
-                t.setName(topic.getName());
-                t.setUpdated(topic.getUpdated());
-                t.setTemp(topic.isTemp());
-                t.setPri(topic.isPri());
-                t.setEssence(topic.isEssence());
-                t.setTop(topic.isTop());
-                t.setRead(topic.getRead());
-                t.setReply(topic.getReply());
-                t.setOwner(topic.getOwner());
-                t.setAvatar(topic.getAvatar());
-                t.setLevel();
-                topics.add(t);
-            }
-            return topics;
-        }
-    }
-    private List<TopicWithGroupId> _getTopics(long campId) {
-        List<TopicWithGroupId> topics = new ArrayList<>();
-        List<Topic> _topics = this.topicService.findTopicByCampId(campId);
-        if (_topics == null) {
-            return null;
-        } else {
-            for (Topic topic : _topics) {
-                TopicWithGroupId t = new TopicWithGroupId();
-                t.setTopicId(topic.getId());
-                t.setGroupId(topic.getGroupId());
-                t.setName(topic.getName());
-                t.setUpdated(topic.getUpdated());
-                t.setTemp(topic.isTemp());
-                t.setPri(topic.isPri());
-                t.setOwner(topic.getOwner());
-                t.setEssence(topic.isEssence());
-                t.setTop(topic.isTop());
-                t.setRead(topic.getRead());
-                t.setReply(topic.getReply());
-                t.setAvatar(topic.getAvatar());
-                t.setLevel();
-                topics.add(t);
-            }
-            return topics;
-        }
-    }
-
-
     @RequestMapping(value = "/getTopics", method = RequestMethod.GET)
     @ResponseBody
     public Object getTopics(@RequestParam("campId") String _campId, @RequestParam("userId") String _userId) {
@@ -546,9 +465,133 @@ public class CampController {
         return result;
     }
 
+    @RequestMapping(value = "/applyComplaint", method = RequestMethod.POST)
+    @ResponseBody
+    public Object applyComplaint(ApplyComplaintReq req) {
+        User user = this.userService.queryUserById(req.getUserId());
+        if (user == null) return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
+        Camp camp = this.campService.queryCampById(req.getCampId());
+        if (camp == null) return EnumUtil.errorToJson(ErrorCode.NO_SUCH_CAMP);
+        ComplaintRecord record = new ComplaintRecord();
+        record.setCampId(req.getCampId());
+        record.setContent(req.getContent());
+        record.setTitle(req.getTitle());
+        record.setUserId(req.getUserId());
+        int i = this.complaintRecordService.add(record);
+        if (i <= 0) return EnumUtil.errorToJson(ErrorCode.ADD_FAILED);
+        JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
+        result.put("status", 200);
+        result.put("message", "成功");
+        result.put("data", data);
+        return result;
+    }
 
+    @RequestMapping(value = "/applyExchange", method = RequestMethod.POST)
+    @ResponseBody
+    public Object applyExchange(ApplyExchangeReq req) {
+        User user = this.userService.queryUserById(req.getUserId());
+        if (user == null) return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
+        Camp camp = this.campService.queryCampById(req.getFrom());
+        if (camp == null) return EnumUtil.errorToJson(ErrorCode.NO_SUCH_CAMP);
+        ExchangeRecord record = new ExchangeRecord();
+        record.setFrom(req.getFrom());
+        record.setUserId(req.getUserId());
+        record.setReason(req.getReason());
+        int i = this.exchangeRecordService.add(record);
+        if (i<=0) return EnumUtil.errorToJson(ErrorCode.ADD_FAILED);
+        JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
+        result.put("status", 200);
+        result.put("message", "成功");
+        result.put("data", data);
+        return result;
+    }
 
+    private List<TopicWithGroupId> _combine(List<Topic> topics) {
+        if (topics == null || topics.size()==0) {
+            return null;
+        } else {
+            List<TopicWithGroupId> result = new ArrayList<>();
+            for (Topic topic : topics) {
+                TopicWithGroupId t = new TopicWithGroupId();
+                t.setTopicId(topic.getId());
+                t.setGroupId(topic.getGroupId());
+                t.setName(topic.getName());
+                t.setUpdated(topic.getUpdated());
+                t.setTemp(topic.isTemp());
+                t.setPri(topic.isPri());
+                t.setEssence(topic.isEssence());
+                t.setTop(topic.isTop());
+                t.setRead(topic.getRead());
+                t.setReply(topic.getReply());
+                t.setAvatar(topic.getAvatar());
+                t.setOwnerId(topic.getOwnerId());
+                t.setLevel();
+                result.add(t);
+            }
+            return result;
+        }
+    }
 
+    private List<CampWithGroupId> _getActive (long userId) {
+        return this.campService.findCampsActiveByUserId(userId);
+    }
+
+    private List<TopicWithGroupId> _getAccessible(long userId) {
+        List<TopicWithGroupId> topics = new ArrayList<>();
+        List<Topic> _topics = this.topicService.findTopicAccessible(userId);
+        if (_topics == null) {
+            return null;
+        } else {
+            for (Topic topic : _topics) {
+                TopicWithGroupId t = new TopicWithGroupId();
+                t.setTopicId(topic.getId());
+                t.setGroupId(topic.getGroupId());
+                t.setName(topic.getName());
+                t.setUpdated(topic.getUpdated());
+                t.setTemp(topic.isTemp());
+                t.setPri(topic.isPri());
+                t.setEssence(topic.isEssence());
+                t.setTop(topic.isTop());
+                t.setRead(topic.getRead());
+                t.setReply(topic.getReply());
+                t.setOwner(topic.getOwner());
+                t.setAvatar(topic.getAvatar());
+                t.setOwnerId(topic.getOwnerId());
+                t.setLevel();
+                topics.add(t);
+            }
+            return topics;
+        }
+    }
+    private List<TopicWithGroupId> _getTopics(long campId) {
+        List<TopicWithGroupId> topics = new ArrayList<>();
+        List<Topic> _topics = this.topicService.findTopicByCampId(campId);
+        if (_topics == null) {
+            return null;
+        } else {
+            for (Topic topic : _topics) {
+                TopicWithGroupId t = new TopicWithGroupId();
+                t.setTopicId(topic.getId());
+                t.setGroupId(topic.getGroupId());
+                t.setName(topic.getName());
+                t.setUpdated(topic.getUpdated());
+                t.setTemp(topic.isTemp());
+                t.setPri(topic.isPri());
+                t.setOwner(topic.getOwner());
+                t.setEssence(topic.isEssence());
+                t.setTop(topic.isTop());
+                t.setRead(topic.getRead());
+                t.setReply(topic.getReply());
+                t.setAvatar(topic.getAvatar());
+                t.setOwnerId(topic.getOwnerId());
+                t.setLevel();
+                topics.add(t);
+            }
+            return topics;
+        }
+    }
 
 
     @PutMapping(value = "/update")

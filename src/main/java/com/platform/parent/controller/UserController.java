@@ -7,6 +7,7 @@ import com.platform.parent.mybatis.bean.*;
 import com.platform.parent.mybatis.service.*;
 import com.platform.parent.request.user.ApplyAuthReq;
 import com.platform.parent.request.user.CompleteInfoReq;
+import com.platform.parent.response.user.UserInfoResponse;
 import com.platform.parent.util.*;
 import io.swagger.client.model.Nickname;
 import org.slf4j.Logger;
@@ -199,6 +200,50 @@ public class UserController {
         } else {
             return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
         }
+    }
+
+    @RequestMapping(value = "/getDetailInCamp", method = RequestMethod.GET)
+    @ResponseBody
+    public Object getDetailInCamp(@RequestParam("userId") String _userId, @RequestParam("targetId") String _targetId) {
+        if (!(StringUtil.isNumber(_userId.trim()) && StringUtil.isNumber(_targetId.trim()))) {
+            return EnumUtil.errorToJson(ErrorCode.ILLEGAL_REQUEST_PARAM);
+        }
+        long userId = Long.valueOf(_userId.trim());
+        long targetId = Long.valueOf(_targetId.trim());
+        User user = this.userService.findUserInfoById(targetId);
+        User u = this.userService.queryUserById(userId);
+        if (user == null || u == null) return EnumUtil.errorToJson(ErrorCode.NO_SUCH_USER);
+        JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
+        if (userId == targetId) {
+            UserInfoResponse response = new UserInfoResponse();
+            response.setUserId(user.getId());
+            response.setChildBirth(user.getDetail().getChildBirth());
+            response.setChildGender(user.getDetail().getChildGender());
+            response.setChildGrade(user.getDetail().getChildGrade());
+            response.setChildSchool(user.getDetail().getChildSchool());
+            response.setNickname(user.getNickname());
+            response.setPhone(user.getPhone());
+            response.setAvatar(user.getAvatar());
+            response.setSchoolAlias(user.getDetail().getSchool());
+            data.put("userInfo", response);
+        } else {
+            UserInfoResponse response = new UserInfoResponse();
+            response.setUserId(user.getId());
+            response.setChildBirth(user.getDetail().getChildBirth());
+            response.setChildGender(user.getDetail().getChildGender());
+            response.setChildGrade(user.getDetail().getChildGrade());
+            response.setChildSchool(user.getDetail().getChildSchool());
+            response.setNickname(user.getNickname());
+//            response.setPhone(user.getPhone());
+            response.setSchoolAlias(user.getDetail().getSchool());
+            response.setAvatar(user.getAvatar());
+            data.put("userInfo", response);
+        }
+        result.put("status", 200);
+        result.put("message", "成功");
+        result.put("data", data);
+        return result;
     }
 
 

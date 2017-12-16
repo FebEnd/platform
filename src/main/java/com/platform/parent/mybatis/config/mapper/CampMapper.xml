@@ -246,7 +246,7 @@
             LEFT JOIN  camp_attend ca ON c.id = ca.camp_id
             LEFT JOIN teacher t ON t.id = ca.user_id
             WHERE t.id = #{id} AND c.type = 0
-        GROUP BY c.id
+        GROUP BY c.id ORDER BY c.id DESC LIMIT 1
     </select>
 
     <update id="addFavor" parameterType="long">

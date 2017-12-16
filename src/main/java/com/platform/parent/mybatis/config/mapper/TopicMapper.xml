@@ -59,7 +59,7 @@
     <select id="findTopicByGroupId" parameterType="java.lang.String" resultMap="base">
         SELECT t.*, u.nickname, u.avatar FROM topic t
         LEFT JOIN `user` u ON u.id = t.owner_id
-        WHERE topic.group_id = #{groupId}
+        WHERE t.group_id = #{groupId}
     </select>
     <!--List<Topic> findTopicAccessible(long userId);-->
     <select id="findTopicAccessible" parameterType="long" resultMap="base">

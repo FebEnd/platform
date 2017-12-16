@@ -5,14 +5,16 @@ package com.platform.parent.request.auth;
  */
 public class RegisterReq {
     private String phone,number,channel;
+    private int register;
 
     public RegisterReq() {
     }
 
-    public RegisterReq(String phone, String number, String channel) {
+    public RegisterReq(String phone, String number, String channel, int register) {
         this.phone = phone;
         this.number = number;
         this.channel = channel;
+        this.register = register;
     }
 
     public String getPhone() {
@@ -37,5 +39,13 @@ public class RegisterReq {
 
     public void setChannel(String channel) {
         this.channel = channel;
+    }
+
+    public int getRegister() {
+        return register;
+    }
+
+    public void setRegister(int register) {
+        this.register = register;
     }
 }

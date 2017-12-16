@@ -89,7 +89,7 @@ public class UserCouponServiceImpl implements UserCouponService {
             System.out.println(strategy.getChannel());
             Coupon coupon = this.couponMapper.findCouponById(strategy.getBaseId());
             int number = strategy.getNumber();
-            int couponId = coupon.getId();
+//            int couponId = coupon.getId();
             Timestamp expiration = new Timestamp(publish.getTime() + coupon.getDuration()*24*3600*1000);
             for (int i = 0; i < number; i++) {
                 UserCoupon userCoupon = new UserCoupon().userId(userId).couponId(coupon.getId())

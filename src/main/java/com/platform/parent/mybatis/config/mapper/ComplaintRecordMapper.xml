@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.parent.mybatis.dao.ComplaintRecordMapper">
+    <resultMap id="base" type="com.platform.parent.mybatis.bean.ComplaintRecord">
+        <id property="id" column="complaint_id"/>
+        <result property="title" column="complaint_title"/>
+        <result property="content" column="complaint_content" />
+        <result property="campId" column="camp_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="created" column="created"/>
+        <result property="updated" column="updated" />
+        <result property="handled" column="handled"/>
+    </resultMap>
+    <insert id="add" parameterType="com.platform.parent.mybatis.bean.ComplaintRecord" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `complaint_record` (`complaint_title`, `complaint_content`, `camp_id`, `user_id`, `created`, `updated`, `handled`)
+                VALUES (#{title}, #{content}, #{campId}, #{userId}, #{created}, #{updated}, #{handled})
+    </insert>
+    <update id="update" parameterType="com.platform.parent.mybatis.bean.ComplaintRecord">
+        UPDATE `complaint_record` SET `complaint_title` = #{title}, `complaint_content` = #{content}, `updated` = now(), `handled` = #{handled}
+    </update>
+    <delete id="deleteByIds" parameterType="java.lang.String">
+        DELETE FROM `complaint_record`
+        <foreach collection="array" item="idItem" open="(" separator="," close=")" >
+            WHERE `complaint_id` IN #{idItem}
+        </foreach>
+    </delete>
+    <select id="findComplaintRecordUnhandled" resultMap="base">
+        SELECT * FROM `complaint_record` cr WHERE cr.handled = FALSE
+    </select>
+</mapper>

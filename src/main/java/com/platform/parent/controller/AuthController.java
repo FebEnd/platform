@@ -119,6 +119,7 @@ public class AuthController {
                     //没有用户推荐人
                     user1 = user1.referee(0l);
                 }
+                if (req.getRegister() != 0) user1.register(req.getRegister());
                 long i = userService.add(user1);
                 //todo 发放优惠券
                 int index = this.userCouponService.add(user1.getId(), Long.valueOf(req.getChannel()));
@@ -190,8 +191,11 @@ public class AuthController {
         JSONObject result = new JSONObject();
         JSONObject data = new JSONObject();
         data.put("token", token);
-        System.out.println(user.getAvatar());
-        if (user != null) data.put("avatar", user.getAvatar());
+//        System.out.println(user.getAvatar());
+        if (user != null) {
+            data.put("avatar", user.getAvatar());
+            data.put("register", user.getRegister());
+        }
 //        data.put("avatar", user.getAvatar());
         result.put("status",200);
         result.put("message","登录成功");

@@ -1,5 +1,6 @@
 package com.platform.parent.mybatis.bean.msgpayload;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -29,6 +30,7 @@ public class Ext {
     }*/
 
     public void setMap(String map) {
+        this.map = new HashMap<String, String>();
         String[] sets = map.split(",");
         for (int i = 0; i < sets.length; i++) {
             String key = sets[i].substring(0,sets[i].indexOf(":"));

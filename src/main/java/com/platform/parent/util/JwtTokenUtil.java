@@ -122,10 +122,10 @@ public class JwtTokenUtil implements Serializable {
         claims.put(CLAIM_KEY_CREATED, new Date());
         claims.put(CLAIM_KEY_PASSWORD, user.getPassword());
         claims.put(CLAIM_KEY_ID, user.getId());
-        claims.put(CLAIM_KEY_CITY, user.getDetail().getCity());
-        claims.put(CLAIM_KEY_DISTRICT,user.getDetail().getCity());
-        claims.put(CLAIM_KEY_GENDER,user.getDetail().getChildGender());
-        claims.put(CLAIM_KEY_GRADE,user.getDetail().getChildGrade());
+        claims.put(CLAIM_KEY_CITY, (user.getDetail().getCity()==null)? null : user.getDetail().getCity());
+        claims.put(CLAIM_KEY_DISTRICT,(user.getDetail().getLiveDistrict()==null)? null : user.getDetail().getLiveDistrict());
+        claims.put(CLAIM_KEY_GENDER,(user.getDetail().getChildGender() == null)? null : user.getDetail().getChildGender());
+        claims.put(CLAIM_KEY_GRADE, (user.getDetail().getChildGrade() == null) ? null : user.getDetail().getChildGrade());
         claims.put(CLAIM_KEY_NICKNAME,user.getNickname());
         claims.put(CLAIM_KEY_SCHOOL,user.getDetail().getChildSchool());
         return generateToken(claims);

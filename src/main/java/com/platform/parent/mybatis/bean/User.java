@@ -10,6 +10,7 @@ public class User {
     private String phone, nickname, password, avatar;
     private long referee;
     private int auth;//申请实名认证 0 未申请， 1 已申请未审核， 2 已审核通过， 3 未通过
+    private int register;//注册途径 0 小程序，1 app
 
     private UserDetail detail;
 
@@ -52,6 +53,11 @@ public class User {
 
     public User detail(UserDetail detail) {
         this.detail = detail;
+        return this;
+    }
+
+    public User register(int register) {
+        this.register = register;
         return this;
     }
 
@@ -216,5 +222,13 @@ public class User {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public int getRegister() {
+        return register;
+    }
+
+    public void setRegister(int register) {
+        this.register = register;
     }
 }

@@ -19,6 +19,7 @@ public interface UserMapper {
     int update(User user);
     int updateAOrN(User user);
     int deleteByIds(String[] ids);
+    User findUserInfoById(long userId);
     User queryUserById(long id);
     User queryUserByIdWithDetail(long id);
     List<User> findUserByCampId(long campId);

@@ -368,3 +368,33 @@ CREATE TABLE `file_record`(
 
     PRIMARY KEY (`file_id`)
 ) ENGINE =InnoDB DEFAULT CHARSET =utf8;
+
+#投诉记录
+DROP TABLE IF EXISTS `complaint_record`;
+CREATE TABLE `complaint_record`(
+    `complaint_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+    `complaint_title` VARCHAR(300) NOT NULL ,
+    `complaint_content` TEXT NOT NULL ,
+    `camp_id` BIGINT(20) NOT NULL ,
+    `user_id` BIGINT(20) NOT NULL ,
+    `created` TIMESTAMP DEFAULT now(),
+    `updated` TIMESTAMP DEFAULT now(),
+    `handled` TINYINT(1) NOT NULL DEFAULT 0,
+
+    PRIMARY KEY (`complaint_id`)
+) ENGINE =InnoDB DEFAULT CHARSET =utf8;
+
+#换班申请记录
+DROP TABLE IF EXISTS `exchange_record`;
+CREATE TABLE `exchange_record`(
+    `exchange_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+    `from_id` BIGINT(20) NOT NULL ,
+    `to_id` BIGINT(20) NOT NULL ,
+    `user_id` BIGINT(20) NOT NULL ,
+    `reason` TEXT ,
+    `created` TIMESTAMP DEFAULT now(),
+    `updated` TIMESTAMP DEFAULT now(),
+    `status` INT(11) NOT NULL DEFAULT 0, #0 未处理，1 处理并通过， 2 处理不通过
+
+    PRIMARY KEY (`exchange_id`)
+) ENGINE =InnoDB DEFAULT CHARSET =utf8;
